@@ -27,6 +27,15 @@ Bestenlisten stehen unter Extras; dort auch Bossrush, Zeitfahren (in der Levelwa
 Abspann gibt es Neues Spiel+. Unter Optionen: Hilfsmodus (Tempo, unverwundbar, unendlich Munition), 40/60 fps für
 den Akku des Decks, Vibration.
 
+Neu in 1.1: Die Pause hat eine Karte des Levels (erkundete Bereiche, fehlende Kristalle). Wer mitten im Level
+pausiert, das Spiel schließt oder das Deck weglegt, macht mit "Fortsetzen" genau dort weiter. Im Zeitfahren läuft
+die eigene Bestzeit als Geist mit. Unter Extras: Herausforderungen (jeden Tag ein Level mit zwei Regeln, oder eigene
+aus Nur-Blaster, Ein Treffer, geringer Schwerkraft, Finsternis und Turbo, mit Bestzeiten) und im Logbuch das
+Bestiarium (rechts/links blättert zwischen Seiten und Gegnern). Optionen: Farbhilfe (Formen auf Schlüsseln und
+Türen, Warnstreifen an Lasern und Stampfern), große Schrift und eine Leistungsanzeige (Bilder pro Sekunde, Akku;
+sie schreibt auch perf.txt in den Spielerordner). Das Spiel notiert, wo Kip k.o. geht (deaths.txt); im Leveleditor
+zeigt H diese Todeskarte, R die erreichbaren Stellen nach dem Prüfen (F5).
+
 Spielstände und Einstellungen: %APPDATA%\KipKepler (Windows), ~/.local/share/KipKepler (Linux).
 Windows warnt beim ersten Start vielleicht ("Der Computer wurde durch Windows geschützt"): "Weitere Informationen"
 > "Trotzdem ausführen" -- das Programm ist nicht signiert.
@@ -56,6 +65,15 @@ level (time, all treasure, unhurt, all secrets), 40 awards, logbook pages to rea
 Extras, as are the boss rush, time trials (in the level select: T) and the level editor. After the credits comes
 New Game+. Under Options: assist mode (speed, invulnerable, infinite ammo), 40/60 fps for the Deck's battery,
 rumble.
+
+New in 1.1: the pause menu has a map of the level (explored parts, crystals still missing). Pause in the middle of a
+level, close the game or put the Deck away, and "Continue" picks up right there. Time trials run your best time as a
+ghost beside you. Under Extras: challenges (a level with two rules every day, or your own from Blaster only, One hit,
+Low gravity, Darkness and Turbo, with best times) and, in the logbook, the bestiary (left/right turns between the
+pages and the enemies). Options: colour help (shapes on keys and doors, warning stripes on lasers and crushers),
+large text and a performance display (frames per second, battery; it also writes perf.txt into the player folder).
+The game notes where Kip is knocked out (deaths.txt); in the level editor H shows this death map, R the places the
+hero can reach after the check (F5).
 
 Saves and settings: %APPDATA%\KipKepler (Windows), ~/.local/share/KipKepler (Linux).
 Windows may warn at the first start ("Windows protected your PC"): "More info" > "Run anyway" -- the program is not

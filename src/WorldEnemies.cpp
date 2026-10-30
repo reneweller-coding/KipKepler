@@ -337,7 +337,8 @@ void World::stepEnemy( Enemy &e, int index, float dt )
                 m_beams.push_back( b );
             }
             float l = std::min( e.m_x, x ), r = std::max( e.m_x, x );
-            if ( heroUp && m_hero.right() > l && m_hero.left() < r && m_hero.top() < y + 6 && m_hero.m_y > y - 6 ) hurtHero( 25, e.m_x );
+            if ( heroUp && m_hero.right() > l && m_hero.left() < r && m_hero.top() < y + 6 && m_hero.m_y > y - 6 )
+                hurtHero( 25, e.m_x, e.m_def->m_id );
             if ( e.m_stateT > 0.45f ) e.m_state = 0, e.m_shootT = 2.0f;
         }
         break;

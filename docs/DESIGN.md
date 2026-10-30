@@ -318,3 +318,29 @@ on Hard and in New Game+ some enemies become elite by themselves. Drawn with a c
 ### Ceiling walkers
 Legend flag `ceiling` on a walker (crystalcrab, beetle, sweeper): it walks upside down along the ceiling above its
 cell (drawn flipped), turning at walls and ceiling edges.
+
+## Extensions (third round)
+
+Files in the player's folder (Save.h userDir()), all plain text but the ghosts:
+
+| File | What |
+|---|---|
+| `deaths.txt` | one knockout per line: `<level id> <x> <y> <cause> <difficulty> <mode> <date>`; cause is an enemy kind, a shot's animation, `laser`, `crusher`, `liquid`, `spikes`, `fall`, `explosion` or `giveup`; mode `play`, `trial`, `challenge`, `rush`, `editor`. The autopilot's test writes the same lines into `deaths.txt` beside its report. The editor shows them (H), KeplerTool draws them (`deaths`). |
+| `ghosts/<id>.ghost` | a time trial's best run: `KKG1`, a uint32 count, then per 1/30 s of the level's clock x, y (float), the hero sheet's frame (int16), facing (int8) |
+| `suspend<slot>.txt` | a level left in the middle (pause, the window closed, the focus lost): `level <id>` and World::snapshot() -- counters, the hero (where he stood if firm, else the checkpoint), pickups taken and enemies beaten (by their index in the level), hurt enemies, broken blocks, open doors, secrets, the checkpoint, the explored cells as runs. Only the episodes' own run keeps one; finishing or restarting the level drops it. |
+| `challenges.txt` | `<key> <seconds> <date>`, the five best per key; key `<id>+<mods>` or `daily<yyyymmdd>:<id>+<mods>` |
+| `perf.txt` | with the performance display on: a line a second -- level, fps, average and longest frame, the fps setting, battery percent and watts (Linux / Steam Deck: /sys/class/power_supply/BAT1) |
+
+Challenges: the mods are bits -- 1 blaster only, 2 one hit (any hit knocks out), 4 low gravity (x 0.6), 8 darkness
+(the level's dark at least 0.88), 16 turbo (the game 1.3 times as fast). The daily challenge hashes the date: one of
+the levels open to the player and two of the five. A challenge plays with a copy of the progress (full ammo) and
+gives no score or credits; pages and enemy kinds found count.
+
+Bestiary: `beast.<id>`, `beast.<id>.text`, `beast.<id>.weak` in `assets/text/<lang>/bestiary.txt` for every enemy
+kind and the four bosses; a kind counts as seen once it was on the screen (Progress::m_seen, `seen` lines in the save).
+
+Pause map: one pixel per cell, only cells that have been on the screen (World::m_explored); the crystals still missing
+everywhere, keys, pages and checkpoints where explored, the exit, the hero.
+
+Colour help: closed doors and keys get a square (blue) or a triangle (gold); laser fences and crushers draw yellow
+warning stripes over what they hurt now (bright) and in the next 0.6 s (faint).

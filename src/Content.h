@@ -199,6 +199,7 @@ struct Progress
     int                             m_cycle = 0;        ///< New Game+ round (0: the first run)
     unsigned long long              m_awards = 0;       ///< AwardE bits
     std::map<std::string, int>      m_lore;             ///< logbook pages found (key -> 1)
+    std::map<std::string, int>       m_seen;             ///< enemy kinds met (the bestiary: id -> 1)
     long                            m_kills = 0, m_crystalsTotal = 0, m_creditsTotal = 0, m_frozenKills = 0, m_eliteKills = 0;
     float                           m_bossRush = 0;     ///< best boss rush, seconds (0 = none)
     int                             m_episodeDeaths = 0; ///< knockouts in the episode so far

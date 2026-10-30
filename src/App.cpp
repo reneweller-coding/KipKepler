@@ -20,6 +20,8 @@
 
 #include <algorithm>
 #include <chrono>
+#include <filesystem>
+#include <fstream>
 #include <cmath>
 #include <cstdlib>
 #include <memory>
@@ -33,7 +35,8 @@ namespace kepler
 void App::openWindow()
 {
     bool deck = getenv( "SteamDeck" ) && atoi( getenv( "SteamDeck" ) ) == 1;
-    bool shot = !m_o.m_shot.empty() || !m_o.m_autotest.empty();
+    // Pictures and timed test runs stay hidden (and quiet: see run()).
+    bool     shot = !m_o.m_shot.empty() || !m_o.m_autotest.empty() || m_o.m_seconds > 0;
     unsigned flags = FLAG_WINDOW_RESIZABLE | ( m_settings.m_vsync && !shot ? FLAG_VSYNC_HINT : 0 ) | ( shot ? FLAG_WINDOW_HIDDEN : 0 );
     SetConfigFlags( flags );
     int w = m_o.m_w ? m_o.m_w : 1280, h = m_o.m_h ? m_o.m_h : 720;
@@ -64,7 +67,8 @@ int App::run()
     loadSettings( m_settings );
     // The autopilot test needs no window: it runs on the processor alone, beside whatever uses the graphics card.
     if ( m_o.m_autotest.empty() ) openWindow();
-    audioInit( m_o.m_mute || !m_o.m_shot.empty() || !m_o.m_autotest.empty() );
+    audioInit( m_o.m_mute || !m_o.m_shot.empty() || !m_o.m_autotest.empty() || m_o.m_seconds > 0 );
+    if ( m_o.m_helpLook ) m_settings.m_colourAssist = m_settings.m_bigText = true;
     applyVolumes();
     setLanguage( !m_o.m_lang.empty() ? m_o.m_lang : !m_settings.m_lang.empty() && m_settings.m_lang != "-" ? m_settings.m_lang : systemLanguage() );
     m_hasSave = loadProgress( m_settings.m_slot, m_progress );
@@ -96,12 +100,29 @@ int App::run()
             for ( auto &[n, s] : names )
                 if ( m_o.m_menuShot == n ) m_state = s;
             if ( m_o.m_menuShot == "radio" ) m_pendingId = "e1l2", m_radioT = 10, m_state = StateE::RADIO;
+            if ( m_o.m_menuShot == "challenge" ) m_state = StateE::CHALLENGE, m_challengeMods = 6;
+            if ( m_o.m_menuShot == "bestiary" )
+            {
+                for ( const std::string &id : bestiaryIds() ) m_progress.m_seen[id] = 1;
+                m_state = StateE::LOGBOOK, m_logTab = 1, m_cursor = 24;
+            }
             if ( m_o.m_menuShot == "story" ) showStory( "story.e1.intro", StateE::MAIN );
-            if ( m_o.m_menuShot == "tally" || m_o.m_menuShot == "pause" )
+            if ( m_o.m_menuShot == "tally" || m_o.m_menuShot == "pause" || m_o.m_menuShot == "map" )
             {
                 ok = startLevel( m_o.m_episode ? m_o.m_episode : 1, m_o.m_stage ? m_o.m_stage : 1 );
+                if ( ok && m_state == StateE::RADIO ) ok = loadLevelId( m_pendingId );
                 if ( ok && m_o.m_menuShot == "tally" ) finishLevel();
                 if ( ok && m_o.m_menuShot == "pause" ) m_state = StateE::PAUSE;
+                if ( ok && m_o.m_menuShot == "map" )
+                {
+                    // Walk the hero around a while so that some of the level is explored.
+                    Controls c;
+                    c.m_right = true;
+                    for ( int i = 0; i < 60 * 8; ++i )
+                        c.m_jump = c.m_jumpPressed = i % 40 == 0, m_world->update( 1.0f / 60, c );
+                    buildMap();
+                    m_state = StateE::MAP;
+                }
             }
             for ( int i = 0; i < 30; ++i ) update( 1.0f / 30 );
         }
@@ -115,6 +136,7 @@ int App::run()
                 ok = m_world->load( m_o.m_level, m_progress, error );
                 if ( !ok ) TraceLog( LOG_ERROR, "%s", error.c_str() );
                 m_state = StateE::PLAY;
+                applyWorldSettings();
             }
             else
                 ok = startLevel( m_o.m_episode ? m_o.m_episode : 1, m_o.m_stage ? m_o.m_stage : 1 );
@@ -173,10 +195,13 @@ int App::run()
             startLevel( m_o.m_episode, std::max( 1, m_o.m_stage ) );
     }
     if ( m_state == StateE::TITLE ) music( "title" );
+    if ( m_o.m_demoNow ) startDemo();
 
     while ( !WindowShouldClose() && !m_quit )
     {
         float dt = std::min( GetFrameTime(), 0.1f );
+        updatePerf( GetFrameTime() );
+        if ( m_o.m_seconds > 0 && GetTime() > m_o.m_seconds ) break;
         if ( IsWindowResized() ) m_screen.resize();
         if ( IsKeyPressed( KEY_F11 ) || ( IsKeyPressed( KEY_ENTER ) && ( IsKeyDown( KEY_LEFT_ALT ) || IsKeyDown( KEY_RIGHT_ALT ) ) ) )
         {
@@ -187,14 +212,16 @@ int App::run()
         }
         update( dt );
         // The level's ambience bed plays while the level does (and under the pause menu).
-        bool playing = m_world && ( m_state == StateE::PLAY || m_state == StateE::PAUSE );
+        bool playing = m_world && ( m_state == StateE::PLAY || m_state == StateE::PAUSE || m_state == StateE::MAP );
         ambience( playing ? m_world->m_level.key( "theme", "" ) : "" );
         audioUpdate( dt );
         BeginDrawing();
         draw();
         EndDrawing();
     }
-    if ( m_state == StateE::PLAY || m_state == StateE::PAUSE ) m_progress.m_playTime += 0;
+    // Closed in the middle of a level (the Deck's "exit game" too): it keeps its place.
+    if ( m_state == StateE::PLAY || m_state == StateE::PAUSE || m_state == StateE::MAP ) saveSuspend();
+    if ( m_mapTex.id ) UnloadTexture( m_mapTex );
     audioClose();
     assets().unload();
     m_screen.unload();
@@ -231,6 +258,7 @@ void App::playEditorLevel()
     m_world = std::move( world );
     m_fromEditor = true;
     m_directLevel = true;
+    applyWorldSettings();
     go( StateE::PLAY );
 }
 
@@ -272,10 +300,32 @@ int App::autotest()
         bot.start( w );
         if ( getenv( "KEPLER_TRACE" ) ) bot.m_trace = fopen( ( std::string( getenv( "KEPLER_TRACE" ) ) + w.m_level.m_id + ".txt" ).c_str(), "w" );
         auto wall = std::chrono::steady_clock::now();
+        std::string deaths = ( std::filesystem::path( m_o.m_autotest ).parent_path() / "deaths.txt" ).string();
+        // KEPLER_SNAPSHOT_TEST=<seconds>: at that moment the quick save goes into a freshly loaded level and out again;
+        // both must say the same (the line goes into the report).
+        float       snapAt = getenv( "KEPLER_SNAPSHOT_TEST" ) ? (float)atof( getenv( "KEPLER_SNAPSHOT_TEST" ) ) : -1;
+        std::string snapResult;
         while ( !w.m_finished && w.m_time < m_o.m_limit )
         {
             Controls c = bot.think( w );
             w.update( phys::Step, c );
+            if ( !w.m_deathLog.empty() ) recordDeaths( w, deaths, "autopilot" );
+            if ( snapAt >= 0 && w.m_time >= snapAt && snapResult.empty() )
+            {
+                World       copy;
+                std::string err, a = w.snapshot();
+                copy.setView( 640, 360 );
+                copy.load( path, m_progress, err );
+                copy.restore( a );
+                // (The restored hero beams in, protected for a moment: past that, he stands where he was.)
+                copy.m_appearT = copy.m_hurtT = 0;
+                std::string b = copy.snapshot();
+                snapResult = a == b ? " snapshot=same" : " snapshot=DIFFERS";
+                if ( a != b && getenv( "KEPLER_TRACE" ) )
+                    std::ofstream( std::string( getenv( "KEPLER_TRACE" ) ) + w.m_level.m_id + "_snap.txt" )
+                        << a << "----\n"
+                        << b;
+            }
         }
         if ( w.m_finished ) m_progress.m_credits += w.m_credits, m_progress.m_score += w.m_score;
         else
@@ -287,7 +337,7 @@ int App::autotest()
             w.m_treasureTaken, w.m_treasure, w.m_secretsFound, w.m_secrets, w.m_kills, w.m_enemiesTotal, bot.m_stalls,
             bot.m_lost, bot.m_noWay, w.m_hp,
             std::chrono::duration<double>( std::chrono::steady_clock::now() - wall ).count(),
-            ( bot.m_stallLog + ( w.m_finished ? "" : " last: " + bot.m_status ) ).c_str() );
+            ( bot.m_stallLog + ( w.m_finished ? "" : " last: " + bot.m_status ) + snapResult ).c_str() );
         fflush( out );
         if ( bot.m_trace ) fclose( bot.m_trace );
     }
@@ -363,24 +413,28 @@ void App::finishLevel()
     if ( w.m_deaths == 0 ) bonus( "tally.bonus_deaths", 1000, 150 );
     int medals = 0;
     nextAfterLevel( w, medals );
-    if ( m_trial ) score = credits = 0;
+    if ( m_trial || m_challenge >= 0 ) score = credits = 0;
     m_tally.push_back( { tr( "tally.score" ), std::to_string( score ), gold } );
     m_tally.push_back( { tr( "tally.credits" ), "+" + std::to_string( credits ), gold } );
-    if ( m_demo || m_trial || m_rush ) score = 0, credits = 0;
+    if ( m_demo || m_trial || m_rush || m_challenge >= 0 ) score = 0, credits = 0;
+    if ( !m_directLevel && !m_demo ) clearSuspend();
 
     m_progress.m_score += score;
     m_progress.m_credits += credits;
     m_progress.m_playTime += w.m_time;
     std::string id = w.m_level.m_id;
-    LevelBest  &b = m_progress.m_best[m_demo || m_fromEditor ? std::string( "demo" ) : id];
-    b.m_done = true;
-    b.m_score = std::max( b.m_score, score );
-    b.m_time = b.m_time > 0 ? std::min( b.m_time, w.m_time ) : w.m_time;
-    b.m_treasure = std::max( b.m_treasure, pct( w.m_treasureTaken, w.m_treasure ) );
-    b.m_secrets = std::max( b.m_secrets, w.m_secretsFound );
-    b.m_secretsMax = w.m_secrets;
-    b.m_kills = std::max( b.m_kills, pct( w.m_kills, w.m_enemiesTotal ) );
-    b.m_medals |= medals;
+    if ( m_challenge < 0 )
+    {
+        LevelBest &b = m_progress.m_best[m_demo || m_fromEditor ? std::string( "demo" ) : id];
+        b.m_done = true;
+        b.m_score = std::max( b.m_score, score );
+        b.m_time = b.m_time > 0 ? std::min( b.m_time, w.m_time ) : w.m_time;
+        b.m_treasure = std::max( b.m_treasure, pct( w.m_treasureTaken, w.m_treasure ) );
+        b.m_secrets = std::max( b.m_secrets, w.m_secretsFound );
+        b.m_secretsMax = w.m_secrets;
+        b.m_kills = std::max( b.m_kills, pct( w.m_kills, w.m_enemiesTotal ) );
+        b.m_medals |= medals;
+    }
     m_progress.m_creditsTotal += credits;
     checkAwards();
     if ( !m_directLevel && !m_demo && !m_trial && !m_rush && !m_nextId.empty() && m_nextId.find( 's' ) == std::string::npos )
@@ -388,7 +442,7 @@ void App::finishLevel()
         m_progress.m_episode = m_nextId[1] - '0';
         m_progress.m_level = atoi( m_nextId.c_str() + 3 );
     }
-    if ( !m_demo && ( !m_directLevel || m_trial || m_rush ) )
+    if ( !m_demo && ( !m_directLevel || m_trial || m_rush || m_challenge >= 0 ) )
     {
         saveProgress( m_settings.m_slot, m_progress );
         m_hasSave = true;
@@ -442,9 +496,13 @@ void App::update( float dt )
     if ( m_state == StateE::PLAY )
     {
         Controls c = readControls();
-        if ( c.m_pause )
+        // Pausing (or the window losing the focus: the Deck's menu, another window) keeps the level's place.
+        bool focused = IsWindowFocused(), lost = m_focused && !focused && !m_demo && !m_bot;
+        m_focused = focused;
+        if ( c.m_pause || lost )
         {
             sfx( "menu_ok", 0.6f );
+            saveSuspend();
             go( StateE::PAUSE );
             return;
         }
@@ -457,7 +515,8 @@ void App::update( float dt )
             return;
         }
         static const float speeds[4] = { 1.0f, 0.9f, 0.8f, 0.7f };
-        float              play = dt * ( m_demo ? 1.0f : speeds[std::clamp( m_settings.m_speed, 0, 3 )] );
+        float              play = dt * ( m_demo ? 1.0f : speeds[std::clamp( m_settings.m_speed, 0, 3 )] ) *
+                                  ( m_challenge >= 0 && ( m_challenge & 16 ) ? 1.3f : 1.0f );
         m_world->m_assistInvulnerable = m_settings.m_invulnerable && !m_demo;
         m_world->m_assistAmmo = m_settings.m_infiniteAmmo && !m_demo;
         m_world->m_rumbleOn = m_settings.m_rumble && !m_demo;
@@ -468,6 +527,7 @@ void App::update( float dt )
         }
         else
             m_world->update( play, c );
+        recordPlayDeaths();
         for ( int a : m_world->m_awardQueue ) m_toasts.push_back( { tr( "msg.award" ) + " " + tr( awardKey( (AwardE)a ) ), 3.5f } );
         m_world->m_awardQueue.clear();
         if ( m_world->m_restart )
@@ -513,13 +573,14 @@ void App::update( float dt )
         if ( i >= 1 && !m_progress.m_finished ) ++i;
         if ( i < 0 )
         {
-            if ( !startLevel( m_progress.m_episode, m_progress.m_level ) ) {}
+            if ( !( hasSuspend() && resumeSuspend() ) ) startLevel( m_progress.m_episode, m_progress.m_level );
         }
         else if ( i == 0 )
             go( StateE::DIFFICULTY, 1 );
         else if ( i == 1 )
         {
             // New Game+: everything stays, the Spiral fights back harder.
+            clearSuspend();
             ++m_progress.m_cycle;
             m_progress.m_episode = 1, m_progress.m_level = 1;
             m_progress.m_episodeDeaths = 0;
@@ -553,6 +614,7 @@ void App::update( float dt )
             }
             int diff = m_confirmAction ? m_confirmAction - 1 : m_cursor;
             m_confirmAction = 0;
+            clearSuspend();
             m_progress = Progress();
             m_progress.m_difficulty = diff;
             saveProgress( m_settings.m_slot, m_progress );
@@ -574,6 +636,7 @@ void App::update( float dt )
                 // Run the difficulty choice again with the confirmation given.
                 int diff = m_confirmAction - 1;
                 m_confirmAction = 0;
+                clearSuspend();
                 m_progress = Progress();
                 m_progress.m_difficulty = diff;
                 saveProgress( m_settings.m_slot, m_progress );
@@ -648,20 +711,25 @@ void App::update( float dt )
     case StateE::PAUSE:
     {
         Controls c = readControls();
-        moveCursor( 5 );
+        moveCursor( 6 );
         if ( k.m_back || ( c.m_pause && m_t > 0.1f ) ) go( StateE::PLAY );
         if ( k.m_ok )
         {
             if ( m_cursor == 0 ) go( StateE::PLAY );
             else if ( m_cursor == 1 )
+                buildMap(), go( StateE::MAP );
+            else if ( m_cursor == 2 )
             {
                 // Back to the last checkpoint (a way out of any spot).
                 m_world->giveUp();
                 go( StateE::PLAY );
             }
-            else if ( m_cursor == 2 )
-                loadLevelId( m_world->m_level.m_id );
             else if ( m_cursor == 3 )
+            {
+                if ( !m_directLevel ) clearSuspend();
+                loadLevelId( m_world->m_level.m_id );
+            }
+            else if ( m_cursor == 4 )
                 m_back = StateE::PAUSE, go( StateE::OPTIONS );
             else if ( m_fromEditor )
             {
@@ -670,13 +738,28 @@ void App::update( float dt )
             }
             else
             {
+                // The level keeps its place for "continue"; trials, the rush and challenges simply end.
+                saveSuspend();
                 saveProgress( m_settings.m_slot, m_progress );
+                bool challenge = m_challenge >= 0;
+                m_trial = false, m_rush = 0, m_challenge = -1, m_directLevel = false;
                 music( "title" );
-                go( StateE::MAIN );
+                go( challenge ? StateE::CHALLENGE : StateE::MAIN );
             }
         }
         break;
     }
+
+    case StateE::MAP:
+        if ( k.m_ok || k.m_back || ( readControls().m_pause && m_t > 0.1f ) )
+        {
+            if ( m_mapTex.id ) UnloadTexture( m_mapTex );
+            m_mapTex = {};
+            go( StateE::PAUSE, 1 );
+        }
+        break;
+
+    case StateE::CHALLENGE: updateChallenge( k ); break;
 
     case StateE::TALLY:
         if ( k.m_ok && m_t > 0.4f )
@@ -697,6 +780,13 @@ void App::update( float dt )
                 m_demo = false;
                 m_bot.reset();
                 go( StateE::TITLE );
+                break;
+            }
+            if ( m_challenge >= 0 )
+            {
+                m_challenge = -1;
+                m_directLevel = false;
+                go( StateE::CHALLENGE );
                 break;
             }
             if ( m_trial )
@@ -812,7 +902,7 @@ void App::update( float dt )
 
     case StateE::OPTIONS:
     {
-        moveCursor( 13 );
+        moveCursor( 16 );
         int dir = k.m_left ? -1 : k.m_right ? 1 : 0;
         auto vol = [&]( float &v )
         {
@@ -842,18 +932,24 @@ void App::update( float dt )
         if ( m_cursor == 8 && ( dir || k.m_ok ) ) m_settings.m_speed = ( m_settings.m_speed + ( dir < 0 ? 3 : 1 ) ) % 4;
         if ( m_cursor == 9 && ( dir || k.m_ok ) ) m_settings.m_invulnerable = !m_settings.m_invulnerable;
         if ( m_cursor == 10 && ( dir || k.m_ok ) ) m_settings.m_infiniteAmmo = !m_settings.m_infiniteAmmo;
-        if ( m_cursor == 11 && k.m_ok ) go( StateE::CONTROLS );
-        else if ( k.m_back || ( m_cursor == 12 && k.m_ok ) )
+        if ( m_cursor == 11 && ( dir || k.m_ok ) )
+            m_settings.m_colourAssist = !m_settings.m_colourAssist, applyWorldSettings();
+        if ( m_cursor == 12 && ( dir || k.m_ok ) ) m_settings.m_bigText = !m_settings.m_bigText, applyWorldSettings();
+        if ( m_cursor == 13 && ( dir || k.m_ok ) ) m_settings.m_perf = !m_settings.m_perf, m_perfLine.clear();
+        if ( m_cursor == 14 && k.m_ok )
+            go( StateE::CONTROLS );
+        else if ( k.m_back || ( m_cursor == 15 && k.m_ok ) )
         {
             saveSettings( m_settings );
             applyAssist();
-            go( m_back, m_back == StateE::PAUSE ? 3 : 0 );
+            applyWorldSettings();
+            go( m_back, m_back == StateE::PAUSE ? 4 : 0 );
         }
         break;
     }
 
     case StateE::CONTROLS:
-        if ( k.m_ok || k.m_back ) go( StateE::OPTIONS, 11 );
+        if ( k.m_ok || k.m_back ) go( StateE::OPTIONS, 14 );
         break;
 
     case StateE::RADIO:
@@ -938,7 +1034,7 @@ void App::draw()
         m_screen.present( 0.6f );
         return;
     }
-    if ( m_state == StateE::PLAY || m_state == StateE::PAUSE )
+    if ( m_state == StateE::PLAY || m_state == StateE::PAUSE || m_state == StateE::MAP )
     {
         m_world->setView( m_screen.m_w, m_screen.m_h );
         m_world->draw( m_screen );
@@ -947,17 +1043,35 @@ void App::draw()
         {
             m_screen.begin( LayerE::HUD );
             DrawRectangle( 0, 0, m_screen.m_w, m_screen.m_h, { 0, 0, 10, 150 } );
-            drawMenu( tr( "pause.title" ), { tr( "pause.resume" ), tr( "pause.checkpoint" ), tr( "pause.restart" ), tr( "menu.options" ), tr( "pause.quit" ) },
-                      m_screen.m_h / 2 - 30 );
+            drawMenu( tr( "pause.title" ),
+                      { tr( "pause.resume" ), tr( "pause.map" ), tr( "pause.checkpoint" ), tr( "pause.restart" ),
+                        tr( "menu.options" ), tr( "pause.quit" ) },
+                      m_screen.m_h / 2 - 40 );
+            m_screen.end();
+        }
+        if ( m_state == StateE::MAP )
+        {
+            m_screen.begin( LayerE::HUD );
+            drawMap();
             m_screen.end();
         }
         m_screen.begin( LayerE::HUD );
         drawToasts();
-        if ( m_trial )
+        if ( m_trial || m_challenge >= 0 )
         {
             std::string t = fmtTime( m_world->m_time ) + "." + std::to_string( (int)( std::fmod( m_world->m_time, 1.0f ) * 10 ) );
             drawText( t, m_screen.m_w * 0.5f, 8, { 255, 230, 140, 255 }, true, true );
+            // The best so far below (the ghost runs it).
+            auto  it = m_progress.m_best.find( m_world->m_level.m_id );
+            float best = m_trial && it != m_progress.m_best.end() ? it->second.m_trial : 0;
+            if ( best > 0 )
+                drawText( tr( "trial.best" ) + " " + fmtTime( best ) + "." +
+                              std::to_string( (int)( std::fmod( best, 1.0f ) * 10 ) ),
+                          m_screen.m_w * 0.5f, 40, { 150, 220, 255, 255 }, false, true );
+            if ( m_challenge >= 0 )
+                drawText( modsText( m_challenge ), m_screen.m_w * 0.5f, 40, { 150, 220, 255, 255 }, false, true );
         }
+        drawPerf();
         if ( m_demo && (int)( m_t * 2 ) % 2 == 0 ) drawText( tr( "title.demo" ), m_screen.m_w * 0.5f, m_screen.m_h - 20.0f, { 230, 240, 255, 255 }, false, true );
         m_screen.end();
         // Fade in at the start of the level.
@@ -1185,15 +1299,27 @@ void App::draw()
     {
         auto pctOf = []( float v ) { return std::to_string( (int)std::round( v * 100 ) ) + "%"; };
         drawMenu( tr( "menu.options" ),
-                  { tr( "opt.fullscreen" ) + ": " + tr( m_settings.m_fullscreen ? "opt.on" : "opt.off" ), tr( "opt.master" ) + ": " + pctOf( m_settings.m_master ),
-                    tr( "opt.music" ) + ": " + pctOf( m_settings.m_music ), tr( "opt.effects" ) + ": " + pctOf( m_settings.m_effects ),
-                    tr( "opt.language" ) + ": " + tr( "opt.lang_name" ), tr( "opt.shake" ) + ": " + tr( m_settings.m_shake ? "opt.on" : "opt.off" ),
+                  { tr( "opt.fullscreen" ) + ": " + tr( m_settings.m_fullscreen ? "opt.on" : "opt.off" ),
+                    tr( "opt.master" ) + ": " + pctOf( m_settings.m_master ),
+                    tr( "opt.music" ) + ": " + pctOf( m_settings.m_music ),
+                    tr( "opt.effects" ) + ": " + pctOf( m_settings.m_effects ),
+                    tr( "opt.language" ) + ": " + tr( "opt.lang_name" ),
+                    tr( "opt.shake" ) + ": " + tr( m_settings.m_shake ? "opt.on" : "opt.off" ),
                     tr( "opt.rumble" ) + ": " + tr( m_settings.m_rumble ? "opt.on" : "opt.off" ),
                     tr( "opt.fps" ) + ": " + tr( "opt.fps." + std::to_string( m_settings.m_fps ) ),
                     tr( "opt.speed" ) + ": " + std::to_string( 100 - 10 * m_settings.m_speed ) + "%",
                     tr( "opt.invulnerable" ) + ": " + tr( m_settings.m_invulnerable ? "opt.on" : "opt.off" ),
-                    tr( "opt.infinite_ammo" ) + ": " + tr( m_settings.m_infiniteAmmo ? "opt.on" : "opt.off" ), tr( "opt.controls" ), tr( "menu.back" ) },
-                  48 );
+                    tr( "opt.infinite_ammo" ) + ": " + tr( m_settings.m_infiniteAmmo ? "opt.on" : "opt.off" ),
+                    tr( "opt.colour_assist" ) + ": " + tr( m_settings.m_colourAssist ? "opt.on" : "opt.off" ),
+                    tr( "opt.big_text" ) + ": " + tr( m_settings.m_bigText ? "opt.on" : "opt.off" ),
+                    tr( "opt.perf" ) + ": " + tr( m_settings.m_perf ? "opt.on" : "opt.off" ), tr( "opt.controls" ),
+                    tr( "menu.back" ) },
+                  44 );
+        if ( m_cursor >= 11 && m_cursor <= 13 )
+            drawText( tr( m_cursor == 11   ? "opt.colour_assist.about"
+                          : m_cursor == 12 ? "opt.big_text.about"
+                                           : "opt.perf.about" ),
+                      cx, m_screen.m_h - 22.0f, { 180, 215, 245, 255 }, false, true );
         break;
     }
     case StateE::CONTROLS:
@@ -1217,9 +1343,11 @@ void App::draw()
     case StateE::LOGBOOK:
     case StateE::AWARDS:
     case StateE::SCORES: drawExtras( m_state ); break;
+    case StateE::CHALLENGE: drawChallenge(); break;
     default: break;
     }
     drawToasts();
+    drawPerf();
     if ( m_messageT > 0 ) drawText( m_message, cx, m_screen.m_h - 20.0f, { 255, 160, 140, 255 }, false, true );
     m_screen.end();
     m_screen.present( 0.6f );

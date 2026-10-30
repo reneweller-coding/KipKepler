@@ -95,6 +95,56 @@ bool standsFirm( const World &w, float x, float y )
 }
 
 /**
+ * @brief Whether the hero stays safe holding a direction for a while and then standing (the platforms running on):
+ *        nothing hurts him and he does not fall more than a cell and a half.
+ * @param[in] w      the world
+ * @param[in] dir    -1, 0, 1
+ * @param[in] hold   seconds the direction is held
+ * @param[in] total  seconds looked ahead
+ * @return whether he stays safe
+ */
+bool holdSafe( const World &w, int dir, float hold, float total )
+{
+    HeroBody b = w.m_hero;
+    Ahead    a( w, b.m_x, b.m_y, b.m_x, b.m_y );
+    float    y0 = b.m_y;
+    for ( int i = 0; i < (int)( total / phys::Step ); ++i )
+    {
+        float t = ( i + 1 ) * phys::Step;
+        for ( Mover &m : a.m_movers )
+        {
+            advanceMover( m, phys::Step );
+            if ( b.m_ground && b.right() > m.m_px && b.left() < m.m_px + m.m_w * T &&
+                 std::fabs( b.m_y - m.m_py ) < 1.0f )
+            {
+                // Carried along -- unless a wall stops him (then the platform slides away under him).
+                float nx = b.m_x + m.m_x - m.m_px;
+                int   row0 = (int)std::floor( ( b.top() + 1 ) / T ), row1 = (int)std::floor( ( b.m_y - 1 ) / T );
+                int col = (int)std::floor( ( nx + ( m.m_x > m.m_px ? phys::HeroW * 0.5f : -phys::HeroW * 0.5f ) ) / T );
+                bool wall = false;
+                for ( int r = row0; r <= row1; ++r ) wall |= w.solid( col, r );
+                if ( !wall ) b.m_x = nx;
+                b.m_y = m.m_y;
+            }
+        }
+        HeroInput in;
+        in.m_dir = t < hold ? dir : 0;
+        stepHero( b, in, a, phys::Step );
+        bool liquid = false;
+        if ( w.m_level.hurts( b.left(), b.top(), b.right(), b.m_y, liquid ) || b.m_y > y0 + 1.5f * T ) return false;
+        for ( const Object &o : w.m_objects )
+        {
+            float box[4];
+            if ( ( o.m_kind == "laser" || o.m_kind == "crusher" ) && std::fabs( o.m_x - b.m_x ) < 12 * T &&
+                 w.hazard( o, o.m_t + t, box ) &&
+                 overlaps( b.left(), b.top(), b.right(), b.m_y, box[0], box[1], box[2], box[3] ) )
+                return false;
+        }
+    }
+    return true;
+}
+
+/**
  * @brief A move as the autopilot's MOVE replays it, the platforms, laser fences and crushers running on by their clocks
  *        and springs acting: it has to end near where it leads (or on a platform that carries on), touch nothing that
  *        hurts on the way and stay unhurt for a moment after.
@@ -229,7 +279,8 @@ bool Bot::plan( const World &w )
     int n = here( w );
     if ( n < 0 )
     {
-        // Not on a known place: walk to the nearest one on this floor.
+        // Not on a known place: walk to the nearest one on this floor -- or, standing on what the checker never
+        // stood on (the last of a column of blocks shot away), off the edge towards the nearest one below.
         int   fy = (int)std::lround( w.m_hero.m_y / T ), keys = keysOf( w ), toggles = (int)( w.m_groups & 255 );
         float best = 7 * T;
         int   pick = -1;
@@ -239,6 +290,16 @@ bool Bot::plan( const World &w )
             if ( r.m_fy != fy || r.m_keys != keys || r.m_toggles != toggles ) continue;
             float d = std::fabs( r.m_x - w.m_hero.m_x );
             if ( d < best ) best = d, pick = (int)i;
+        }
+        for ( size_t i = 0; i < m_graph.m_nodes.size() && pick < 0 && best >= 7 * T; ++i )
+        {
+            const ReachNode &r = m_graph.m_nodes[i];
+            float            dx = std::fabs( r.m_x - w.m_hero.m_x );
+            if ( r.m_fy <= fy || r.m_fy > fy + 12 || r.m_keys != keys || r.m_toggles != toggles || dx < 0.75f * T ||
+                 dx > 12 * T )
+                continue;
+            float d = dx + ( r.m_fy - fy ) * T * 0.5f;
+            if ( d < 14 * T && ( pick < 0 || d < best ) ) best = d, pick = (int)i;
         }
         if ( pick < 0 )
         {
@@ -496,6 +557,26 @@ float Bot::waitLimit( const World &w, float x, float y ) const
     return most + 4;
 }
 
+void Bot::ride( const World &w, Controls &c )
+{
+    // Standing on a platform is safe unless it carries the hero into a wall or a laser: a few times a second look
+    // ahead, and step to the side that stays safe.
+    m_rideCheckT -= phys::Step;
+    if ( m_rideCheckT <= 0 )
+    {
+        m_rideCheckT = 0.1f;
+        m_rideDir = 0;
+        if ( !holdSafe( w, 0, 0, 1.5f ) )
+            for ( int d : { 1, -1 } )
+                if ( holdSafe( w, d, 0.3f, 1.5f ) )
+                {
+                    m_rideDir = d;
+                    break;
+                }
+    }
+    if ( m_rideDir ) ( m_rideDir > 0 ? c.m_right : c.m_left ) = true;
+}
+
 void Bot::steer( const World &w, Controls &c ) const
 {
     const HeroBody &h = w.m_hero;
@@ -581,6 +662,12 @@ Controls Bot::think( const World &w )
         m_modeT = 0;
         m_wanderDir = GetRandomValue( 0, 1 ) ? 1 : -1;
     }
+    // KEPLER_TRACE_FROM=<seconds>: two and a half seconds of the bot's state from then on, into the trace.
+    if ( m_trace && getenv( "KEPLER_TRACE_FROM" ) && w.m_time >= atof( getenv( "KEPLER_TRACE_FROM" ) ) &&
+         w.m_time < atof( getenv( "KEPLER_TRACE_FROM" ) ) + 2.5f && ( (int)( w.m_time / phys::Step ) % 12 ) == 0 )
+        fprintf( m_trace, "DBG t=%.2f mode %d x %.1f y %.1f g %d hp %.0f status %s edge prim %d x %.1f to %d\n",
+                 w.m_time, (int)m_mode, h.m_x, h.m_y, h.m_ground ? 1 : 0, w.m_hp, m_status.c_str(), m_edge.m_prim,
+                 m_edge.m_x, m_edge.m_to );
     switch ( m_mode )
     {
     case ModeE::PLAN:
@@ -593,6 +680,7 @@ Controls Bot::think( const World &w )
         if ( m_rideT > 0 )
         {
             m_rideT -= dt;
+            ride( w, c );
             fight( w, c );
             break;
         }
@@ -608,7 +696,21 @@ Controls Bot::think( const World &w )
             ++m_stalls;
             // Moves that failed may work from a slightly different spot: give them another chance.
             m_failed.clear();
-            if ( m_trace ) fprintf( m_trace, "t=%.1f STALL %s\n", w.m_time, m_status.c_str() );
+            if ( m_trace )
+            {
+                // What the hero stands on: the cells below and around his feet (solid?), movers, frozen enemies.
+                std::string under;
+                for ( int dx = -1; dx <= 1; ++dx )
+                {
+                    int cx = (int)std::floor( h.m_x / T ) + dx, cy = (int)std::floor( ( h.m_y + 1 ) / T );
+                    under += std::to_string( (int)w.m_level.at( cx, cy ).m_kind ) + ( w.solid( cx, cy ) ? "s" : "" ) +
+                             ( w.oneway( cx, cy ) ? "o" : "" ) + " ";
+                }
+                float top = 0;
+                bool  plat = w.platformTop( h.left(), h.right(), h.m_y - 1, h.m_y + 1, top );
+                fprintf( m_trace, "t=%.1f STALL %s x=%.1f y=%.1f under %s platform %d\n", w.m_time, m_status.c_str(),
+                         h.m_x, h.m_y, under.c_str(), plat ? 1 : 0 );
+            }
             if ( m_stalls <= 6 ) m_stallLog += "[" + m_status + " t=" + std::to_string( (int)w.m_time ) + "]";
             m_mode = ModeE::WANDER;
             m_modeT = 0;
@@ -633,6 +735,13 @@ Controls Bot::think( const World &w )
                                         o.m_cy * T, ( o.m_cx + 1 ) * T, ( o.m_cy + 1 ) * T );
             if ( !spring )
             {
+                // Slipped off on the way to the move's start (ice, a ledge): that counts against the move.
+                if ( m_from >= 0 && m_edge.m_prim >= 0 )
+                {
+                    long key = (long)m_from * 4096 + m_edgeIndex;
+                    ++m_failed[key];
+                    if ( ++m_misses[key] >= 3 ) m_impossible[key] = 1;
+                }
                 m_mode = ModeE::PLAN;
                 break;
             }
@@ -654,13 +763,19 @@ Controls Bot::think( const World &w )
             if ( w.m_level.inside( cx, row ) && w.m_level.at( cx, row ).m_kind == CellE::CRUMBLE ) crumble = true;
             if ( w.solid( cx, row ) || w.oneway( cx, row ) ) staticFloor = true;
         }
-        bool loose = h.m_pushX != 0 || crumble || !staticFloor;
+        // On ice the hero slides a long way before he stops: close (and slow) is enough there too.
+        bool loose = h.m_pushX != 0 || crumble || !staticFloor || h.m_icy;
         bool riding = !staticFloor && h.m_pushX == 0 && !crumble;
         // On a crumbling block there is no time to walk about: the move starts where the hero is.
-        float tolerance = crumble ? 40.0f : riding ? 24.0f : 12.0f;
-        bool  there = ( std::fabs( dx ) < 2.0f && std::fabs( h.m_vx ) < 6 ) || ( loose && std::fabs( dx ) < tolerance );
+        float tolerance = crumble ? 40.0f : riding ? 24.0f : h.m_icy ? 16.0f : 12.0f;
+        bool  there = ( std::fabs( dx ) < 2.0f && std::fabs( h.m_vx ) < 6 ) ||
+                      ( loose && std::fabs( dx ) < tolerance && ( !h.m_icy || std::fabs( h.m_vx ) < 40 ) );
         // On a platform the place a move was found at has moved on: only the look-ahead decides.
         if ( riding && m_edge.m_prim >= 0 ) there = true;
+        // Never step off a ledge on the way to where a move begins (the checker may stand on its last half pixel):
+        // close to it is close enough then.
+        bool brink = m_edge.m_prim >= 0 && staticFloor && !standsFirm( w, h.m_x + ( dx > 0 ? 3 : -3 ), h.m_y );
+        if ( brink && std::fabs( dx ) < 10 && std::fabs( h.m_vx ) < 40 ) there = true;
         // A move whose timing matters starts when the look-ahead lands it safely (tried again a few steps later);
         // crumbling blocks do not wait.
         bool timing = !crumble && timed( w, m_edge, h.m_x, h.m_y ), ready = true;
@@ -680,6 +795,7 @@ Controls Bot::think( const World &w )
             // Riding a platform: stand still and let it carry (walking to a place of the world would walk off it);
             // think again in a moment.
             if ( m_modeT > 0.25f ) m_mode = ModeE::PLAN;
+            ride( w, c );
             fight( w, c );
             break;
         }
@@ -705,9 +821,9 @@ Controls Bot::think( const World &w )
             break;
         }
         // Run there and let the deceleration stop on the spot.
-        float stop = h.m_vx * h.m_vx / ( 2 * phys::DecGround );
+        float stop = h.m_vx * h.m_vx / ( 2 * ( h.m_icy ? phys::DecIce : phys::DecGround ) );
         int   dir = dx > 0 ? 1 : -1;
-        if ( !there && ( h.m_vx * dir < 0 || std::fabs( dx ) > stop + 0.4f ) )
+        if ( !there && !brink && ( h.m_vx * dir < 0 || std::fabs( dx ) > stop + 0.4f ) )
             ( dir > 0 ? c.m_right : c.m_left ) = true;
         if ( m_modeT > ( timing ? waitLimit( w, h.m_x, h.m_y ) : 3.0f ) )
         {

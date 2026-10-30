@@ -20,10 +20,6 @@ namespace kepler
 
 namespace fs = std::filesystem;
 
-namespace
-{
-
-/** @brief Writes into a .tmp beside the file, then puts it in place (the one before kept as .bak). */
 bool writeWhole( const std::string &path, const std::string &text )
 {
     std::string tmp = path + ".tmp";
@@ -38,6 +34,9 @@ bool writeWhole( const std::string &path, const std::string &text )
     fs::rename( tmp, path, e );
     return !e;
 }
+
+namespace
+{
 
 std::string slotPath( int slot )
 {
@@ -100,6 +99,12 @@ bool loadSettings( Settings &s )
             s.m_invulnerable = atoi( w[1].c_str() ) != 0;
         else if ( w[0] == "infiniteammo" )
             s.m_infiniteAmmo = atoi( w[1].c_str() ) != 0;
+        else if ( w[0] == "colourassist" )
+            s.m_colourAssist = atoi( w[1].c_str() ) != 0;
+        else if ( w[0] == "bigtext" )
+            s.m_bigText = atoi( w[1].c_str() ) != 0;
+        else if ( w[0] == "perf" )
+            s.m_perf = atoi( w[1].c_str() ) != 0;
     }
     return true;
 }
@@ -111,8 +116,10 @@ bool saveSettings( const Settings &s )
               s.m_fullscreen ? 1 : 0, s.m_master, s.m_music, s.m_effects, s.m_lang.empty() ? "-" : s.m_lang.c_str(), s.m_vsync ? 1 : 0,
               s.m_slot, s.m_shake ? 1 : 0, s.m_hints ? 1 : 0 );
     std::string t = buf;
-    snprintf( buf, sizeof( buf ), "rumble %d\nfps %d\nspeed %d\ninvulnerable %d\ninfiniteammo %d\n", s.m_rumble ? 1 : 0, s.m_fps, s.m_speed,
-              s.m_invulnerable ? 1 : 0, s.m_infiniteAmmo ? 1 : 0 );
+    snprintf( buf, sizeof( buf ),
+              "rumble %d\nfps %d\nspeed %d\ninvulnerable %d\ninfiniteammo %d\ncolourassist %d\nbigtext %d\nperf %d\n",
+              s.m_rumble ? 1 : 0, s.m_fps, s.m_speed, s.m_invulnerable ? 1 : 0, s.m_infiniteAmmo ? 1 : 0,
+              s.m_colourAssist ? 1 : 0, s.m_bigText ? 1 : 0, s.m_perf ? 1 : 0 );
     t += buf;
     return writeWhole( userDir() + "settings.txt", t );
 }
@@ -155,6 +162,8 @@ bool loadProgress( int slot, Progress &p )
             p.m_awards = strtoull( w[1].c_str(), nullptr, 10 );
         else if ( w[0] == "lore" )
             p.m_lore[w[1]] = 1;
+        else if ( w[0] == "seen" )
+            p.m_seen[w[1]] = 1;
         else if ( w[0] == "stats" && w.size() >= 6 )
             p.m_kills = atol( w[1].c_str() ), p.m_crystalsTotal = atol( w[2].c_str() ), p.m_creditsTotal = atol( w[3].c_str() ),
             p.m_frozenKills = atol( w[4].c_str() ), p.m_eliteKills = atol( w[5].c_str() );
@@ -209,6 +218,7 @@ bool saveProgress( int slot, const Progress &p )
               p.m_finished ? 1 : 0 );
     t += buf;
     for ( const auto &[key, v] : p.m_lore ) t += "lore " + key + "\n";
+    for ( const auto &[id, v] : p.m_seen ) t += "seen " + id + "\n";
     return writeWhole( slotPath( slot ), t );
 }
 

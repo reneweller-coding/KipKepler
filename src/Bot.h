@@ -58,6 +58,8 @@ private:
     bool possible( const World &w, int node, int edge );
     /** @brief How long a timed move at (x, y) may wait for its moment (the platforms' longest round trip and some). */
     float waitLimit( const World &w, float x, float y ) const;
+    /** @brief Riding a platform: steps aside when standing still would carry the hero into a wall or a laser. */
+    void ride( const World &w, Controls &c );
     /** @brief In the air for long (a spring keeps bouncing him): steers off the spring towards the nearest place. */
     void steer( const World &w, Controls &c ) const;
 
@@ -86,6 +88,8 @@ private:
     float                m_airT = 0;           ///< seconds off the ground
     int                  m_forecastWait = 0;   ///< steps until the next look-ahead after one that failed
     int                  m_budget = 0;         ///< look-aheads over a round trip one plan may still run
+    float                m_rideCheckT = 0;     ///< riding: seconds until the next look whether standing is safe
+    int                  m_rideDir = 0;        ///< riding: the side to step to (0: stand)
     float                m_rideT = 0;          ///< riding with nothing to do: seconds until the next plan
 };
 

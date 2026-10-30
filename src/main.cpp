@@ -74,6 +74,14 @@ int main( int argc, char **argv )
             o.m_autotest = next(), o.m_mute = true;
         else if ( a == "--limit" )
             o.m_limit = (float)atof( next().c_str() );
+        else if ( a == "--perf" )
+            o.m_perf = true;
+        else if ( a == "--demo" )
+            o.m_demoNow = true;
+        else if ( a == "--help-look" )
+            o.m_helpLook = true;
+        else if ( a == "--seconds" )
+            o.m_seconds = (float)atof( next().c_str() );
     }
     return runApp( o );
 }

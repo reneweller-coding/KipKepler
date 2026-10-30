@@ -4,9 +4,11 @@ A 2D action platformer in HD pixel art: Kip Kepler, the most junior cadet of the
 of four shattered beacons across four episodes of nine levels each -- crystals open the exit, key cards open doors,
 switches move walls, fake walls hide secrets, and nine science-fiction weapons (bought up at the Quartermaster
 between levels) deal with what lives there. Four bosses, a secret level per episode behind a hidden warp, the
-Commodore's radio messages (spoken, German and English), logbook pages, medals, 40 awards, high scores, New Game+,
-boss rush, time trials, an assist mode and a level editor. In the spirit of the early-90s shareware jump-and-runs,
-with its own world, levels and characters. Windows, Linux and the Steam Deck.
+Commodore's radio messages (spoken, German and English), logbook pages, a bestiary, medals, 40 awards, high scores,
+New Game+, boss rush, time trials against your own ghost, daily and custom challenges, a pause map, a quick save in the
+middle of a level, an assist mode, colour help, large text, a performance display and a level editor with a death
+map. In the spirit of the early-90s shareware jump-and-runs, with its own world, levels and characters. Windows,
+Linux and the Steam Deck.
 
 ## Build
 
@@ -31,7 +33,7 @@ The saves and settings live in %APPDATA%\KipKepler (Linux: ~/.local/share/KipKep
 
 | Path | What |
 |---|---|
-| src/ | the game: App (menus, flow), World* (one level in play: hero, weapons, enemies, bosses, drawing), Physics (shared with the checker), Level (the file format), Checker, Screen (virtual pixels, light, bloom), Assets, Audio, Text, Save, Input |
+| src/ | the game: App* (menus and flow; AppExtras: radio, medals, awards, logbook, rush, trials; AppMore: death records, ghosts, challenges, bestiary, pause map, quick save, performance display), World* (one level in play: hero, weapons, enemies, bosses, drawing), Physics (shared with the checker), Level (the file format), Checker, Screen (virtual pixels, light, bloom), Assets, Audio, Text, Save, Input |
 | src/Editor* | the level editor (Extras > Level editor, 9 slots in the user folder; F1 shows its keys) |
 | src/Bot.* | the autopilot (title demo, `--autotest`) on the checker's graph |
 | src/tool/ | KeplerTool: `check` (reachability with the hero's own physics), `checkall`, `render` (CPU picture of a level) |
@@ -44,8 +46,11 @@ The saves and settings live in %APPDATA%\KipKepler (Linux: ~/.local/share/KipKep
 
     KipKepler --level FILE | --episode N --stage M      play a level directly
     KipKepler --shot OUT.png [--at X,Y] [--warm S] [--hold rljfu] [--weapons]   a picture after S seconds (tiles for --at)
-    KipKepler --menu title|main|episodes|levels|shop|options|difficulty|story|tally|pause|extras|awards|logbook|radio --shot OUT.png
+    KipKepler --menu title|main|episodes|levels|shop|options|difficulty|story|tally|pause|map|extras|awards|logbook|bestiary|challenge|radio --shot OUT.png
     KipKepler --autotest REPORT [--limit S] [--level FILE | --episode N]   the autopilot: no window, no sound, processor only
+    KipKepler --demo --perf --seconds S                                    the demo with the performance log, hidden, ended after S
+    KipKepler --help-look                                                  colour help and large text on (pictures; settings untouched)
     KipKepler --editor FILE                                                the level editor on a file
     KipKepler --mute --windowed --w W --h H --lang de|en --difficulty 0-2
     KeplerTool check LEVEL [overview.png] | checkall DIR | render LEVEL OUT.png [scale | x y w h]
+    KeplerTool deaths LEVEL deaths.txt OUT.png [scale]                    a level with its knockouts (the death map)

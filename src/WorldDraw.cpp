@@ -353,6 +353,17 @@ void World::draw( Screen &s )
             if ( e.m_frozen > 0 )
                 DrawRectangle( (int)sx( e.left() ) - 2, (int)sy( e.top() ) - 2, e.m_def->m_w + 4, e.m_def->m_h + 4, { 170, 230, 255, 110 } );
         }
+        // The best run's ghost (time trials): the hero's frame where he was then, see-through.
+        if ( m_ghost && !glow && !hero.m_standIn )
+        {
+            size_t gi = (size_t)( m_time * 30 );
+            if ( gi < m_ghost->size() )
+            {
+                const TrackPoint &g = ( *m_ghost )[gi];
+                if ( visible( g.m_x, g.m_y - 24, 48 ) )
+                    hero.draw( g.m_frame, sx( g.m_x ), sy( g.m_y ), g.m_face < 0, { 150, 220, 255, 110 } );
+            }
+        }
         // The hero.
         bool blink = m_hurtT > 0 && !m_dead && ( (int)( m_hurtT * 16 ) % 2 );
         if ( !blink && !( m_exitT > 0.9f ) )
@@ -442,6 +453,55 @@ void World::draw( Screen &s )
             Color c = p.m_c;
             if ( glow ) c = ColorBrightness( c, -0.2f );
             DrawRectangle( (int)sx( p.m_x ), (int)sy( p.m_y ), p.m_size, p.m_size, c );
+        }
+        // Colour help: shapes on keys and doors (blue a square, gold a triangle), warning stripes where laser fences
+        // and crushers are about to hurt.
+        if ( !glow && m_colourAssist )
+        {
+            auto shape = [&]( float x, float y, bool gold )
+            {
+                if ( gold )
+                {
+                    DrawTriangle( { x, y - 6 }, { x - 6, y + 5 }, { x + 6, y + 5 }, { 20, 16, 30, 255 } );
+                    DrawTriangle( { x, y - 4 }, { x - 4, y + 3 }, { x + 4, y + 3 }, { 255, 255, 255, 255 } );
+                }
+                else
+                {
+                    DrawRectangle( (int)x - 5, (int)y - 5, 10, 10, { 20, 16, 30, 255 } );
+                    DrawRectangle( (int)x - 3, (int)y - 3, 6, 6, { 255, 255, 255, 255 } );
+                }
+            };
+            int c0 = std::max( 0, (int)std::floor( m_camX / T ) ),
+                c1 = std::min( m_level.m_w - 1, (int)std::floor( ( m_camX + s.m_w ) / T ) );
+            int r0 = std::max( 0, (int)std::floor( m_camY / T ) ),
+                r1 = std::min( m_level.m_h - 1, (int)std::floor( ( m_camY + s.m_h ) / T ) );
+            for ( int y = r0; y <= r1; ++y )
+                for ( int x = c0; x <= c1; ++x )
+                {
+                    CellE k = m_level.at( x, y ).m_kind;
+                    if ( ( k == CellE::DOOR_BLUE || k == CellE::DOOR_GOLD ) &&
+                         !m_doorOpen[(size_t)y * m_level.m_w + x] )
+                        shape( sx( x * T + T * 0.5f ), sy( y * T + T * 0.5f ), k == CellE::DOOR_GOLD );
+                }
+            for ( const Pickup &p : m_pickups )
+                if ( !p.m_taken && ( p.m_kind == PickE::KEY_BLUE || p.m_kind == PickE::KEY_GOLD ) &&
+                     visible( p.m_x, p.m_y, 32 ) )
+                    shape( sx( p.m_x ), sy( p.m_y - 22 ), p.m_kind == PickE::KEY_GOLD );
+            for ( const Object &o : m_objects )
+            {
+                if ( ( o.m_kind != "laser" && o.m_kind != "crusher" ) || !visible( o.m_x, o.m_y, 400 ) ) continue;
+                float box[4];
+                bool  now = hazard( o, o.m_t, box ), soon = !now && hazard( o, o.m_t + 0.6f, box );
+                if ( !now && !soon ) continue;
+                float l = sx( box[0] ), t = sy( box[1] ), w = box[2] - box[0], h = box[3] - box[1];
+                BeginScissorMode( (int)l, (int)t, (int)std::ceil( w ), (int)std::ceil( h ) );
+                for ( float d = -h; d < w; d += 12 )
+                    DrawLineEx( { l + d, t + h }, { l + d + h, t }, 4,
+                                now ? Color{ 255, 220, 40, 150 } : Color{ 255, 220, 40, 60 } );
+                EndScissorMode();
+                DrawRectangleLinesEx( { l, t, w, h }, 1,
+                                      now ? Color{ 255, 230, 60, 255 } : Color{ 255, 230, 60, 140 } );
+            }
         }
         // The foreground silhouettes, in front of everything (they hide their glow layer's light too).
         if ( !glow ) drawForeground( assets().background( m_bgName ), s.m_w, s.m_h, m_camX, m_camY - m_camYSmooth );
@@ -620,13 +680,25 @@ void World::drawHud( Screen &s )
             if ( nl == std::string::npos ) break;
             start = nl + 1;
         }
-        int w = 0;
-        for ( auto &l : lines ) w = std::max( w, font.width( l ) );
-        int h = (int)lines.size() * ( font.height() + 2 ) + 10;
+        // In the big font when asked for (and when it fits).
+        const PixelFont *sf = m_bigText ? &big : &font;
+        int              w = 0;
+        for ( auto &l : lines ) w = std::max( w, sf->width( l ) );
+        if ( sf == &big && w > s.m_w - 40 )
+        {
+            sf = &font, w = 0;
+            for ( auto &l : lines ) w = std::max( w, font.width( l ) );
+        }
+        int h = (int)lines.size() * ( sf->height() + 2 ) + 10;
         int x = ( s.m_w - w ) / 2 - 8, y = s.m_h - h - 34;
         DrawRectangle( x, y, w + 16, h, { 14, 18, 40, 230 } );
         DrawRectangleLines( x, y, w + 16, h, { 90, 200, 255, 255 } );
-        for ( size_t i = 0; i < lines.size(); ++i ) text( lines[i], x + 8, y + 6 + (int)i * ( font.height() + 2 ), { 220, 240, 255, 255 } );
+        for ( size_t i = 0; i < lines.size(); ++i )
+        {
+            int ly = y + 6 + (int)i * ( sf->height() + 2 );
+            sf->draw( lines[i], x + 9.0f, ly + 1.0f, { 10, 8, 20, 255 } );
+            sf->draw( lines[i], (float)x + 8, (float)ly, { 220, 240, 255, 255 } );
+        }
     }
     // The level's name at the start.
     if ( m_time < 3.0f && m_time > 0 )

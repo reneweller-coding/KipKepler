@@ -15,6 +15,7 @@
 #include <algorithm>
 #include <cmath>
 #include <cstdlib>
+#include <sstream>
 
 namespace kepler
 {
@@ -62,6 +63,8 @@ bool World::load( const std::string &path, Progress &progress, std::string &erro
     size_t n = (size_t)L.m_w * L.m_h;
     m_broken.assign( n, 0 );
     m_crumbleT.assign( n, 0 );
+    m_explored.assign( n, 0 );
+    m_deathLog.clear(), m_track.clear();
     m_doorOpen.assign( n, 0 );
     m_secretGroup.assign( n, 0 );
     m_maskTerrain.assign( n, 0 );
@@ -307,6 +310,7 @@ bool World::load( const std::string &path, Progress &progress, std::string &erro
     m_fightMusic = false;
     respawn();
     m_appearT = 0.6f;
+    m_loadedPickups = (int)m_pickups.size(), m_loadedEnemies = (int)m_enemies.size();
     placeDecos();
     if ( m_crystals == 0 && !m_boss ) openExitIfDone();
     // Two takes of each piece: the levels alternate them.
@@ -541,6 +545,159 @@ bool World::hazard( const Object &o, float at, float box[4], int *beam ) const
     return false;
 }
 
+// ----------------------------------------------------------------------------------------- seen, quick save
+
+void World::noteSeen()
+{
+    // The cells on the screen are explored (the pause map), the enemy kinds on it met (the bestiary).
+    int c0 = std::max( 0, (int)std::floor( m_camX / T ) ),
+        c1 = std::min( m_level.m_w - 1, (int)std::floor( ( m_camX + m_vw ) / T ) );
+    int r0 = std::max( 0, (int)std::floor( m_camY / T ) ),
+        r1 = std::min( m_level.m_h - 1, (int)std::floor( ( m_camY + m_vh ) / T ) );
+    for ( int y = r0; y <= r1; ++y )
+        for ( int x = c0; x <= c1; ++x ) m_explored[(size_t)y * m_level.m_w + x] = 1;
+    for ( const Enemy &e : m_enemies )
+        if ( e.m_alive && !e.m_hidden && e.m_x > m_camX && e.m_x < m_camX + m_vw && e.m_y > m_camY &&
+             e.top() < m_camY + m_vh )
+            m_progress->m_seen.emplace( e.m_def->m_id, 1 );
+}
+
+std::string World::snapshot() const
+{
+    // One line per thing. The hero stays where he stands if that is firm ground, else he goes back to the checkpoint.
+    std::ostringstream o;
+    bool               firm = m_hero.m_ground && !m_dead && m_hurtT <= 0 && m_exitT < 0 && m_appearT <= 0;
+    o << "time " << m_time << "\n";
+    o << "stats " << m_deaths << " " << m_score << " " << m_credits << " " << m_crystalsTaken << " " << m_treasureTaken
+      << " " << m_secretsFound << " " << m_kills << " " << m_hits << "\n";
+    o << "hero " << ( firm ? m_hero.m_x : m_spawnX ) << " " << ( firm ? m_hero.m_y : m_spawnY ) << " "
+      << std::max( 1.0f, m_hp ) << " " << (int)m_weapon << " " << m_face << "\n";
+    o << "spawn " << m_spawnX << " " << m_spawnY << "\n";
+    o << "keys " << m_keys[0] << " " << m_keys[1] << " " << m_boots << "\n";
+    o << "groups " << m_groups << "\nexit " << m_exitOpen << "\n";
+    o << "taken";
+    for ( int i = 0; i < m_loadedPickups; ++i )
+        if ( m_pickups[i].m_taken ) o << " " << i;
+    o << "\nbeaten";
+    for ( int i = 0; i < m_loadedEnemies; ++i )
+        if ( !m_enemies[i].m_alive ) o << " " << i;
+    o << "\nhurt";
+    for ( int i = 0; i < m_loadedEnemies; ++i )
+        if ( m_enemies[i].m_alive && m_enemies[i].m_hp < m_enemies[i].m_hpMax )
+            o << " " << i << ":" << m_enemies[i].m_hp;
+    o << "\nbroken";
+    for ( size_t i = 0; i < m_broken.size(); ++i )
+        if ( m_broken[i] == 2 && m_level.m_cells[i].m_kind == CellE::BREAKABLE ) o << " " << i;
+    o << "\ndoors";
+    for ( size_t i = 0; i < m_doorOpen.size(); ++i )
+        if ( m_doorOpen[i] ) o << " " << i;
+    o << "\nsecrets";
+    for ( size_t g = 0; g < m_secretSeen.size(); ++g )
+        if ( m_secretSeen[g] ) o << " " << g;
+    o << "\ncheckpoint";
+    for ( size_t k = 0; k < m_objects.size(); ++k )
+        if ( m_objects[k].m_kind == "checkpoint" && m_objects[k].m_on ) o << " " << k;
+    // The explored cells as runs: start, length.
+    o << "\nexplored";
+    for ( size_t i = 0; i < m_explored.size(); )
+    {
+        if ( !m_explored[i] )
+        {
+            ++i;
+            continue;
+        }
+        size_t j = i;
+        while ( j < m_explored.size() && m_explored[j] ) ++j;
+        o << " " << i << ":" << j - i;
+        i = j;
+    }
+    o << "\n";
+    return o.str();
+}
+
+bool World::restore( const std::string &text )
+{
+    std::istringstream in( text );
+    std::string        line;
+    size_t             cells = m_broken.size();
+    while ( std::getline( in, line ) )
+    {
+        std::istringstream l( line );
+        std::string        key;
+        l >> key;
+        if ( key == "time" )
+            l >> m_time;
+        else if ( key == "stats" )
+            l >> m_deaths >> m_score >> m_credits >> m_crystalsTaken >> m_treasureTaken >> m_secretsFound >> m_kills >>
+                m_hits;
+        else if ( key == "hero" )
+        {
+            int w = 0;
+            l >> m_hero.m_x >> m_hero.m_y >> m_hp >> w >> m_face;
+            if ( w >= 0 && w < WeaponCount && m_progress->has( (WeaponE)w ) ) m_weapon = (WeaponE)w;
+            m_hero.m_vx = m_hero.m_vy = 0;
+            m_hero.m_ground = true;
+        }
+        else if ( key == "spawn" )
+            l >> m_spawnX >> m_spawnY;
+        else if ( key == "keys" )
+            l >> m_keys[0] >> m_keys[1] >> m_boots;
+        else if ( key == "groups" )
+            l >> m_groups;
+        else if ( key == "exit" )
+            l >> m_exitOpen;
+        else if ( key == "taken" )
+            for ( int i; l >> i; )
+            {
+                if ( i >= 0 && i < m_loadedPickups ) m_pickups[i].m_taken = true;
+            }
+        else if ( key == "beaten" )
+            for ( int i; l >> i; )
+            {
+                if ( i >= 0 && i < m_loadedEnemies ) m_enemies[i].m_alive = false;
+            }
+        else if ( key == "hurt" )
+            for ( std::string w; l >> w; )
+            {
+                int i = atoi( w.c_str() );
+                if ( i >= 0 && i < m_loadedEnemies && w.find( ':' ) != std::string::npos )
+                    m_enemies[i].m_hp = (float)atof( w.c_str() + w.find( ':' ) + 1 );
+            }
+        else if ( key == "broken" )
+            for ( size_t i; l >> i; )
+            {
+                if ( i < cells ) m_broken[i] = 2;
+            }
+        else if ( key == "doors" )
+            for ( size_t i; l >> i; )
+            {
+                if ( i < cells ) m_doorOpen[i] = 1;
+            }
+        else if ( key == "secrets" )
+            for ( size_t g; l >> g; )
+            {
+                if ( g < m_secretSeen.size() ) m_secretSeen[g] = true;
+            }
+        else if ( key == "checkpoint" )
+            for ( size_t k; l >> k; )
+            {
+                if ( k < m_objects.size() ) m_objects[k].m_on = true;
+            }
+        else if ( key == "explored" )
+            for ( std::string w; l >> w; )
+            {
+                size_t a = (size_t)atoll( w.c_str() ),
+                       n = w.find( ':' ) != std::string::npos ? (size_t)atoll( w.c_str() + w.find( ':' ) + 1 ) : 0;
+                for ( size_t i = a; i < a + n && i < cells; ++i ) m_explored[i] = 1;
+            }
+    }
+    m_hp = std::clamp( m_hp, 1.0f, (float)m_progress->healthMax() );
+    m_appearT = 0.6f;
+    m_hurtT = 1.2f;
+    stepCamera( 0, true );
+    return true;
+}
+
 bool World::lineOfSight( float x0, float y0, float x1, float y1 ) const
 {
     float d = std::hypot( x1 - x0, y1 - y0 );
@@ -636,6 +793,14 @@ void World::step( float dt, const Controls &c )
         }
     }
     stepCamera( dt );
+    // What the App keeps: the cells and enemy kinds seen, the hero's way.
+    if ( ++m_noteN >= 8 ) m_noteN = 0, noteSeen();
+    if ( m_record && m_track.size() <= (size_t)( m_time * 30 ) )
+    {
+        const Sheet &hs = assets().sheet( "hero" );
+        m_track.push_back(
+            { m_hero.m_x, m_hero.m_y, (int16_t)( hs.m_standIn ? 0 : hs.frame( m_anim, m_animT ) ), (int8_t)m_face } );
+    }
     // The music gets denser while enemies are close or the hero is hit, and calms down a while after the last one.
     bool danger = !m_dead && !m_bossAwake && m_hurtT > 0.9f;
     for ( size_t i = 0; i < m_enemies.size() && !danger && !m_dead && !m_bossAwake; ++i )
@@ -696,7 +861,7 @@ void World::stepHero( float dt, const Controls &c )
     in.m_jumpPressed = c.m_jumpPressed;
     in.m_down = c.m_down;
     m_hero.m_jumpSpeed = m_boots ? phys::BootsJump : phys::Jump;
-    m_hero.m_gravity = phys::Gravity * m_level.num( "gravity", 1.0f );
+    m_hero.m_gravity = phys::Gravity * m_level.num( "gravity", 1.0f ) * m_gravityMul;
     // Conveyors push what stands on them.
     m_hero.m_pushX = 0;
     if ( m_hero.m_ground )
@@ -785,19 +950,19 @@ void World::stepHero( float dt, const Controls &c )
             effect( "splash", m_hero.m_x, std::floor( ( m_hero.m_y - 8 ) / T ) * T + 8 );
             burst( m_hero.m_x, m_hero.m_y - 8, 16, { 160, 255, 120, 255 }, 160 );
             sfx( "splash" );
-            killHero();
+            killHero( "liquid" );
             return;
         }
         if ( m_hurtT <= 0 && m_shield <= 0 )
         {
-            hurtHero( 25, m_hero.m_x - m_face * 10 );
+            hurtHero( 25, m_hero.m_x - m_face * 10, "spikes" );
             m_hero.m_vy = -460;
             m_hero.m_ground = false;
         }
     }
     if ( m_hero.top() > m_level.m_h * T + 64 )
     {
-        killHero();
+        killHero( "fall" );
         return;
     }
 
@@ -884,7 +1049,7 @@ void World::stepHero( float dt, const Controls &c )
             if ( !e.m_alive || e.m_hidden || e.m_frozen > 0 ) continue;
             if ( overlaps( m_hero.left() + 3, m_hero.top() + 4, m_hero.right() - 3, m_hero.m_y - 2, e.left(), e.top(), e.right(), e.m_y ) )
             {
-                hurtHero( (float)e.m_def->m_damage, e.m_x );
+                hurtHero( (float)e.m_def->m_damage, e.m_x, e.m_def->m_id );
                 if ( e.m_def->m_brain == BrainE::FLOATER && !e.m_boss )
                 {
                     e.m_hp = 0;
@@ -932,12 +1097,14 @@ void World::stepHero( float dt, const Controls &c )
         setAnim( "idle" );
 }
 
-void World::hurtHero( float amount, float fromX )
+void World::hurtHero( float amount, float fromX, const std::string &cause )
 {
     if ( m_dead || m_hurtT > 0 || m_shield > 0 || m_exitT >= 0 ) return;
     static const float scale[3] = { 0.6f, 1.0f, 1.5f };
     if ( m_assistInvulnerable ) return;
-    m_hp -= amount * scale[std::clamp( m_progress->m_difficulty, 0, 2 )] * ( 1.0f + 0.25f * m_progress->m_cycle );
+    m_hp -= m_oneHit
+                ? m_hp
+                : amount * scale[std::clamp( m_progress->m_difficulty, 0, 2 )] * ( 1.0f + 0.25f * m_progress->m_cycle );
     ++m_hits;
     m_hurtT = 1.1f;
     m_hero.m_vx = ( m_hero.m_x < fromX ? -1 : 1 ) * 200.0f;
@@ -947,12 +1114,13 @@ void World::hurtHero( float amount, float fromX )
     m_hitStop = 0.04f;
     sfx( "hurt" );
     burst( m_hero.m_x, m_hero.m_y - 24, 8, { 255, 220, 160, 255 }, 140 );
-    if ( m_hp <= 0 ) killHero();
+    if ( m_hp <= 0 ) killHero( cause );
 }
 
-void World::killHero()
+void World::killHero( const std::string &cause )
 {
     if ( m_dead ) return;
+    m_deathLog.push_back( { m_hero.m_x, m_hero.m_y, cause } );
     m_hp = 0;
     m_dead = true;
     m_deadT = 0;
@@ -1260,7 +1428,8 @@ void World::stepObjects( float dt )
             if ( o.m_on && !was && std::fabs( o.m_x - m_hero.m_x ) < 400 ) sfx( "laser_fence", 0.4f );
             float box[4];
             if ( !o.m_on || !hazard( o, o.m_t, box, &o.m_target ) || !heroFree ) continue;
-            if ( overlaps( hl, ht, hr, hb, box[0], box[1], box[2], box[3] ) ) hurtHero( 30, m_hero.m_x - m_face );
+            if ( overlaps( hl, ht, hr, hb, box[0], box[1], box[2], box[3] ) )
+                hurtHero( 30, m_hero.m_x - m_face, "laser" );
         }
         else if ( o.m_kind == "crusher" )
         {
@@ -1273,7 +1442,7 @@ void World::stepObjects( float dt )
             }
             float box[4];
             if ( heroFree && hazard( o, o.m_t, box ) && overlaps( hl, ht, hr, hb, box[0], box[1], box[2], box[3] ) )
-                hurtHero( 40, o.m_x );
+                hurtHero( 40, o.m_x, "crusher" );
         }
     }
     if ( !m_sign.empty() ) m_signT = 0.2f;

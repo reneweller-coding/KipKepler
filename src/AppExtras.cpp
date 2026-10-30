@@ -55,10 +55,11 @@ std::vector<ScoreLine> readScores()
     return out;
 }
 
-/** @brief Wraps a text into lines that fit a width. */
-std::vector<std::string> wrap( const std::string &text, int width )
+}   // namespace
+
+std::vector<std::string> wrapText( const std::string &text, int width, bool big )
 {
-    const PixelFont         &f = assets().font();
+    const PixelFont         &f = big ? assets().font( true, true ) : assets().font();
     std::vector<std::string> lines;
     std::string              line, word;
     auto                     flush = [&]()
@@ -82,8 +83,6 @@ std::vector<std::string> wrap( const std::string &text, int width )
     if ( !line.empty() ) lines.push_back( line );
     return lines;
 }
-
-}   // namespace
 
 // ---------------------------------------------------------------------------------------------------- levels
 
@@ -114,10 +113,20 @@ bool App::loadLevelId( const std::string &id )
     int episode, stage;
     parseId( id, episode, stage );
     grantEpisodeWeapons( episode );
+    // A challenge plays with a copy of what Kip carries (full ammo; only the blaster if so modified).
+    if ( m_challenge >= 0 )
+    {
+        m_challengeProgress = m_progress;
+        for ( int k = 1; k < WeaponCount; ++k )
+            m_challengeProgress.m_ammo[k] = m_challengeProgress.ammoMax( (WeaponE)k );
+        if ( m_challenge & 1 ) m_challengeProgress.m_weapons = 1;
+    }
+    // A level of the episodes begun afresh drops the place kept in another one.
+    if ( !m_directLevel && !m_demo && !m_trial && !m_rush && m_challenge < 0 ) clearSuspend();
     auto world = std::make_unique<World>();
     world->setView( m_screen.m_w, m_screen.m_h );
     std::string error;
-    if ( !world->load( path, m_progress, error ) )
+    if ( !world->load( path, m_challenge >= 0 ? m_challengeProgress : m_progress, error ) )
     {
         m_message = id + ": " + error;
         m_messageT = 6;
@@ -125,7 +134,21 @@ bool App::loadLevelId( const std::string &id )
         return false;
     }
     m_world = std::move( world );
-    m_world->m_trial = m_trial;
+    m_world->m_trial = m_trial || m_challenge >= 0;
+    if ( m_challenge >= 0 )
+    {
+        m_world->m_oneHit = ( m_challenge & 2 ) != 0;
+        m_world->m_gravityMul = ( m_challenge & 4 ) ? 0.6f : 1.0f;
+        if ( m_challenge & 8 ) m_world->m_dark = std::max( m_world->m_dark, 0.88f );
+    }
+    // A time trial records Kip's way; the best one so far runs beside him.
+    if ( m_trial )
+    {
+        loadGhost( id );
+        m_world->m_record = true;
+        m_world->m_ghost = m_ghostTrack.empty() ? nullptr : &m_ghostTrack;
+    }
+    applyWorldSettings();
     if ( m_o.m_autoplay || m_demo )
     {
         m_bot = std::make_unique<Bot>();
@@ -160,8 +183,14 @@ void App::nextAfterLevel( World &w, int &medals )
     {
         LevelBest &b = m_progress.m_best[id];
         bool       best = b.m_trial <= 0 || w.m_time < b.m_trial;
-        if ( best ) b.m_trial = w.m_time;
+        if ( best ) b.m_trial = w.m_time, saveGhost( id, w.m_track );
         m_tally.push_back( { tr( best ? "tally.trial_best" : "tally.trial" ), fmtTime( w.m_time ) + "." + std::to_string( (int)( std::fmod( w.m_time, 1.0f ) * 10 ) ), medal } );
+    }
+    if ( m_challenge >= 0 )
+    {
+        finishChallenge( w );
+        m_nextId.clear();
+        return;
     }
     if ( m_demo || m_fromEditor )
     {
@@ -347,10 +376,11 @@ void App::updateExtras( StateE state, MenuKeys &k, float dt )
 
     case StateE::EXTRAS:
     {
-        moveCursor( 6 );
+        moveCursor( 7 );
         if ( k.m_back ) go( StateE::MAIN, 3 );
         // Left and right choose the editor's level slot.
-        if ( m_cursor == 4 && ( k.m_left || k.m_right ) ) m_editorSlot = ( m_editorSlot + ( k.m_right ? 1 : 7 ) ) % 9 + 1, sfx( "menu_move" );
+        if ( m_cursor == 5 && ( k.m_left || k.m_right ) )
+            m_editorSlot = ( m_editorSlot + ( k.m_right ? 1 : 7 ) ) % 9 + 1, sfx( "menu_move" );
         if ( !k.m_ok ) break;
         bool bosses = true;
         for ( int e = 1; e <= 4; ++e ) bosses &= m_progress.m_best.count( levelId( e, 9 ) ) && m_progress.m_best[levelId( e, 9 )].m_done;
@@ -360,12 +390,14 @@ void App::updateExtras( StateE state, MenuKeys &k, float dt )
         else if ( m_cursor == 2 )
             m_scoreDiff = m_progress.m_difficulty, go( StateE::SCORES );
         else if ( m_cursor == 3 )
+            go( StateE::CHALLENGE );
+        else if ( m_cursor == 4 )
         {
             if ( bosses ) startBossRush();
             else
                 m_message = tr( "menu.rush_locked" ), m_messageT = 2.5f;
         }
-        else if ( m_cursor == 4 )
+        else if ( m_cursor == 5 )
             openEditor( userDir() + "levels/custom" + std::to_string( m_editorSlot ) + ".txt" );
         else
             go( StateE::MAIN, 3 );
@@ -374,8 +406,10 @@ void App::updateExtras( StateE state, MenuKeys &k, float dt )
 
     case StateE::LOGBOOK:
     {
-        std::vector<std::string> keys = textKeys( "lore.", ".title" );
-        moveCursor( (int)std::max<size_t>( 1, keys.size() ) );
+        // Left and right turn between the pages found and the bestiary.
+        if ( k.m_left || k.m_right ) m_logTab ^= 1, m_cursor = 0, m_listTop = 0, sfx( "menu_move", 0.5f );
+        size_t n = m_logTab ? bestiaryIds().size() : textKeys( "lore.", ".title" ).size();
+        moveCursor( (int)std::max<size_t>( 1, n ) );
         if ( k.m_back || k.m_ok ) go( StateE::EXTRAS, 0 );
         break;
     }
@@ -462,8 +496,13 @@ void App::drawRadio()
     drawText( tr( "radio.commodore" ), 104, 198, { 255, 210, 120, 255 }, false, true );
     // Cut the text at a character boundary (UTF-8).
     while ( shown < text.size() && ( (unsigned char)text[shown] & 0xC0 ) == 0x80 ) ++shown;
-    float y = 100;
-    for ( const std::string &l : wrap( text.substr( 0, shown ), m_screen.m_w - 230 ) ) drawText( l, 170, y, { 225, 235, 255, 255 } ), y += 15;
+    float                    y = 100;
+    bool                     big = m_settings.m_bigText;
+    std::vector<std::string> lines = wrapText( text.substr( 0, shown ), m_screen.m_w - 230, big );
+    if ( big && wrapText( text, m_screen.m_w - 230, true ).size() * ( assets().font( true, true ).height() + 2 ) > 140 )
+        big = false, lines = wrapText( text.substr( 0, shown ), m_screen.m_w - 230 );
+    for ( const std::string &l : lines )
+        drawText( l, 170, y, { 225, 235, 255, 255 }, big ), y += big ? assets().font( true, true ).height() + 2 : 15;
     if ( shown >= text.size() && (int)( m_t * 2 ) % 2 == 0 ) drawText( tr( "menu.press_on" ), cx, 270, { 200, 210, 230, 255 }, false, true );
     drawToasts();
     m_screen.end();
@@ -485,15 +524,27 @@ void App::drawExtras( StateE state )
         if ( m_progress.m_bossRush > 0 ) rush += "  (" + fmtTime( m_progress.m_bossRush ) + ")";
         int got = 0;
         for ( int a = 0; a < AW_COUNT; ++a ) got += m_progress.award( (AwardE)a );
+        on.insert( on.begin() + 3, true );
         drawMenu( tr( "menu.extras" ),
-                  { tr( "extras.logbook" ) + "  (" + std::to_string( m_progress.m_lore.size() ) + ")", tr( "extras.awards" ) + "  (" + std::to_string( got ) + "/" + std::to_string( (int)AW_COUNT ) + ")",
-                    tr( "extras.scores" ), rush, tr( "menu.editor" ) + editorSlot, tr( "menu.back" ) },
-                  m_screen.m_h / 2 - 50, &on );
+                  { tr( "extras.logbook" ) + "  (" + std::to_string( m_progress.m_lore.size() ) + ")",
+                    tr( "extras.awards" ) + "  (" + std::to_string( got ) + "/" + std::to_string( (int)AW_COUNT ) + ")",
+                    tr( "extras.scores" ), tr( "extras.challenges" ), rush, tr( "menu.editor" ) + editorSlot,
+                    tr( "menu.back" ) },
+                  m_screen.m_h / 2 - 56, &on );
         break;
     }
     case StateE::LOGBOOK:
     {
-        drawText( tr( "extras.logbook" ), cx, 14, { 200, 235, 255, 255 }, true, true );
+        // Two pages: the logbook's and the bestiary's, left and right between them.
+        std::string tab = m_logTab ? tr( "extras.bestiary" ) + "  (" + std::to_string( m_progress.m_seen.size() ) +
+                                         "/" + std::to_string( bestiaryIds().size() ) + ")"
+                                   : tr( "extras.logbook" );
+        drawText( "< " + tab + " >", cx, 14, { 200, 235, 255, 255 }, true, true );
+        if ( m_logTab )
+        {
+            drawBestiary();
+            break;
+        }
         std::vector<std::string> keys = textKeys( "lore.", ".title" );
         drawPanel( 20, 50, 220, m_screen.m_h - 70 );
         drawPanel( 250, 50, m_screen.m_w - 270, m_screen.m_h - 70 );
@@ -515,7 +566,8 @@ void App::drawExtras( StateE state )
             {
                 drawText( tr( keys[m_cursor] ), 264, 62, { 255, 210, 120, 255 } );
                 float y = 84;
-                for ( const std::string &l : wrap( tr( "lore." + key + ".text" ), m_screen.m_w - 300 ) ) drawText( l, 264, y, { 220, 230, 250, 255 } ), y += 14;
+                for ( const std::string &l : wrapText( tr( "lore." + key + ".text" ), m_screen.m_w - 300 ) )
+                    drawText( l, 264, y, { 220, 230, 250, 255 } ), y += 14;
             }
             else
                 drawText( tr( "extras.not_found" ), 264, 62, { 140, 150, 180, 255 } );

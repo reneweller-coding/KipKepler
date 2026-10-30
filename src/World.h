@@ -225,7 +225,10 @@ public:
     /** @brief Puts the camera on a point (tests and pictures). */
     void lookAt( float x, float y );
     /** @brief Back to the last checkpoint (pause menu: a way out of any spot). */
-    void giveUp() { if ( !m_dead && m_exitT < 0 ) killHero(); }
+    void giveUp()
+    {
+        if ( !m_dead && m_exitT < 0 ) killHero( "giveup" );
+    }
     /** @brief Puts the hero somewhere (tests). */
     void place( float x, float y );
 
@@ -262,6 +265,38 @@ public:
     bool  m_assistInvulnerable = false; ///< assist mode: nothing hurts
     bool  m_assistAmmo = false;  ///< assist mode: ammo never runs out
     bool  m_rumbleOn = false;    ///< the pad's motors follow the shake
+    bool        m_oneHit = false;      ///< challenge: any hit knocks out
+    float       m_gravityMul = 1;      ///< challenge: low gravity
+    bool        m_colourAssist = false;   ///< keys and doors get shapes, laser fences and crushers warning stripes
+    bool        m_bigText = false;        ///< signs in the big font
+
+    /** @brief A knockout: where and by what. */
+    struct Death
+    {
+        float       m_x, m_y;
+        std::string m_cause;   ///< an enemy kind, a shot, laser, crusher, liquid, spikes, fall, explosion, giveup
+    };
+    std::vector<Death> m_deathLog;   ///< knockouts since the App last took them
+    /** @brief A point of the hero's way (30 a second of the level's clock). */
+    struct TrackPoint
+    {
+        float   m_x, m_y;
+        int16_t m_frame;   ///< in the hero's sheet
+        int8_t  m_face;
+    };
+    bool                           m_record = false;   ///< keep the hero's way (time trials)
+    std::vector<TrackPoint>        m_track;
+    const std::vector<TrackPoint> *m_ghost = nullptr;   ///< the best run's way, drawn see-through
+    std::vector<uint8_t>           m_explored;          ///< per cell: has been on the screen (the pause map)
+
+    /** @brief The level's state for a quick save: the counters, the hero, what was taken, beaten, opened, seen. */
+    std::string snapshot() const;
+    /**
+     * @brief Puts a quick save's state into the freshly loaded level.
+     * @param[in] text  what snapshot() wrote
+     * @return whether it fitted the level
+     */
+    bool restore( const std::string &text );
     std::vector<int> m_awardQueue;   ///< awards won in this level, to show (AwardE)
     float m_awardT = 0;
     void  grant( int award );   ///< gives an award (once) and queues its toast
@@ -344,6 +379,8 @@ public:
     int         m_teleLock = -1;           ///< the pad the hero arrived on: it waits until he steps off
     bool        m_boss = false;            ///< a boss level
     float       m_hitStop = 0;
+    int m_loadedPickups = 0, m_loadedEnemies = 0;   ///< the level's own (not dropped or beamed in later)
+    int m_noteN = 0;                                ///< steps since the cells and enemies on screen were noted
 
 private:
     void step( float dt, const Controls &c );
@@ -359,8 +396,9 @@ private:
     void fire();
     void fireAlt();
     void enemyShoot( Enemy &e, const std::string &kind, float x, float y, float vx, float vy );
-    void hurtHero( float amount, float fromX );
-    void killHero();
+    void hurtHero( float amount, float fromX, const std::string &cause );
+    void killHero( const std::string &cause );
+    void noteSeen();
     void respawn();
     bool hurtEnemy( int index, float damage, float fromX, WeaponE w, bool charged );
     void killEnemy( int index );

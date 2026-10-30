@@ -28,10 +28,16 @@ struct Settings
     int         m_speed = 0;     ///< assist: game speed 0 100 %, 1 90 %, 2 80 %, 3 70 %
     bool        m_invulnerable = false;   ///< assist
     bool        m_infiniteAmmo = false;   ///< assist
+    bool        m_colourAssist = false;   ///< shapes on keys and doors, warning stripes on laser fences and crushers
+    bool        m_bigText = false;        ///< signs and the Commodore's words in the big font
+    bool        m_perf = false;           ///< the frame times and the battery shown and written to perf.txt
 };
 
 /** @brief The player's folder, with a slash at the end (made if missing). */
 std::string userDir();
+
+/** @brief Writes a file whole or not at all (a .tmp beside it, then put in place; the one before kept as .bak). */
+bool writeWhole( const std::string &path, const std::string &text );
 
 bool loadSettings( Settings &s );
 bool saveSettings( const Settings &s );

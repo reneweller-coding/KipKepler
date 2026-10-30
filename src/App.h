@@ -33,6 +33,10 @@ struct Options
     bool        m_autoplay = false;   ///< the autopilot plays (visible)
     std::string m_autotest;           ///< the autopilot plays headless and writes one line per level into this file
     float       m_limit = 900;        ///< autotest: game seconds per level before giving up
+    bool        m_perf = false;       ///< the performance display and perf.txt, whatever the settings say
+    bool        m_demoNow = false;    ///< the demo starts at once
+    float       m_seconds = 0;        ///< ends after this long (0: never); the window stays hidden, the sound off
+    bool        m_helpLook = false;   ///< colour help and big text on (pictures), the settings untouched
 };
 
 /** @brief Runs the game. */

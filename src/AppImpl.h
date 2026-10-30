@@ -1,7 +1,8 @@
 /**
  * @file AppImpl.h
  * @brief The App class behind runApp (App.cpp: start, menus, flow; AppExtras.cpp: the second round -- radio,
- *        medals, awards, logbook, high scores, boss rush, time trial, New Game+, demo, assist).
+ *        medals, awards, logbook, high scores, boss rush, time trial, New Game+, demo, assist; AppMore.cpp: the third
+ *        -- death records, ghosts, challenges, bestiary, pause map, quick save, performance display).
  * @author Rene Weller
  */
 #pragma once
@@ -43,14 +44,19 @@ enum class StateE
     CONFIRM,
     CONTROLS,
     EDITOR,
-    RADIO,     ///< the Commodore's message before a level
+    RADIO,   ///< the Commodore's message before a level
     EXTRAS,
     LOGBOOK,
     AWARDS,
-    SCORES
+    SCORES,
+    CHALLENGE,   ///< the challenges: today's, or a level with modifiers
+    MAP          ///< the pause menu's map of the level
 };
 
 inline const char *EpisodeBg[5] = { "", "station_a", "jungle_a", "ice_a", "citadel_a" };
+
+/** @brief Wraps a text into lines that fit a width (in the small or the big font). */
+std::vector<std::string> wrapText( const std::string &text, int width, bool big = false );
 
 inline std::string fmtTime( float t )
 {
@@ -157,6 +163,51 @@ private:
         float       m_t;
     };
     std::vector<Toast> m_toasts;
+
+    // The third round (AppMore.cpp).
+    void recordDeaths( World &w, const std::string &file, const char *mode );
+    void recordPlayDeaths();
+    std::string ghostPath( const std::string &id ) const;
+    void loadGhost( const std::string &id );
+    void saveGhost( const std::string &id, const std::vector<World::TrackPoint> &track );
+    std::vector<std::string> challengeLevels() const;
+    void dailyChallenge( std::string &id, int &mods ) const;
+    std::string challengeKey( const std::string &id, int mods, bool daily ) const;
+    std::string modsText( int mods ) const;
+    bool startChallenge( const std::string &id, int mods, const std::string &key );
+    void finishChallenge( World &w );
+    void updateChallenge( struct MenuKeys &k );
+    void drawChallenge();
+    std::vector<std::string> bestiaryIds() const;
+    void drawBestiary();
+    void buildMap();
+    void drawMap();
+    std::string suspendPath() const;
+    bool canSuspend() const;
+    void saveSuspend();
+    void clearSuspend();
+    bool hasSuspend() const;
+    bool resumeSuspend();
+    bool perfOn() const { return m_settings.m_perf || m_o.m_perf; }
+    void updatePerf( float frame );
+    void drawPerf();
+    /** @brief The settings the level in play follows (colour help, big text). */
+    void applyWorldSettings()
+    {
+        if ( m_world ) m_world->m_colourAssist = m_settings.m_colourAssist, m_world->m_bigText = m_settings.m_bigText;
+    }
+
+    std::vector<World::TrackPoint> m_ghostTrack;       ///< the time trial's best run
+    int                            m_challenge = -1;   ///< a challenge runs: its modifiers (bits), -1 none
+    std::string                    m_challengeKey;
+    int                            m_challengeMods = 0, m_challengePick = 0;
+    Progress    m_challengeProgress;   ///< what Kip carries in a challenge (the game's progress stays)
+    int         m_logTab = 0;          ///< the logbook's page: 0 the pages found, 1 the bestiary
+    Texture2D   m_mapTex = {};
+    int         m_perfN = 0;
+    float       m_perfSum = 0, m_perfMax = 0;
+    std::string m_perfLine;
+    bool        m_focused = true;
 };
 
 

@@ -5,6 +5,8 @@
  *          KeplerTool checkall <folder>                     every .txt level in the folder
  *          KeplerTool render <level.txt> <out.png> [scale]  the whole level with its real tiles and sprites
  *          KeplerTool render <level.txt> <out.png> x y w h  a part (in tiles), drawn twice as large
+ *          KeplerTool deaths <level.txt> <deaths.txt> <out.png> [scale]   the level with its knockouts (the game's
+ *                                                                          death records) as red circles
  * @author Rene Weller
  */
 #include "../Checker.h"
@@ -157,7 +159,8 @@ uint32_t hashCell( int x, int y )
     return h;
 }
 
-int render( const Level &L, const std::string &out, int x0, int y0, int w, int h, float scale )
+int render( const Level &L, const std::string &out, int x0, int y0, int w, int h, float scale,
+            const std::string &deaths = "" )
 {
     std::string theme = L.key( "theme", "station" ), tdir = g_assets + "tiles/" + theme + "/";
     Image       ta = loadImg( tdir + "terrain_a.png" ), tb = loadImg( tdir + "terrain_b.png" ), back = loadImg( tdir + "back.png" );
@@ -291,6 +294,33 @@ int render( const Level &L, const std::string &out, int x0, int y0, int w, int h
         else if ( k == "crusher" )
             ImageDrawRectangle( &img, cx - 14, cy - 16, 28, 26, { 120, 124, 140, 255 } );
     }
+    // The knockouts of this level from a death record (level x y cause ...): a circle per cell, larger the more.
+    if ( !deaths.empty() )
+    {
+        std::ifstream                              in( deaths );
+        std::string                                line;
+        std::map<std::pair<int, int>, int>         cells;
+        std::map<std::pair<int, int>, std::string> cause;
+        while ( std::getline( in, line ) )
+        {
+            char id[64] = {}, what[64] = {};
+            int  x = 0, y = 0;
+            if ( sscanf( line.c_str(), "%63s %d %d %63s", id, &x, &y, what ) < 4 || L.m_id != id ||
+                 std::string( what ) == "giveup" )
+                continue;
+            std::pair<int, int> c = { x / Tile, ( y - 1 ) / Tile };
+            ++cells[c];
+            cause[c] = what;
+        }
+        for ( const auto &[c, n] : cells )
+        {
+            int px = ( c.first - x0 ) * Tile + Tile / 2, py = ( c.second - y0 ) * Tile + Tile / 2;
+            int r = 8 + 3 * std::min( n, 8 );
+            ImageDrawCircle( &img, px, py, r, { 255, 40, 40, 150 } );
+            ImageDrawCircleLines( &img, px, py, r, { 255, 230, 230, 255 } );
+            label( img, std::to_string( n ) + " " + cause[c], px + r + 2, py - 4, { 255, 220, 220, 255 } );
+        }
+    }
     if ( scale != 1.0f ) ImageResizeNN( &img, (int)( img.width * scale ), (int)( img.height * scale ) );
     bool ok = ExportImage( img, out.c_str() );
     UnloadImage( img );
@@ -305,11 +335,24 @@ int main( int argc, char **argv )
     if ( argc < 3 )
     {
         printf( "usage: KeplerTool check <level.txt> [overview.png]\n       KeplerTool checkall <folder>\n"
-                "       KeplerTool render <level.txt> <out.png> [scale | x y w h]\n" );
+                "       KeplerTool render <level.txt> <out.png> [scale | x y w h]\n"
+                "       KeplerTool deaths <level.txt> <deaths.txt> <out.png> [scale]\n" );
         return 2;
     }
     if ( const char *a = getenv( "KEPLER_ASSETS_DIR" ) ) g_assets = std::string( a ) + "/";
     std::string cmd = argv[1];
+    if ( cmd == "deaths" )
+    {
+        if ( argc < 5 ) return 2;
+        Level       level;
+        std::string error;
+        if ( !level.load( argv[2], error ) )
+        {
+            printf( "FAIL  %s: %s\n", argv[2], error.c_str() );
+            return 1;
+        }
+        return render( level, argv[4], 0, 0, level.m_w, level.m_h, argc >= 6 ? (float)atof( argv[5] ) : 0.5f, argv[3] );
+    }
     if ( cmd == "render" )
     {
         if ( argc < 4 ) return 2;

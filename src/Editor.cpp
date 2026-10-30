@@ -20,6 +20,7 @@
 #include "EditorDoc.h"
 #include "EditorView.h"
 #include "Level.h"
+#include "Save.h"
 #include "Screen.h"
 #include "Text.h"
 
@@ -512,6 +513,15 @@ struct Editor::Impl
     std::thread             m_thread;
     std::atomic<bool>       m_checking{ false }, m_checked{ false };
     std::string             m_checkOut;
+    std::vector<std::pair<int, int>> m_reach, m_reachOut;   ///< standing places the check reached (column, floor row)
+    bool                             m_showReach = true;
+    // The death map: knockouts in the player's games of this level, per cell.
+    struct DeathMark
+    {
+        int m_x, m_y, m_n;
+    };
+    std::vector<DeathMark>  m_deathMarks;
+    bool                    m_showDeaths = false;
     int                     m_flashX = -1, m_flashY = -1;
     float                   m_flashT = 0;
 
@@ -1081,10 +1091,20 @@ struct Editor::Impl
         {
             Level       level;
             std::string error, report;
+            std::vector<std::pair<int, int>> reach;
             if ( !level.load( tmp, error ) ) report = "ERROR " + error + "\n";
             else
+            {
                 checkLevel( level, "", report );
+                // The places the hero can stand on (whatever keys and switches), for the overlay.
+                ReachGraph graph;
+                buildGraph( level, graph );
+                std::set<std::pair<int, int>> cells;
+                for ( const ReachNode &n : graph.m_nodes ) cells.insert( { n.m_fx, n.m_fy } );
+                reach.assign( cells.begin(), cells.end() );
+            }
             m_checkOut = report;
+            m_reachOut = std::move( reach );
             m_checked = true;
         };
         if ( wait ) job();
@@ -1099,6 +1119,7 @@ struct Editor::Impl
         if ( m_thread.joinable() ) m_thread.join();
         m_checking = false;
         m_lines.clear();
+        m_reach = std::move( m_reachOut );
         std::istringstream in( m_checkOut );
         std::string        l;
         while ( std::getline( in, l ) )
@@ -1121,6 +1142,50 @@ struct Editor::Impl
         m_report = true;
         bool ok = !m_lines.empty() && m_lines[0].m_text.rfind( "OK", 0 ) == 0;
         message( tr( ok ? "editor.msg.check_ok" : "editor.msg.check_fail" ), ok ? Good : Bad );
+    }
+
+    // ----------------------------------------------------------------------------------------- the death map
+
+    void toggleDeaths()
+    {
+        // The player's knockouts in this level (deaths.txt in the player's folder: level x y cause ...), per cell.
+        m_showDeaths = !m_showDeaths;
+        m_deathMarks.clear();
+        if ( !m_showDeaths )
+        {
+            message( tr( "editor.msg.deaths_off" ), Dim, 2 );
+            return;
+        }
+        std::ifstream              in( userDir() + "deaths.txt" );
+        std::string                line;
+        std::map<long, int>        cells;
+        std::map<std::string, int> causes;
+        int                        total = 0;
+        while ( std::getline( in, line ) )
+        {
+            std::istringstream l( line );
+            std::string        id, cause;
+            int                x = 0, y = 0;
+            if ( !( l >> id >> x >> y >> cause ) || id != m_doc.m_id || cause == "giveup" ) continue;
+            int cx = (int)std::floor( x / T ), cy = (int)std::floor( ( y - 1 ) / T );
+            ++cells[(long)cy * 100000 + cx], ++causes[cause], ++total;
+        }
+        for ( const auto &[k, n] : cells ) m_deathMarks.push_back( { (int)( k % 100000 ), (int)( k / 100000 ), n } );
+        if ( !total )
+        {
+            message( tr( "editor.msg.deaths_none" ), Dim, 3 );
+            return;
+        }
+        // The three most frequent causes.
+        std::vector<std::pair<int, std::string>> top;
+        for ( const auto &[c, n] : causes ) top.push_back( { n, c } );
+        std::sort( top.rbegin(), top.rend() );
+        std::string most;
+        for ( size_t i = 0; i < top.size() && i < 3; ++i )
+            most += ( i ? ", " : "" ) + top[i].second + " " + std::to_string( top[i].first );
+        char buf[256];
+        snprintf( buf, sizeof( buf ), tr( "editor.msg.deaths" ).c_str(), total, most.c_str() );
+        message( buf, Warn, 5 );
     }
 
     // -------------------------------------------------------------------------------------------- the camera
@@ -1897,6 +1962,10 @@ struct Editor::Impl
             return ResultE::STAY;
         }
         if ( IsKeyPressed( KEY_F3 ) ) m_decos = !m_decos;
+        if ( IsKeyPressed( KEY_H ) ) toggleDeaths();
+        if ( IsKeyPressed( KEY_R ) )
+            m_showReach = !m_showReach,
+            message( tr( m_showReach ? "editor.msg.reach_on" : "editor.msg.reach_off" ), Dim, 2 );
         if ( IsKeyPressed( KEY_F4 ) ) m_light = !m_light, message( tr( m_light ? "editor.msg.light_on" : "editor.msg.light_off" ), Dim, 2 );
         if ( IsKeyPressed( KEY_TAB ) ) m_palette = !m_palette, clampCamera();
         if ( ctrl )
@@ -2340,6 +2409,20 @@ struct Editor::Impl
                     if ( ambush ) DrawCircle( (int)px + 5, (int)py + 5, 3, { 120, 220, 255, 230 } );
                     if ( elite ) DrawCircle( (int)px + 13, (int)py + 5, 3, { 255, 200, 60, 230 } );
                 }
+            }
+        // Where the hero can stand (after a check) and where players were knocked out.
+        if ( m_showReach && m_report )
+            for ( const auto &[x, y] : m_reach )
+                DrawRectangleRec( { x * T + T * 0.5f - 2 * lw, y * T - 5 * lw, 4 * lw, 4 * lw },
+                                  { 120, 255, 150, 210 } );
+        if ( m_showDeaths )
+            for ( const DeathMark &d : m_deathMarks )
+            {
+                float r = T * ( 0.35f + 0.12f * std::min( d.m_n, 8 ) );
+                DrawCircleV( { d.m_x * T + T * 0.5f, d.m_y * T + T * 0.5f }, r,
+                             { 255, 50, 50, (unsigned char)std::min( 200, 70 + 25 * d.m_n ) } );
+                DrawCircleLines( (int)( d.m_x * T + T * 0.5f ), (int)( d.m_y * T + T * 0.5f ), r,
+                                 { 255, 220, 220, 230 } );
             }
         // The checker's findings.
         for ( const ReportLine &l : m_lines )

@@ -502,7 +502,7 @@ void World::stepShots( float dt )
             {
                 if ( s.m_splash > 0 ) explode( s.m_x, s.m_y, s.m_splash, s.m_damage, false );
                 else
-                    hurtHero( s.m_damage, s.m_x - s.m_vx );
+                    hurtHero( s.m_damage, s.m_x - s.m_vx, s.m_anim );
                 if ( m_shield > 0 ) effect( "spark", s.m_x, s.m_y );
                 s.m_dead = true;
             }
@@ -682,7 +682,7 @@ void World::explode( float x, float y, float radius, float damage, bool byHero )
     else
     {
         float dx = std::max( { m_hero.left() - x, 0.0f, x - m_hero.right() } ), dy = std::max( { m_hero.top() - y, 0.0f, y - m_hero.m_y } );
-        if ( dx * dx + dy * dy < radius * radius ) hurtHero( damage, x );
+        if ( dx * dx + dy * dy < radius * radius ) hurtHero( damage, x, "explosion" );
     }
 }
 

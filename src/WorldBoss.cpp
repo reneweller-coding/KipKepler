@@ -296,7 +296,8 @@ void World::stepBoss( Enemy &e, int index, float dt )
                 b.m_life = 0.05f;
                 m_beams.push_back( b );
                 float l = std::min( e.m_x, x ), r = std::max( e.m_x, x );
-                if ( heroUp && m_hero.right() > l && m_hero.left() < r && m_hero.top() < y + 7 && m_hero.m_y > y - 7 ) hurtHero( 25, e.m_x );
+                if ( heroUp && m_hero.right() > l && m_hero.left() < r && m_hero.top() < y + 7 && m_hero.m_y > y - 7 )
+                    hurtHero( 25, e.m_x, e.m_def->m_id );
             }
             if ( e.m_stateT > 1.0f && e.m_stateT < 1.0f + dt * 1.5f ) sfx( "shoot_lancer", 0.8f, 0.5f );
             if ( e.m_stateT > 2.0f ) e.m_state = 0, e.m_stateT = 0;

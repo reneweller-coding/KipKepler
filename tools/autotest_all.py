@@ -2,7 +2,7 @@
 without a window (the test runs on the processor alone and leaves the graphics card to others), each with a hard time
 limit; the reports land in work/autotest/<worker>.txt and a summary is printed.
 
-    python tools/autotest_all.py [--limit 600] [--minutes 45]
+    python tools/autotest_all.py [--limit 900] [--minutes 45]
 """
 import argparse
 import os
@@ -20,7 +20,7 @@ WORKERS = {"a": [["--episode", "1"], ["--episode", "2"]],
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--limit", default="600", help="game seconds per level")
+    ap.add_argument("--limit", default="900", help="game seconds per level")
     ap.add_argument("--minutes", type=float, default=45, help="wall-clock limit per worker")
     a = ap.parse_args()
     os.makedirs(WORK, exist_ok=True)
