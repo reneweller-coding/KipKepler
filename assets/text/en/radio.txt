@@ -1,0 +1,51 @@
+# KIP KEPLER -- the Commodore's radio messages before each level (English). Keys radio.<levelid>.
+# Running threads: episode 1 the graduation exam, episode 2 Admiral (the Commodore's cat), episode 3 the galley's
+# pudding, episode 4 Accounting's forms.
+
+# Episode 1 -- The Academy Ring
+radio.e1l1 = Kepler, your graduation exam is officially still running. I'm counting this as the practical part. Start in the quarters – and leave the socks where they are.
+radio.e1l2 = Exam part two: the maintenance deck. There's a blue key card somewhere. Mind the crumbling plates; they've been on Facility Management's list for years.
+radio.e1l3 = Hangar Bay 7. The platforms still run, just on their own timetable. There's a repeater in the weapons locker. I'm counting it as exam equipment.
+radio.e1l4 = You're going out onto the outer hull, Kepler. Don't panic: space is just very big and very empty. Hold on to the springs. Figuratively.
+radio.e1l5 = The Reactor Spine: laser fences, switches, a vault with the gold key card. Rumour has it some walls in there hum strangely. That's not part of the exam.
+radio.e1l6 = Conveyors and presses. Don't run against the belt, it always wins. There's a scatter gun on the way. Exam part four is now called "breaking up crowds".
+radio.e1l7 = The antenna field has hardly any gravity. Jump high if you like, just don't look down. I'm putting you down for five bonus points for courage. Provisionally.
+radio.e1l8 = Security Core: both key cards, teleporters, fabricators. And Kepler: your own file is in there too. Reading it isn't forbidden. Just embarrassing.
+radio.e1l9 = The Warden has sealed off the Ring. He's the last examiner I can't spare you. Pass him and I'll sign anything. Really, anything.
+radio.e1s = Kepler? My scanner just lost you. Wherever you are, it's on no plan of the Ring. Have a good look around. And bring me a copy.
+
+# Episode 2 -- Verdant Moon Thessa
+radio.e2l1 = Thessa, Kepler: green, warm, and everything bites. If you hear purring on this channel, that's Admiral, my cat. Technically she outranks me.
+radio.e2l2 = The root caverns are tight and rotten. There's a ricochet gun round a corner; its discs bounce round corners too. Admiral is chasing a laser dot. She's winning.
+radio.e2l3 = Canopy bridges, high in the treetops. Below you there's only air and a very long fall. Admiral is at the window, watching the moths. With intent.
+radio.e2l4 = The Sunken Temple: switches, teleporters, and more secrets than stones. Dr. Ferro says the Thessans built nothing without a reason. Admiral is asleep on the star chart.
+radio.e2l5 = The hive outskirts. Spitters aim well, so keep moving. There's a cryo projector nearby. Admiral caught a moth in the air vent. She's very proud.
+radio.e2l6 = Spore Marsh. Breathe shallow and pop the pods from a distance. Admiral has requisitioned your dress jacket as a bed. I couldn't stop her. She's an admiral.
+radio.e2l7 = Amber Tunnels: lots of up, not much to hold on to. The lifts come back, be patient. Admiral knocked over the radio desk, in case I start sounding like a cat.
+radio.e2l8 = The Nursery. Dark, crowded, and a gold key card somewhere. Don't wake anything you can't carry. Admiral is hissing at the screens. Frankly, so am I.
+radio.e2l9 = The Broodmother is waiting beyond, Kepler. She guards the shards like eggs and doesn't like visitors. Admiral has crawled under the desk. I wish I could join her.
+radio.e2s = Your signal is coming from beneath the temple, or from somewhere else entirely. Dr. Ferro is green with envy. Record everything. Admiral is purring. That's a good sign.
+
+# Episode 3 -- The Comet Mines of Ysk
+radio.e3l1 = Ysk, Kepler: low gravity, lots of black ice. The galley made pudding to celebrate. I've put a bowl aside for you. Come back in one piece, or I'll eat it myself.
+radio.e3l2 = Frozen shafts, and a lancer somewhere in the rock. The ice slides take you along whether you like it or not. Your pudding is in the cold store. Where else.
+radio.e3l3 = The grotto is dark, but the crystals light your way. Some walls are only glitter. The cook asks whether comet crystal is edible. Please say no.
+radio.e3l4 = Ore elevators: big platforms, big crushers. Wait for the beat. Also, your pudding bowl is gone. Admiral is a suspect. The investigation is ongoing.
+radio.e3l5 = The Brine Lake. The rotten ice only holds you briefly, so don't stand still. Good news: the cook is making new pudding. Bad news: salted caramel. From brine.
+radio.e3l6 = The Prism Halls: three gates, three levers, one mortar. And supposedly a passage that's on no map. The new pudding is ready. It's wobbling nervously.
+radio.e3l7 = Avalanche Run. Burrowers lurk under the snow, and frost golems brake for nobody. Run! The cook says pudding is just a very slow avalanche.
+radio.e3l8 = The Heart of the Comet: wisps, dark caves, both key cards. Shift boss Okoro says the crystal down there sings. The cook wants the recipe. I sent him away.
+radio.e3l9 = Kepler, the crystal at the heart has pulled itself together into something big. Very big. Aim for the glowing parts. And afterwards: pudding. That's an order.
+radio.e3s = Your signal comes from the ice beneath the ice. No miner has ever been that deep. Look around, but don't freeze to anything. The cook is keeping the pudding warm. Somehow.
+
+# Episode 4 -- The Gloam Dreadnought
+radio.e4l1 = You're aboard the Gloam, Kepler. Molten metal, troopers, hounds. Accounting asks who pays for the breach. I wrote down "the Gloam". Go.
+radio.e4l2 = Forge Decks: belts, hammers, and an arc caster for crowds. Accounting needs a Form 7-B for every robot you break. I've ordered a stack. A tall one.
+radio.e4l3 = Coolant ducts: tight, dark, laser fences on a beat. The brutes throw grenades, so stay nimble. Form 7-B now has a back page. Nobody knows what for.
+radio.e4l4 = The Long Barracks: shieldbots, laser eyes, both key cards. Accounting wants to know if a dreadnought counts as a business trip. I said yes. With expenses.
+radio.e4l5 = The Engine Cathedral: platforms over embers, jetpackers in the air, and luckily a seeker. Admiral chewed up Form 7-B. I've filed it under force majeure.
+radio.e4l6 = The Neon Labyrinth: teleporters, levers, and blinkers that are never where you look. Some corridors are on no plan. Accounting has given up. I'm calling that a win.
+radio.e4l7 = Hangar of Shadows: wide spaces, springs, jetpackers. Our scanners show ships in there that have been listed as lost for years. Look closely, Kepler.
+radio.e4l8 = Core Approach. Now comes the hardest part: riftgates, everything at once. Accounting has sent a new form. It's called "Promotion". I'm filling it in already.
+radio.e4l9 = Beyond lies the Gloam's core. It floats, it jumps, it's cold. Make it bright, Kepler. The whole Corps is listening. Admiral too. And the cook has pudding.
+radio.e4s = Kepler, you've vanished from every map, in the middle of a dreadnought. That's either very bad or very typical of you. Look around, then come back.

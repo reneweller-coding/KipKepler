@@ -1,0 +1,15 @@
+eye_sensor 209 1 20 16 wall 2 glow
+holo_screen 143 1 28 20 wall 2 glow
+pylon 1 1 14 36 floor 2 glow
+conduit 61 1 12 34 wall 2 glow
+neon_sign 117 1 24 22 wall 1 glow
+banner 17 1 22 34 wall 1 glow
+drone_dock 185 1 22 16 ceiling 2 glow
+cables 271 1 46 12 ceiling 2
+power_core 95 1 20 26 floor 1 glow
+server 41 1 18 34 floor 2 glow
+projector 75 1 18 30 floor 1 glow
+vent 231 1 22 14 wall 2
+edge_emitter 173 1 10 20 edge 2 glow
+float_cube 255 1 14 14 wall 1 glow
+chevrons 319 1 22 10 wall 1 glow

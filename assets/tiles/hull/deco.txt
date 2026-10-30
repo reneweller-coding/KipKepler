@@ -1,0 +1,16 @@
+antenna 1 1 14 42 floor 3 glow
+dish 17 1 30 28 floor 2 glow
+beacon_lamp 303 1 14 16 floor 2 glow
+floodlight 319 1 18 14 wall 2 glow
+window 107 1 28 20 wall 2 glow
+solar_panel 137 1 32 18 wall 2
+exhaust 197 1 22 18 wall 2
+scorch 171 1 24 18 wall 2
+fuel_tank 89 1 16 24 floor 2
+clamp 279 1 22 16 ceiling 2
+sensor 339 1 14 14 ceiling 2 glow
+edge_cables 49 1 12 28 edge 2
+comm_array 63 1 24 24 wall 1 glow
+crate 221 1 22 18 floor 2
+railing 245 1 32 16 floor 3
+bay_marker 355 1 20 12 wall 1 glow

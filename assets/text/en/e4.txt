@@ -1,0 +1,32 @@
+# Episode 4 -- The Gloam Dreadnought: level names and signs
+level.e4l1 = Boarding Breach
+level.e4l2 = Forge Decks
+level.e4l3 = Coolant Ducts
+level.e4l4 = The Long Barracks
+level.e4l5 = Engine Cathedral
+level.e4l6 = Neon Labyrinth
+level.e4l7 = Hangar of Shadows
+level.e4l8 = Core Approach
+level.e4l9 = The Gloam
+
+sign.e4l1.lava = Molten metal kills on contact!|Take a run-up and jump the channels.
+sign.e4l1.hound = Gloamhounds charge when they see you –|but they brake at every edge.|Let them come, then fire across the gap!
+sign.e4l2.arc = Arc caster: lightning leaps to up to|four nearby foes. Made for squads!|Switch weapons: LB/RB or Q/E.
+sign.e4l2.belt = Conveyor belts carry you along.|Walking against them is slower.
+sign.e4l2.hammer = Forge hammers slam in rhythm.|Wait for the hammer to rise – then run!
+sign.e4l3.laser = Laser fences blink on and off.|Pass while the beam is dark.
+sign.e4l3.brute = Brutes lob grenades in an arc.|Keep moving – the mortar hits them|from above, too.
+sign.e4l4.shieldbot = Shieldbots block shots from the front.|Jump over and hit them from behind –|or drop a mortar shell on them.
+sign.e4l4.lasereye = Laser eyes charge before they fire.|Jump the beam or take cover!
+sign.e4l5.mover = Moving platforms carry you over the glow.|Wait for one, then hop on.
+sign.e4l5.seeker = Seeker: three missiles that find their mark.|Perfect against jetpackers!
+sign.e4l6.switch = Levers flip the glowing blocks.|Touch them or shoot them!
+sign.e4l6.teleport = Teleporters beam you across the maze.|Beside every arrival pad waits one|for the way back.
+sign.e4l7.spring = Bounce pads hurl you high up.|Steer onto the platform in mid-air!
+sign.e4l8.riftgate = Riftgates keep beaming in troopers.|Destroy the gate first!
+sign.e4l9.core = Beyond lies the Gloam's core.|No way back – good luck, cadet!
+
+# Secret level
+level.e4s = The Gloam's Treasury
+sign.e4s.treasury = TREASURY – authorised machines only.|Lasers armed, crushers primed.|Organics will be fined.
+sign.e4s.vault = The Vault of Crowns lies beyond.|Mind the sweeping beams –|they come in waves.

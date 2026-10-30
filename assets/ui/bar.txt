@@ -1,0 +1,4 @@
+# health/ammo bar (tools/ui/make_ui.py)
+# draw bar_frame.png, then a fill at (fill x, fill y), cropped to width round(fill w * fraction)
+frame 100 14
+fill 4 3 92 8

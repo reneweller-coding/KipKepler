@@ -1,0 +1,31 @@
+# Episode 2 -- Verdant Moon Thessa: level names and signs
+level.e2l1 = Landing Glade
+level.e2l2 = Root Caverns
+level.e2l3 = Canopy Bridges
+level.e2l4 = The Sunken Temple
+level.e2l5 = Hive Outskirts
+level.e2l6 = Spore Marsh
+level.e2l7 = Amber Tunnels
+level.e2l8 = The Nursery
+level.e2l9 = Broodmother
+
+sign.e2l1.acid = Thessan acid: green, bubbly, deadly.|Jump over it, don't fall in!
+sign.e2l1.beetle = Beetles are armoured at the front.|Jump over them and hit them from behind!
+sign.e2l2.ricochet = RICOCHET: discs bounce up to 4 times –|right into a beetle's unarmoured back.|Switch weapons: Q / E or LB / RB
+sign.e2l2.crumble = Rotten roots! They give way if you|stand still on them. Keep moving!
+sign.e2l2.snapvine = Snapvines hang from the ceiling and|drop on you. Shoot them first!
+sign.e2l3.fall = Don't look down.|Really. There's nothing down there.
+sign.e2l3.pods = Bounce pods: step on and take off.|You can still steer in the air.
+sign.e2l4.switch = Switches: touch them or shoot them.|They open gates – and sometimes bridges.
+sign.e2l4.teleport = Teleporters only work one way.|Every chamber has its own way out.
+sign.e2l5.cryo = CRYO PROJECTOR: freezes enemies for 5 s.|The ice holds you – a hit shatters it.
+sign.e2l5.spitter = Spitters lob acid in a high arc.|Keep moving!
+sign.e2l6.sporepod = Sporepods drift towards you and burst.|Shoot them from a distance!
+sign.e2l6.stalker = Stalkers charge as soon as they see you.|Jump over them when one comes!
+sign.e2l7.elevator = Amber lifts ride up and down.|Wait a moment – they come back.
+sign.e2l9.boss = BROODMOTHER – Do not disturb.|(She is very busy right now.)
+
+# Secret level
+level.e2s = The Pod Garden
+sign.e2s.pods = Bounce pods! The botanists bred them|just for fun. Hop on – they fling you|high and far.
+sign.e2s.steer = Too far to jump? Bounce!|Steer in the air from pod to pod.

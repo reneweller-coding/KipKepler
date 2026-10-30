@@ -1,0 +1,4 @@
+0 255 255 255 0 neutral
+1 255 228 200 6 sunlit
+2 200 214 255 -6 shadowside
+3 255 200 190 -4 redlight

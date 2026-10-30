@@ -1,0 +1,18 @@
+furnace 23 1 32 26 wall 2 glow
+pipe_h 341 1 34 10 wall 3
+pipe_v 11 1 10 34 wall 3
+valve 95 1 20 20 wall 2
+gauge 223 1 16 16 wall 2
+chain_0 85 1 8 22 ceiling 3
+chain_1 1 1 8 36 ceiling 3
+crucible 117 1 24 18 floor 2 glow
+ingots 241 1 22 14 floor 2 glow
+slag_pile 313 1 26 12 floor 2 glow
+cage_lamp 191 1 14 18 ceiling 3 glow
+steam_vent 265 1 18 14 wall 2
+sign_heat 169 1 20 18 wall 1
+press 143 1 24 18 floor 1
+slag_drips 301 1 10 14 edge 2 glow
+barrel 207 1 14 18 floor 2
+bracket 57 1 26 26 wall 1
+embers 285 1 14 14 wall 2 glow

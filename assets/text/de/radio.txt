@@ -1,0 +1,51 @@
+# KIP KEPLER -- Funksprüche der Kommodore vor jedem Level (Deutsch, die Quelle). Schlüssel radio.<levelid>.
+# Laufende Fäden: Episode 1 die Abschlussprüfung, Episode 2 Admiral (die Katze der Kommodore), Episode 3 der Pudding
+# der Kombüse, Episode 4 die Formulare der Verwaltung.
+
+# Episode 1 -- Akademiering
+radio.e1l1 = Kepler, Ihre Abschlussprüfung läuft offiziell noch. Ich werte das hier als praktischen Teil. Fangen Sie in den Quartieren an – und lassen Sie die Socken liegen.
+radio.e1l2 = Prüfungsteil zwei: das Wartungsdeck. Irgendwo liegt eine blaue Schlüsselkarte. Vorsicht auf den Bröckelplatten, die stehen seit Jahren auf der Liste der Hausmeisterei.
+radio.e1l3 = Hangar 7. Die Plattformen fahren noch, nur nach eigenem Fahrplan. Im Waffenschrank liegt ein Repetierer. Ich zähle ihn als Prüfungsausrüstung.
+radio.e1l4 = Sie gehen raus auf die Außenhülle, Kepler. Keine Panik: Das All ist nur sehr groß und sehr leer. Halten Sie sich an die Sprungfedern. Bildlich gesprochen.
+radio.e1l5 = Das Reaktorrückgrat: Laserzäune, Schalter, ein Tresor mit der goldenen Karte. Man munkelt, hinter manchen Wänden summt es seltsam. Für die Prüfung zählt das nicht.
+radio.e1l6 = Frachtbänder und Pressen. Laufen Sie nicht gegen das Band, es gewinnt immer. Unterwegs liegt ein Streuer. Prüfungsteil vier heißt ab jetzt "Gedränge auflösen".
+radio.e1l7 = Das Antennenfeld hat kaum Schwerkraft. Springen Sie ruhig hoch, aber schauen Sie nicht runter. Ich trage Ihnen fünf Bonuspunkte für Mut ein. Vorläufig.
+radio.e1l8 = Sicherheitskern: beide Schlüsselkarten, Teleporter, Fabrikatoren. Und, Kepler: Dort liegt auch Ihre Akte. Lesen ist nicht verboten. Nur peinlich.
+radio.e1l9 = Der Wächter hat den Ring abgeriegelt. Er ist der letzte Prüfer, den ich Ihnen nicht ersparen kann. Bestehen Sie ihn, und ich unterschreibe alles. Wirklich alles.
+radio.e1s = Kepler? Mein Scanner hat Sie verloren. Wo auch immer Sie sind, es steht auf keinem Plan des Rings. Sehen Sie sich gut um. Und bringen Sie mir eine Kopie mit.
+
+# Episode 2 -- Grüner Mond Thessa
+radio.e2l1 = Thessa, Kepler: grün, warm, und alles beißt. Falls Sie auf diesem Kanal ein Schnurren hören, das ist Admiral, meine Katze. Formal hat sie einen höheren Rang als ich.
+radio.e2l2 = Die Wurzelhöhlen sind eng und morsch. Um eine Ecke liegt ein Querschläger, seine Scheiben prallen auch um Ecken. Admiral jagt gerade einen Laserpunkt. Sie gewinnt.
+radio.e2l3 = Kronenbrücken, ganz oben im Blätterdach. Unter Ihnen ist nur Luft und ein sehr langer Fall. Admiral sitzt am Fenster und beobachtet die Motten. Mit Absichten.
+radio.e2l4 = Der versunkene Tempel: Schalter, Teleporter und mehr Geheimnisse als Steine. Dr. Ferro sagt, die Thessaner bauten nichts ohne Grund. Admiral schläft auf der Sternkarte.
+radio.e2l5 = Rand des Stocks. Die Spucker zielen gut, also bleiben Sie in Bewegung. In der Nähe liegt ein Kryowerfer. Admiral hat im Lüftungsschacht eine Motte gefangen. Sie ist sehr stolz.
+radio.e2l6 = Sporensumpf. Atmen Sie flach und schießen Sie die Kapseln aus der Ferne. Admiral hat Ihre Ausgehjacke als Bett beschlagnahmt. Ich konnte nichts tun. Sie ist Admiral.
+radio.e2l7 = Bernsteintunnel: viel senkrecht, wenig Halt. Die Aufzüge kommen wieder, Geduld. Admiral hat das Funkpult umgeworfen, falls ich gleich nach Katze klinge.
+radio.e2l8 = Die Brutkammern. Dunkel, voll, und irgendwo eine goldene Karte. Wecken Sie nichts, was Sie nicht tragen können. Admiral faucht die Bildschirme an. Ich ehrlich gesagt auch.
+radio.e2l9 = Dahinter wartet die Brutmutter, Kepler. Sie hütet die Splitter wie Eier und mag keinen Besuch. Admiral ist unter das Pult gekrochen. Ich wünschte, ich dürfte mit.
+radio.e2s = Ihr Signal kommt von unter dem Tempel, oder von ganz woanders. Dr. Ferro platzt vor Neid. Nehmen Sie alles auf, was Sie sehen. Admiral schnurrt. Ein gutes Zeichen.
+
+# Episode 3 -- Kometenminen von Ysk
+radio.e3l1 = Ysk, Kepler: wenig Schwerkraft, viel Glatteis. Die Kombüse hat zur Feier des Tages Pudding gekocht. Ich stelle Ihnen eine Schale zurück. Kommen Sie heil zurück, sonst esse ich sie.
+radio.e3l2 = Gefrorene Schächte, und irgendwo im Fels steckt eine Lanze. Die Eisrutschen nehmen Sie mit, ob Sie wollen oder nicht. Ihr Pudding steht im Kühlfach. Wo auch sonst.
+radio.e3l3 = Die Grotte ist dunkel, aber die Kristalle leuchten Ihnen den Weg. Manche Wand ist nur Glanz. Der Smutje fragt, ob Kometenkristall essbar ist. Bitte sagen Sie nein.
+radio.e3l4 = Erzaufzüge: große Plattformen, große Brecher. Warten Sie auf den Takt. Übrigens ist Ihre Puddingschale weg. Admiral wird verdächtigt. Die Ermittlungen laufen.
+radio.e3l5 = Der Solesee. Das mürbe Eis trägt Sie nur kurz, also nicht stehen bleiben. Gute Nachricht: Der Smutje kocht neuen Pudding. Schlechte Nachricht: Salzkaramell. Aus Sole.
+radio.e3l6 = Die Prismenhallen: drei Tore, drei Hebel, ein Mörser. Und angeblich ein Gang, den keine Karte zeigt. Der neue Pudding ist fertig. Er wackelt nervös.
+radio.e3l7 = Lawinenlauf. Unter dem Schnee lauern Gräber, und Frostgolems bremsen für niemanden. Rennen Sie! Der Smutje sagt, Pudding sei auch nur eine sehr langsame Lawine.
+radio.e3l8 = Das Herz des Kometen: Irrlichter, dunkle Höhlen, beide Schlüsselkarten. Schichtleiter Okoro sagt, der Kristall dort singt. Der Smutje will das Rezept. Ich habe ihn weggeschickt.
+radio.e3l9 = Kepler, der Kristall am Herzen hat sich zu etwas Großem zusammengesetzt. Sehr groß. Zielen Sie auf die leuchtenden Stellen. Und danach: Pudding. Das ist ein Befehl.
+radio.e3s = Ihr Signal kommt aus dem Eis unter dem Eis. So tief war noch kein Bergmann. Sehen Sie sich um, aber frieren Sie nirgends fest. Der Smutje hält den Pudding warm. Irgendwie.
+
+# Episode 4 -- Das Gloam-Schlachtschiff
+radio.e4l1 = Sie sind an Bord des Gloam, Kepler. Flüssiges Metall, Truppler, Hunde. Die Verwaltung fragt, wer die Bresche bezahlt. Ich habe "das Gloam" eingetragen. Los.
+radio.e4l2 = Schmiededecks: Bänder, Hämmer und ein Bogenwerfer gegen Trupps. Die Verwaltung braucht für jeden kaputten Roboter ein Formular 7-B. Ich habe einen Stapel bestellt. Einen hohen.
+radio.e4l3 = Kühlschächte: eng, dunkel, Laserzäune im Takt. Die Brocken werfen Granaten, bleiben Sie beweglich. Formular 7-B hat jetzt eine Rückseite. Wozu, weiß niemand.
+radio.e4l4 = Die langen Kasernen: Schildbots, Laseraugen, beide Karten. Die Verwaltung will wissen, ob ein Schlachtschiff als Dienstreise gilt. Ich habe Ja geschrieben. Mit Spesen.
+radio.e4l5 = Die Maschinenkathedrale: Plattformen über Glut, Jetpacker in der Luft, zum Glück liegt hier ein Sucher. Admiral hat Formular 7-B zerkaut. Ich lege es unter höhere Gewalt ab.
+radio.e4l6 = Das Neonlabyrinth: Teleporter, Hebel und Blinker, die nie da sind, wo man hinschaut. Manche Gänge stehen auf keinem Plan. Die Verwaltung gibt auf. Ich werte das als Sieg.
+radio.e4l7 = Hangar der Schatten: weite Räume, Federn, Jetpacker. Unsere Scanner zeigen dort Schiffe, die seit Jahren als verschollen gelten. Schauen Sie genau hin, Kepler.
+radio.e4l8 = Kernzugang. Jetzt kommt das Schwerste: Risstore, alles auf einmal. Die Verwaltung schickt ein neues Formular. Es heißt "Beförderung". Ich fülle es schon mal aus.
+radio.e4l9 = Dahinter liegt der Kern des Gloam. Es schwebt, es springt, es ist kalt. Machen Sie es hell, Kepler. Das ganze Korps hört zu. Admiral auch. Und der Smutje hat Pudding.
+radio.e4s = Kepler, Sie sind von allen Karten verschwunden, mitten in einem Schlachtschiff. Das ist entweder sehr schlecht oder sehr typisch für Sie. Sehen Sie sich um und kommen Sie zurück.

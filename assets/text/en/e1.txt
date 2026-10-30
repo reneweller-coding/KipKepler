@@ -1,0 +1,55 @@
+# Episode 1 -- Academy Ring: level names and signs
+level.e1l1 = Cadet Quarters
+level.e1l2 = Maintenance Deck
+level.e1l3 = Hangar Bay 7
+level.e1l4 = Outer Hull
+level.e1l5 = Reactor Spine
+level.e1l6 = Cargo Conveyors
+level.e1l7 = Antenna Field
+level.e1l8 = Security Core
+level.e1l9 = The Warden
+
+sign.e1l1.run = Run: arrow keys / stick|(or A and D)
+sign.e1l1.jump = Jump: {jump}|Hold it longer to jump higher.
+sign.e1l1.crystal = Collect every crystal –|then the exit opens!
+sign.e1l1.shoot = Shoot: {fire}|Sweeper bots hate that.
+sign.e1l1.checkpoint = Checkpoint: touch the beacon.|After a mishap you start again here.
+sign.e1l1.spikes = Careful, spikes! Jump over them.|(Signed: Facility Management)
+sign.e1l1.charge = Hold fire to charge a shot that|pierces a whole row of bots.
+sign.e1l1.aimup = Drones overhead? Hold up|to aim into the air!
+sign.e1l1.secret = Cadet wisdom: not every wall|is as solid as it looks.
+sign.e1l1.exit = The exit stays shut until you|have collected every crystal.
+
+sign.e1l2.oneway = Grating catwalks: jump up through them.|Down + jump: drop through.
+sign.e1l2.door = Blue door. Without a blue key card|it stays shut. Somewhere on this deck …
+sign.e1l2.crumble = Crumbling plates! They drop away|if you stand still. Keep moving!
+
+sign.e1l3.repeater = REPEATER: a stream of small bolts.|Uses ammo. Switch weapons:|Q / E or LB / RB
+sign.e1l3.mover = Moving platforms: hop on and ride.|Don't jump off too early!
+
+sign.e1l4.spring = Springs: step on and lift off.|You can still steer in the air.
+sign.e1l4.plasma = Plasma conduits! Falling in is fatal.|Jump, don't bathe.
+sign.e1l4.hatch = Way out: the spring under the hatch|takes you back onto the hull.
+
+sign.e1l5.laser = Laser fences! Wait until they|switch off – then dash through.
+sign.e1l5.switch = Switches: touch them or shoot them.|They open bulkheads and build bridges.
+sign.e1l5.shoot = Too high? Stand below it,|hold up and shoot the switch.
+sign.e1l5.golddoor = Gold door: gold key card only.|It is kept in the vault.
+
+sign.e1l6.scatter = SCATTER: five pellets at short range.|Perfect for crowds!
+sign.e1l6.conveyor = Conveyors carry you along.|Against the flow it gets slow.
+sign.e1l6.crusher = Presses! Wait until they rise,|then hurry underneath.
+
+sign.e1l7.gravity = Antenna field: low gravity.|You jump higher and farther.|Look down at your own risk.
+
+sign.e1l8.keys = SECURITY CORE. Key cards required.|Blue: down in the west.|Gold: nobody quite knows.
+sign.e1l8.teleport = Teleporters: step on one. Every vault|has a pad back to the hub.
+sign.e1l8.fabricator = Fabricators keep building drones.|Factory first, drones second!
+
+sign.e1l9.warning = WARNING: security mech WARDEN|out of control. Cadets please|do NOT enter. (Good luck!)
+sign.e1l9.arena = Last chance: medkit and ammo.|The Warden waits beyond.
+
+# Secret level
+level.e1s = Zero-G Training Hall
+sign.e1s.gravity = Free-fall gym. Gravity set to 55 %.|You jump twice as high in here –|mind your helmet!
+sign.e1s.pads = Bounce pads in low gravity:|steer in the air to land|on the decks above.

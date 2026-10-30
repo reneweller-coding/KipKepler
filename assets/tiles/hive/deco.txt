@@ -1,0 +1,17 @@
+eggs_0 175 1 24 18 floor 1 glow
+eggs_1 141 1 32 18 floor 1 glow
+nodules 201 1 22 18 wall 3 glow
+larva_pod 1 1 14 28 ceiling 2 glow
+membrane 245 1 32 16 ceiling 2
+resin_drips 225 1 18 18 ceiling 3 glow
+spines 279 1 24 16 floor 2
+bones 345 1 30 12 floor 1
+skull 325 1 18 14 floor 1
+veins 17 1 26 26 wall 2
+cocoon 59 1 16 24 wall 1
+glow_worms 377 1 16 12 wall 2 glow
+comb_chunk 117 1 22 20 wall 1 glow
+tendrils_edge 45 1 12 26 edge 3 glow
+fungus 305 1 18 16 floor 2 glow
+stump 77 1 16 24 floor 2
+egg_sac 95 1 20 22 wall 1 glow

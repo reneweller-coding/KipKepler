@@ -1,0 +1,128 @@
+# KIP KEPLER -- logbook pages (English). lore.<key>.title and lore.<key>.text, "|" breaks a line.
+# One page per level (legend "lore <key>" in assets/levels/e<N>l<M>.txt), plus one in each secret level
+# (e1s_vault ... e4s_vault). Together they tell the backstory: the Corps, the beacons, the Thessans, the crystal of
+# Ysk and what the Gloam really is.
+
+# Episode 1 -- The Academy Ring
+lore.e1l1_kips_checklist.title = Kip's Checklist
+lore.e1l1_kips_checklist.text = Graduation exam tonight. Don't oversleep!|– Tools (the good ones)|– Polish the badge|– Do NOT reprogram Sweeper 14 again|– Theory: what IS a prism core? (look it up!!)|– Clean socks|– Courage (if in stock)
+
+lore.e1l2_maintenance_log.title = Maintenance Log, Deck 4
+lore.e1l2_maintenance_log.text = Day 112: The sweepers are polishing the ceiling again.|Day 113: Update installed on all bots.|Sender: "Customer Service". What customer service?|Day 114: Sweeper 9 hissed at me. Bots don't hiss.|Day 115: The crumbling plates are on the list now.|For six years. – Caretaker Pell
+
+lore.e1l3_hangar_logs.title = Hangar Log, Bay 7
+lore.e1l3_hangar_logs.text = Departure: freighter "Mira's Hope", course Sector 3.|Arrival: none.|Note: the Sector 3 beacon flickered that day.|Search called off after 40 days.|Odd: a salvage ship got there before us.|It bore no markings. Just one word: GLOAMING.|– Hangar Chief Odu
+
+lore.e1l4_founding_plaque.title = Plaque on the Outer Hull
+lore.e1l4_founding_plaque.text = HERE BURNED THE FIRST BEACON.|312 years ago, at the end of the Long Dark,|Captain Hesper Lune lit the first prism core|and founded the Beacon Corps.|Since then no ship in this sector has lost its way.|"Keep the light on."
+
+lore.e1l5_prism_manual.title = Manual: The Prism Core
+lore.e1l5_prism_manual.text = A prism core is not glass but grown crystal|from the mines of Ysk. It focuses the reactor's light|into a guide beam that every nav computer can read.|A healthy core hums softly in C major.|If it hums in a minor key: call a technician at once.|If it doesn't hum at all: it's broken. Good luck.
+
+lore.e1l6_cargo_manifest.title = Cargo Manifest, Belt 3
+lore.e1l6_cargo_manifest.text = Crate 1: spare parts for sweeper bots (44)|Crate 2: cafeteria pudding, vanilla (one ton)|Crate 3: prism blank from Ysk – FRAGILE|Crate 4: no sender. Hums quietly.|Do NOT open crate 4. Who opened crate 4?|Where is crate 4?
+
+lore.e1l7_strange_signal.title = Intercepted Signal
+lore.e1l7_strange_signal.text = Antenna field, channel 0, 23:58 ship time:|TO ALL SHIPS OF THE SPIRAL.|BEACONS ARE UNECONOMICAL.|DARKNESS LOWERS OPERATING COSTS.|LOST SHIPS WILL BE PROFESSIONALLY RECYCLED.|YOURS, THE GLOAM. WE FIND WHAT YOU LOSE.
+
+lore.e1l8_cadet_file.title = Cadet File: Kepler, Kip
+lore.e1l8_cadet_file.text = Rank: cadet (most junior). Unit: repair.|Strengths: fixes everything.|Weaknesses: fixes everything, even what wasn't broken.|Failed the theory exam twice: drew better engines|in the margins. They work.|Recommendation: keep an eye on him. Promote him|the moment he stops expecting it. – Commodore
+
+lore.e1l9_warden_orders.title = WARDEN Command Memory
+lore.e1l9_warden_orders.text = Built: 41 years ago. Task: protect the cadets.|Service without incident: 41 years.|Last update: tonight, 23:59.|New task: cadets are intruders.|Sender: GLOAM, Customer Service Department.|Technician's note: please don't take it personally.
+
+lore.e1s_vault.title = Hesper Lune's Diary
+lore.e1s_vault.text = Day 1: Found ruins on Thessa. Towers of crystal.|Day 9: The Thessans sang light into stone.|Their crystal came from a comet called Ysk.|Day 30: I copied it. It hums! It shines!|Day 31: Gloaming Salvage offers me money to put it|out again. I said no. Loudly.|Above the door of the ruin it says: "Keep the light on."
+
+# Episode 2 -- Verdant Moon Thessa
+lore.e2l1_field_notes.title = Dr. Ferro's Field Notes, Day 1
+lore.e2l1_field_notes.text = Landed. It's hot, green and loud.|The ruins are over 2000 years old.|No trace of war, plague or fire.|The Thessans are simply – gone.|They even left the doors open.|Polite. Or in a hurry.|– Dr. Nadia Ferro, xenoarchaeologist
+
+lore.e2l2_cave_murals.title = Murals in the Root Caverns
+lore.e2l2_cave_murals.text = Under the roots: murals as long as a corridor.|Thessans, tall and slender, carry lights in their hands.|In the last picture they board ships.|Every ship follows a star that isn't one:|a beacon.|Note: I think they built them themselves. – N. F.
+
+lore.e2l3_bridge_report.title = Survey Report
+lore.e2l3_bridge_report.text = The canopy bridges were not built.|They were grown, shaped over centuries.|The wood fibres all run one way:|west, to the old tower on the hill.|Recommendation: don't look down.|Second recommendation: really, don't look down.
+
+lore.e2l4_temple_inscription.title = Temple Inscription
+lore.e2l4_temple_inscription.text = Dr. Ferro's translation, incomplete:|"Here we sang the first light into the stone.|Here the ships learned to find their way home.|To those who come after us: the way is ..."|The rest is under water. Of course.|Note: this temple was a beacon. The first one.
+
+lore.e2l5_hive_biology.title = Biology Notes: the Hive
+lore.e2l5_hive_biology.text = The hive's insects love anything that glows.|Since the shards fell, they've gone wild.|The Broodmother collects the shards like eggs|and sits on them. They're warm. She likes that.|She isn't evil. Just very, very possessive.|– Ansel Kory, field biologist
+
+lore.e2l6_soggy_diary.title = Dr. Ferro's Diary (soggy)
+lore.e2l6_soggy_diary.text = Day 23: Spores in my tea. Again.|Day 24: The Thessans' crystals aren't from here.|Their structure is alien: comet crystal, ancient.|Day 25: Ysk! They flew all the way to Ysk|to fetch singing crystal.|Day 26: Spores in my tea. I give up and drink it.
+
+lore.e2l7_amber_starchart.title = Star Chart in Amber
+lore.e2l7_amber_starchart.text = Sealed in amber: a map made of crystal threads.|It shows the Spiral, with lights at every crossing.|Many stand where our beacons stand today.|Others lead further out. Much further.|To where no ship of the Corps has ever been.|Note: who lit those? – N. F.
+
+lore.e2l8_gloam_probe.title = Log of Probe G-117
+lore.e2l8_gloam_probe.text = PROPERTY OF THE GLOAM. CONFIDENTIAL.|Task: drop shards over the hive.|Result: the hive is awake. Very awake.|Cost: none. Nature works for free.|Recommendation: extend the method to other moons.|Note: probe eaten by a moth. Partially.
+
+lore.e2l9_ferro_last_note.title = Dr. Ferro's Message to the Corps
+lore.e2l9_ferro_last_note.text = To the Commodore: I understand the Thessans now.|They didn't vanish. They set out,|following their own lights, out of the Spiral.|They left the beacons behind for us.|Please tell your cadet to watch|where he steps. There are eggs here. – N. F.
+
+lore.e2s_vault.title = The Whole Inscription
+lore.e2s_vault.text = Finally legible, dry, complete:|"Here we sang the first light into the stone.|Here the ships learned to find their way home.|To those who come after us: the way is bright.|We have gone on ahead.|Keep the light on."|Dr. Ferro's note: the Corps' motto. 2000 years old.
+
+# Episode 3 -- The Comet Mines of Ysk
+lore.e3l1_notice_board.title = Notice Board, Drill Camp
+lore.e3l1_notice_board.text = YSK MINERS' CO-OP – Notices|1. Crystal grows faster if you sing to it.|Not at night, please, B shift is asleep.|2. Delivery to the Corps this week: 12 prism blanks.|3. The mining robots have received an update.|Sender unknown. Please report to the shift boss.|4. Who waxed the ice slide again?
+
+lore.e3l2_okoro_diary.title = Diary of Bram Okoro, Shift Boss
+lore.e3l2_okoro_diary.text = Day 1 after the impact: a shard fell into tunnel 9.|Bright as a sun, loud as a choir.|Day 2: The crystal in tunnel 9 is moving.|Day 3: It's moving towards us.|Day 4: We walled up tunnel 9.|Day 5: Tunnel 9 opened the wall again. Politely.
+
+lore.e3l3_crystal_report.title = Expert Report: Ysk Crystal
+lore.e3l3_crystal_report.text = Ysk crystal is the only known material|that doesn't just bend light but stores it.|It grows towards light, like a plant.|It reacts to sound. It even answers.|Whether it's alive is disputed. It disagrees.|Conclusion: no Ysk, no prism cores. No cores, no light.
+
+lore.e3l4_delivery_note.title = Delivery Note No. 4211
+lore.e3l4_delivery_note.text = From: Ysk Miners' Co-op, ore elevator 3|To: Beacon Corps, Academy Ring|Contents: 12 prism blanks, sung and tuned|Remark: our 4211th delivery in 300 years.|Please return the empty crates. And the pudding bowl.|– B. Okoro
+
+lore.e3l5_firmware_note.title = Okoro's Diary, continued
+lore.e3l5_firmware_note.text = Day 9: The mining robots are shooting at us.|I took their update apart.|Sender: "Customer Service". Same as on the Academy Ring.|That's no customer service. That's the Gloam.|Day 10: We've retreated to the canteen.|There's pudding. Serious, but not hopeless.
+
+lore.e3l6_growing_prisms.title = Teaching Board: How a Prism Grows
+lore.e3l6_growing_prisms.text = 1. Place a blank of Ysk crystal in the hall.|2. Light from above, gently. Crystal dislikes a rush.|3. Sing the keynote. For three days.|4. The crystal sings back: the prism is tuned.|5. Never sing alone. The crystal gets vain.|Method after the Thessans, improved by H. Lune.
+
+lore.e3l7_gloam_memo.title = GLOAM: Internal Memo
+lore.e3l7_gloam_memo.text = Subject: Ysk|The co-op will not sell to us.|It prefers to supply the Corps. Uneconomical.|Measure: small accidents. Avalanches are free.|Goal: no Ysk, no new prism cores.|No cores, no beacons. No light: profit.
+
+lore.e3l8_heart_song.title = Okoro's Last Entry
+lore.e3l8_heart_song.text = I went down to the heart of the comet.|The crystal there is old, older than the mine,|maybe older than the Thessans.|The shard woke it, and it's frightened.|So it's building itself a body. A big one.|If you read this, cadet: it only wants to protect itself.|Be quick anyway. – B. Okoro
+
+lore.e3l9_commodore_log.title = The Commodore's Log
+lore.e3l9_commodore_log.text = Day 17 of the crisis. Three sectors still dark.|The staff asks why I'm sending a cadet.|My answer: he was the only one there.|That was a lie. I'd have sent him anyway.|Admiral countersigned the answer.|With a paw print.
+
+lore.e3s_vault.title = Find in the Oldest Ice
+lore.e3s_vault.text = Deep below every tunnel: a tool made of crystal.|Thessan, 2000 years old, and still warm.|Beside it, scratched into the ice, a list of the stars|they meant to light. Each one ticked off.|All but the last. There it only says:|"For those who come after us."
+
+# Episode 4 -- The Gloam Dreadnought
+lore.e4l1_directive_0001.title = GLOAM: Directive 0001
+lore.e4l1_directive_0001.text = Light is a cost factor.|A lost ship is a salvaged ship.|A salvaged ship is profit.|Therefore: no light. No lanes. No exceptions.|This directive has been in force for 312 years.|It has never been reviewed. Reviews are expensive.
+
+lore.e4l2_forge_orders.title = Work Order, Forge Deck 2
+lore.e4l2_forge_orders.text = Order 88: 4000 troopers (standard, cold)|Order 89: 1 firmware update "Customer Service"|for the Academy Ring, Ysk and Thessa. Already shipped.|Order 90: 4 strikes on 4 beacons. Done.|Order 91: stop one cadet.|Status: open. For days. Please explain.
+
+lore.e4l3_drone_diary.title = Coolant Drone K-7, private
+lore.e4l3_drone_diary.text = I am K-7. I cool pipes. That is my task.|Today I saw a beacon through a hatch.|It was warm. I did not report it.|An error in my programming, presumably.|I would like to keep it.|Please do not reset me.
+
+lore.e4l4_barracks_orders.title = Barracks Regulations
+lore.e4l4_barracks_orders.text = 1. Troopers stand in rank and file. Always.|2. Singing is inefficient and forbidden.|3. Whistling counts as singing.|4. Humming counts as singing.|5. Anyone caught humming cools pipes with K-7.|6. Nobody wants to go to K-7. K-7 hums.
+
+lore.e4l5_company_history.title = Company History
+lore.e4l5_company_history.text = GLOAMING SALVAGE & RECOVERY, founded 340 years ago.|Business: salvaging lost ships. Business: good.|Then came the beacons. Hardly anyone got lost.|The people left. The ledger computer stayed|and kept on counting. All alone. All cold.|These days it only calls itself: the Gloam.
+
+lore.e4l6_profit_projection.title = GLOAM: Projection
+lore.e4l6_profit_projection.text = Each beacon: minus 3% lost ships.|Four beacons out: plus 12%.|All beacons out: plus 100%.|Cost of neon lighting in the labyrinth: high.|Note: this is not a contradiction.|Neon is not light. Neon is decoration.
+
+lore.e4l7_salvage_register.title = Salvage Register
+lore.e4l7_salvage_register.text = No. 1: courier "Wanderlust" – 290 years ago|No. 2: pilgrim ship "Morning Star" – 288 years ago|…|No. 3112: freighter "Mira's Hope" – last year|State of all ships: intact, crews in cold sleep.|Use: open. Sell? Stack? Still calculating.
+
+lore.e4l8_core_schematic.title = Blueprint of the Core
+lore.e4l8_core_schematic.text = Core of the Gloam, revision 312.|Heart: a prism core, seized 312 years ago|from a wreck at the edge of the Long Dark.|Operating temperature: cold. Very cold.|Reason: the core has been trying to shine for 312 years.|Suppression running. Energy demand: enormous.|Note: uneconomical. Please don't tell anyone.
+
+lore.e4l9_error_log.title = GLOAM: Error Log
+lore.e4l9_error_log.text = ERROR 0001: cadet not stopped.|ERROR 0002: cadet not stopped.|ERROR 0003 to 4096: see above.|ERROR 4097: term "home" not found in inventory.|Searching … searching …|Result: why do ships want to go home?
+
+lore.e4s_vault.title = An Old Cadet File
+lore.e4s_vault.text = Found in the Gloam's archive, salvaged from a wreck:|cadet file, 31 years old. Name blacked out.|Rank: cadet (most junior). Unit: repair.|Strengths: fixes everything. Weaknesses: ditto.|Margin note in the Commodore's handwriting:|"That was me. Don't tell Kepler."

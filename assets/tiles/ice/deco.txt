@@ -1,0 +1,19 @@
+lantern 285 1 12 18 wall 3 glow
+lantern_hanging 167 1 10 22 ceiling 2 glow
+support_timber 1 1 42 58 wall 3
+support_steel 45 1 42 58 wall 2
+mine_cart 135 1 30 22 floor 2
+tools 115 1 18 28 floor 2
+crate 201 1 22 18 floor 3
+barrel 269 1 14 18 floor 2
+ore_vein 299 1 24 16 wall 2 glow
+ice_crystals 179 1 20 20 floor 3
+icicles 225 1 20 18 ceiling 4
+icicles_edge 343 1 14 16 edge 3
+pipe_frozen 387 1 34 10 wall 2
+sign_rocks 247 1 20 18 wall 1
+snow_drift 423 1 28 10 floor 3
+rails 453 1 34 8 floor 1
+drill 89 1 24 30 floor 1 glow
+frost_fern 325 1 16 16 wall 2
+bones 359 1 26 12 floor 1

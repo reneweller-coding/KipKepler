@@ -1,0 +1,2 @@
+# menu panel, 9-slice (tools/ui/make_ui.py): corners 16 px stay, edges and centre stretch or tile
+slice 16

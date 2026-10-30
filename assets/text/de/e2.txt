@@ -1,0 +1,31 @@
+# Episode 2 -- Grüner Mond Thessa: Levelnamen und Schilder
+level.e2l1 = Landelichtung
+level.e2l2 = Wurzelhöhlen
+level.e2l3 = Kronenbrücken
+level.e2l4 = Der versunkene Tempel
+level.e2l5 = Rand des Stocks
+level.e2l6 = Sporensumpf
+level.e2l7 = Bernsteintunnel
+level.e2l8 = Die Brutkammern
+level.e2l9 = Brutmutter
+
+sign.e2l1.acid = Thessa-Säure: grün, blubbernd, tödlich.|Drüberspringen, nicht reinfallen!
+sign.e2l1.beetle = Käfer sind vorne gepanzert.|Spring drüber und triff sie von hinten!
+sign.e2l2.ricochet = QUERSCHLÄGER: Scheiben prallen bis zu|4-mal ab – auch Käfern in den Rücken.|Waffe wechseln: Q / E oder LB / RB
+sign.e2l2.crumble = Morsche Wurzeln! Sie brechen weg,|wenn du stehen bleibst. Weiterlaufen!
+sign.e2l2.snapvine = Schnappranken hängen an der Decke und|lassen sich fallen. Erst abschießen!
+sign.e2l3.fall = Nicht nach unten schauen.|Wirklich nicht. Da unten ist nichts.
+sign.e2l3.pods = Sprungkapseln: drauflaufen und abheben.|In der Luft kannst du noch lenken.
+sign.e2l4.switch = Schalter: berühren oder anschießen.|Sie öffnen Tore – manchmal auch Brücken.
+sign.e2l4.teleport = Teleporter wirken nur in eine Richtung.|Jede Kammer hat ihren eigenen Ausgang.
+sign.e2l5.cryo = KRYOWERFER: friert Gegner 5 s lang ein.|Eis trägt dich – ein Treffer zerschlägt es.
+sign.e2l5.spitter = Spucker werfen Säure im hohen Bogen.|Bleib in Bewegung!
+sign.e2l6.sporepod = Sporenkapseln treiben auf dich zu und|platzen. Aus der Ferne abschießen!
+sign.e2l6.stalker = Pirscher stürmen los, sobald sie dich|sehen. Spring drüber, wenn einer anrennt!
+sign.e2l7.elevator = Bernsteinaufzüge fahren rauf und runter.|Kurz warten – sie kommen wieder.
+sign.e2l9.boss = BRUTMUTTER – Bitte nicht stören.|(Sie ist gerade sehr beschäftigt.)
+
+# Secret level
+level.e2s = Der Schotengarten
+sign.e2s.pods = Sprungschoten! Die Botaniker haben sie|zum Spaß gezüchtet. Drauf – sie|schleudern dich hoch und weit.
+sign.e2s.steer = Zu weit zum Springen? Hüpf!|Lenk in der Luft von Schote zu Schote.

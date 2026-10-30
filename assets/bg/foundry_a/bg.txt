@@ -1,0 +1,26 @@
+# foundry_a -- parallax background, made by tools/backgrounds/make_bg.py (do not edit by hand)
+# foundry_a: the dreadnought's forge halls: furnaces with glowing mouths in a red haze, crucibles on an
+# overhead rail pouring molten metal into a glowing channel, drifting smoke (layer 2 scrolls by itself at
+# -6 px/s), near girders, chains and pillars (they run off the top and repeat upwards).
+# layer<n> <parallax x> <parallax y> <y offset> [scroll px/s]
+#   screen x of the layer = -camera_x * parallax_x (wrapped, the layer repeats horizontally)
+#   screen y of the layer's top row = y offset + rise * parallax_y, where rise = how far the camera's top
+#   is above its lowest position in the level (px, >= 0); so at the bottom of a level the layer's top
+#   sits at the y offset and climbing moves the layers down
+#   scroll: the layer's own drift in px/s (negative = to the left), added to its x
+#   above / below a layer the engine repeats its first / last row (clamp to edge); for layer 0 these
+#   rows are flat and equal to the fill colours
+#   layer<n>_glow.png (when present): the layer's emissive pixels for bloom, same size
+layer0 0.06 0.03 0
+layer1 0.2 0.06 0
+layer2 0.3 0.08 0 -6
+layer3 0.66 0.2 0
+# fill <top r g b> <bottom r g b>: the colours above and below layer 0
+fill 26 10 16 26 10 16
+# fore <parallax x> <parallax y> <y offset>: fore.png (made by tools/backgrounds/fore.py), drawn IN FRONT of
+# fore   the world, behind the HUD: dark silhouettes in its top 62 and bottom 52 rows, the middle empty but
+# fore   for a thin pillar / chain / vine. x like a layer (-camera_x * parallax x, wrapped). y: keep it on the
+# fore   screen -- its top row at the y offset on the 400 px view and 20 px higher on the 360 px view; use
+# fore   parallax y only for a small bounded sway (the rise formula of the layers would carry the top band
+# fore   into the middle of the screen); no clamp-to-edge rows above or below it.
+fore 1.35 1.18 0

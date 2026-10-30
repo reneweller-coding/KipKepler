@@ -1,0 +1,18 @@
+cluster_0 169 1 18 20 floor 3 glow
+cluster_1 33 1 26 28 floor 3 glow
+cluster_2 311 1 14 14 floor 3 glow
+cluster_3 93 1 22 24 floor 3 glow
+cluster_hang_0 239 1 18 18 ceiling 3 glow
+cluster_hang_1 117 1 24 22 ceiling 3 glow
+geode 143 1 24 22 wall 2 glow
+mushrooms 273 1 18 16 floor 2 glow
+stalagmite 61 1 14 26 floor 2
+stalactite 77 1 14 26 ceiling 3 glow
+vein 189 1 26 18 wall 2 glow
+float_shard 259 1 12 18 wall 1 glow
+lamp_post 19 1 12 32 floor 1 glow
+shards 343 1 24 9 floor 3 glow
+pillar 1 1 16 42 floor 1 glow
+edge_crystals 293 1 16 16 edge 3 glow
+scanner 217 1 20 18 floor 1 glow
+glints 327 1 14 12 wall 3 glow

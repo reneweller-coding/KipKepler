@@ -1,0 +1,27 @@
+# HUD icons (tools/ui/make_ui.py). One frame per icon; hud_glow.png = emissive mask.
+frame 32 32
+anchor 16 16
+anim crystal 1 loop 0
+anim health 1 loop 1
+anim key_blue 1 loop 2
+anim key_gold 1 loop 3
+anim score 1 loop 4
+anim clock 1 loop 5
+anim power_overdrive 1 loop 6
+anim power_boots 1 loop 7
+anim power_shield 1 loop 8
+anim ammo 1 loop 9
+anim skull 1 loop 10
+anim secret 1 loop 11
+anim credits 1 loop 12
+anim weapon_blaster 1 loop 13
+anim weapon_repeater 1 loop 14
+anim weapon_scatter 1 loop 15
+anim weapon_ricochet 1 loop 16
+anim weapon_cryo 1 loop 17
+anim weapon_lancer 1 loop 18
+anim weapon_mortar 1 loop 19
+anim weapon_arc 1 loop 20
+anim weapon_seeker 1 loop 21
+anim heart 1 loop 1
+anim star 1 loop 4

@@ -1,0 +1,55 @@
+# Episode 1 -- Akademiering: Levelnamen und Schilder
+level.e1l1 = Kadettenquartiere
+level.e1l2 = Wartungsdeck
+level.e1l3 = Hangar 7
+level.e1l4 = Außenhülle
+level.e1l5 = Reaktorrückgrat
+level.e1l6 = Frachtbänder
+level.e1l7 = Antennenfeld
+level.e1l8 = Sicherheitskern
+level.e1l9 = Der Wächter
+
+sign.e1l1.run = Laufen: Pfeiltasten / Stick|(oder A und D)
+sign.e1l1.jump = Springen: {jump}|Länger halten = höher springen.
+sign.e1l1.crystal = Sammle alle Kristalle –|dann öffnet sich der Ausgang!
+sign.e1l1.shoot = Schießen: {fire}|Kehrbots mögen das gar nicht.
+sign.e1l1.checkpoint = Kontrollpunkt: Berühre das Leuchtfeuer.|Nach einem Fehler geht es hier weiter.
+sign.e1l1.spikes = Achtung, Stacheln! Drüberspringen.|(Gez. die Hausmeisterei)
+sign.e1l1.charge = Schießen gedrückt halten: ein geladener|Schuss durchschlägt ganze Reihen.
+sign.e1l1.aimup = Drohnen von oben? Halte Oben|und ziele in die Luft!
+sign.e1l1.secret = Kadettenweisheit: Nicht jede Wand|ist so fest, wie sie aussieht.
+sign.e1l1.exit = Der Ausgang bleibt zu, bis du|alle Kristalle gesammelt hast.
+
+sign.e1l2.oneway = Gitterstege: von unten durchspringen.|Unten + Springen: hindurchfallen.
+sign.e1l2.door = Blaue Tür. Ohne blaue Schlüsselkarte|bleibt sie zu. Irgendwo im Deck …
+sign.e1l2.crumble = Bröckelplatten! Sie fallen weg,|wenn du stehen bleibst. Weiterlaufen!
+
+sign.e1l3.repeater = REPETIERER: ein Strom kleiner Bolzen.|Braucht Munition. Waffe wechseln:|Q / E oder LB / RB
+sign.e1l3.mover = Fahrende Plattformen: aufspringen|und mitfahren. Nicht zu früh abspringen!
+
+sign.e1l4.spring = Sprungfedern: drauflaufen und abheben.|In der Luft kannst du noch lenken.
+sign.e1l4.plasma = Plasmaleitungen! Hineinfallen ist|tödlich. Springen, nicht baden.
+sign.e1l4.hatch = Ausstieg: Die Feder unter der Luke|bringt dich zurück auf die Hülle.
+
+sign.e1l5.laser = Laserzäune! Warte, bis sie|abschalten – dann schnell durch.
+sign.e1l5.switch = Schalter: berühren oder anschießen.|Sie öffnen Schotts und bauen Brücken.
+sign.e1l5.shoot = Zu hoch? Stell dich darunter,|halte Oben und schieß den Schalter an.
+sign.e1l5.golddoor = Goldene Tür: nur mit der goldenen|Schlüsselkarte. Die liegt im Tresor.
+
+sign.e1l6.scatter = STREUER: fünf Schrotkugeln auf kurze|Distanz. Ideal gegen Gedränge!
+sign.e1l6.conveyor = Förderbänder schieben dich mit.|Gegen die Richtung wird es zäh.
+sign.e1l6.crusher = Pressen! Warte, bis sie hochfahren,|dann zügig darunter durch.
+
+sign.e1l7.gravity = Antennenfeld: geringe Schwerkraft.|Du springst höher und weiter.|Runterschauen auf eigene Gefahr.
+
+sign.e1l8.keys = SICHERHEITSKERN. Zutritt nur mit|Schlüsselkarte. Blau: unten im Westen.|Gold: weiß niemand so genau.
+sign.e1l8.teleport = Teleporter: draufstellen. Jede Kammer|hat ein Rückkehrfeld zur Zentrale.
+sign.e1l8.fabricator = Fabrikatoren bauen Drohnen nach.|Erst die Fabrik, dann die Drohnen!
+
+sign.e1l9.warning = WARNUNG: Sicherheitsmech WÄCHTER|außer Kontrolle. Kadetten bitte|NICHT betreten. (Viel Glück!)
+sign.e1l9.arena = Letzte Chance: Medipack und Munition.|Dahinter wartet der Wächter.
+
+# Secret level
+level.e1s = Schwerelos-Trainingshalle
+sign.e1s.gravity = Freifall-Turnhalle. Schwerkraft: 55 %.|Hier springst du doppelt so hoch –|Vorsicht mit dem Helm!
+sign.e1s.pads = Sprungfelder bei wenig Schwerkraft:|In der Luft lenken und oben|auf den Decks landen.

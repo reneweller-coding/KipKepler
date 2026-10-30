@@ -1,0 +1,4 @@
+0 255 255 255 0 neutral
+1 236 214 255 14 amethyst
+2 200 236 255 -30 aquamarine
+3 176 170 210 0 deep

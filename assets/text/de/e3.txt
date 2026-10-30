@@ -1,0 +1,29 @@
+# Episode 3 -- Die Kometenminen von Ysk: Levelnamen und Schilder (tools/levels/e3/)
+level.e3l1 = Bohrlager
+level.e3l2 = Gefrorene Schächte
+level.e3l3 = Glitzergrotte
+level.e3l4 = Erzaufzüge
+level.e3l5 = Solesee
+level.e3l6 = Prismenhallen
+level.e3l7 = Lawinenlauf
+level.e3l8 = Herz des Kometen
+level.e3l9 = Der Koloss
+
+sign.e3l1.gravity = Ysk ist klein, die Schwerkraft schwach:|du springst höher und weiter als daheim.
+sign.e3l1.ice = Achtung, Glatteis! Auf blankem Eis kommst|du langsam in Fahrt und noch langsamer|zum Stehen. Fels gibt Halt.
+sign.e3l1.door = Blaue Tür. Die Schlüsselkarte hat der|Schichtleiter unten in der Mine verloren.
+sign.e3l2.lancer = LANZE: ein Strahl durch alle Gegner einer|Reihe, bis zur nächsten Wand.|Waffe wechseln: Q / E oder LB / RB.
+sign.e3l2.slide = Eisrutsche! Wer drauf ist, rutscht.|Die Kristalle im Vorbeirutschen schnappen.
+sign.e3l3.secrets = Die Grotte glitzert im Dunkeln. Manche Wand|ist nur Kristallglanz, und Leuchtkristalle|zeigen dir den Weg.
+sign.e3l4.lift = Erzaufzug: aufspringen und mitfahren.|Er fährt von allein hoch und wieder runter.
+sign.e3l4.crusher = Erzbrecher! Warte, bis der Stempel|hochgeht, dann schnell durch.
+sign.e3l5.crumble = Mürbes Eis bricht unter den Stiefeln weg|und wächst nach ein paar Sekunden nach.|Nicht stehen bleiben!
+sign.e3l6.mortar = PLASMAMÖRSER: Granaten im Bogen. Die|Explosion trifft auch Gegner über und|unter Kanten.
+sign.e3l6.gates = Drei Kristalltore versperren den Ausgang.|Jedes öffnet ein Hebel in einem Flügel.|Teleporter bringen dich hin und zurück.
+sign.e3l7.burrowers = Lawinengebiet! Gräber lauern unterm Schnee,|Frostgolems rennen alles über den Haufen.|In Bewegung bleiben!
+sign.e3l8.wisps = Irrlichter schweben durch den Fels.|Keine Wand hält sie auf, nur deine Waffe!
+
+# Secret level
+level.e3s = Der Spiegelpalast
+sign.e3s.crumble = Bröckeleis über Sole!|In Bewegung bleiben – jede Platte|bricht kurz nach dem Betreten.
+sign.e3s.mirror = Spieglein, Spieglein: Auch der andere|Flügel birgt Splitter. Der Lift der Königin|bringt dich hinab zum Torsaal.

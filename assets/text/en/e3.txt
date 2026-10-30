@@ -1,0 +1,29 @@
+# Episode 3 -- The Comet Mines of Ysk: level names and signs (tools/levels/e3/)
+level.e3l1 = Drill Camp
+level.e3l2 = Frozen Shafts
+level.e3l3 = Glittering Grotto
+level.e3l4 = Ore Elevators
+level.e3l5 = Brine Lake
+level.e3l6 = Prism Halls
+level.e3l7 = Avalanche Run
+level.e3l8 = Heart of the Comet
+level.e3l9 = The Colossus
+
+sign.e3l1.gravity = Ysk is small and its gravity is weak:|you jump higher and farther than at home.
+sign.e3l1.ice = Careful, slippery ice! On bare ice you are|slow to get going and even slower to stop.|Rock gives you grip.
+sign.e3l1.door = Blue door. The shift boss lost the key card|somewhere down in the mine.
+sign.e3l2.lancer = LANCER: one beam through every enemy in a|line, up to the next wall.|Switch weapons: Q / E or LB / RB.
+sign.e3l2.slide = Ice slide! Once you are on it, you slide.|Grab the crystals on the way down.
+sign.e3l3.secrets = The grotto glitters in the dark. Some walls|are just a trick of the light, and glowing|crystals show you the way.
+sign.e3l4.lift = Ore lift: hop on and ride.|It goes up and down on its own.
+sign.e3l4.crusher = Ore crushers! Wait until the ram goes up,|then dash through.
+sign.e3l5.crumble = Brittle ice gives way under your boots|and grows back after a few seconds.|Keep moving!
+sign.e3l6.mortar = PLASMA MORTAR: lobbed shells. The blast|also hits enemies above and below ledges.
+sign.e3l6.gates = Three crystal gates seal the exit. Each one|opens with a lever in one of the wings.|Teleporters take you there and back.
+sign.e3l7.burrowers = Avalanche country! Burrowers lurk under|the snow, frost golems charge at anything.|Keep moving!
+sign.e3l8.wisps = Wisps drift right through the rock.|No wall stops them, only your cannon!
+
+# Secret level
+level.e3s = The Mirror Palace
+sign.e3s.crumble = Crumbling ice over brine!|Keep moving – every slab gives way|a moment after you step on it.
+sign.e3s.mirror = Mirror, mirror: the other wing|holds shards too. The queen's lift|takes you down to the gate hall.

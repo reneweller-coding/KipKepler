@@ -1,0 +1,32 @@
+# Episode 4 -- Das Gloam-Schlachtschiff: Levelnamen und Schilder
+level.e4l1 = Enterbresche
+level.e4l2 = Schmiededecks
+level.e4l3 = Kühlschächte
+level.e4l4 = Die langen Kasernen
+level.e4l5 = Maschinenkathedrale
+level.e4l6 = Neonlabyrinth
+level.e4l7 = Hangar der Schatten
+level.e4l8 = Kernzugang
+level.e4l9 = Das Gloam
+
+sign.e4l1.lava = Geschmolzenes Metall ist tödlich!|Spring mit Anlauf über die Rinnen.
+sign.e4l1.hound = Gloamhunde stürmen los, wenn sie dich sehen –|an Kanten bremsen sie. Lass sie kommen|und feuere über die Lücke!
+sign.e4l2.arc = Bogenwerfer: Blitze springen auf bis zu|vier nahe Gegner über. Ideal gegen Trupps!|Waffe wechseln: LB/RB oder Q/E.
+sign.e4l2.belt = Förderbänder tragen dich mit.|Gegen das Band läufst du langsamer.
+sign.e4l2.hammer = Schmiedehämmer schlagen im Takt.|Warte, bis der Hammer hochfährt – dann lauf!
+sign.e4l3.laser = Laserzäune blinken im Takt.|Geh durch, wenn der Strahl erloschen ist.
+sign.e4l3.brute = Brocken werfen Granaten im Bogen.|Bleib in Bewegung – der Mörser trifft sie|auch von oben.
+sign.e4l4.shieldbot = Schildbots blocken Schüsse von vorn.|Spring drüber und triff sie von hinten –|oder lass eine Mörsergranate fallen.
+sign.e4l4.lasereye = Laseraugen laden, bevor sie feuern.|Spring über den Strahl oder geh in Deckung!
+sign.e4l5.mover = Plattformen fahren dich über die Glut.|Warte, bis eine kommt, dann spring auf.
+sign.e4l5.seeker = Sucher: drei Raketen, die ihr Ziel finden.|Perfekt gegen Jetpacker in der Luft!
+sign.e4l6.switch = Hebel schalten die leuchtenden Blöcke um.|Berühren oder anschießen!
+sign.e4l6.teleport = Teleporter bringen dich quer durchs|Labyrinth. Neben jedem Ankunftsfeld|wartet einer für den Rückweg.
+sign.e4l7.spring = Sprungfedern schleudern dich hoch hinauf.|Lenk in der Luft auf die Plattform!
+sign.e4l8.riftgate = Risstore beamen ständig Soldaten herbei.|Zerstör zuerst das Tor!
+sign.e4l9.core = Dahinter liegt der Kern des Gloam.|Kein Weg zurück – viel Glück, Kadett!
+
+# Secret level
+level.e4s = Die Schatzkammer des Gloam
+sign.e4s.treasury = SCHATZKAMMER – nur für befugte Maschinen.|Laser scharf, Pressen bereit.|Lebewesen zahlen Strafe.
+sign.e4s.vault = Dahinter: der Kronentresor.|Vorsicht, die Strahlen fegen|in Wellen durch den Raum.

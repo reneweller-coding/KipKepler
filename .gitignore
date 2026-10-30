@@ -1,0 +1,8 @@
+build/
+.vs/
+*.user
+# bin/<preset> what can be started, work/ local pictures and logs, dist/ release packages.
+bin/
+work/
+dist/
+__pycache__/

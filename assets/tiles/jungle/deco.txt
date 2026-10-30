@@ -1,0 +1,18 @@
+mushrooms_0 259 1 16 16 floor 3 glow
+mushrooms_1 168 1 22 20 floor 3 glow
+fern 108 1 24 22 floor 3
+grass 325 1 18 12 floor 4 glow
+flower 44 1 20 30 floor 1 glow
+vines_0 218 1 15 18 ceiling 3 glow
+vines_1 21 1 21 30 ceiling 3 glow
+glowpod 152 1 14 22 ceiling 2 glow
+vines_edge 66 1 14 30 edge 4
+stele 1 1 18 32 floor 1 glow
+pillar_stub 134 1 16 22 floor 2
+bones 277 1 28 14 floor 1
+roots_wall 82 1 24 28 wall 2
+fungus_shelf 345 1 18 12 wall 2 glow
+fireflies 365 1 14 12 wall 2 glow
+boulder 192 1 24 18 floor 2
+probe 235 1 22 16 floor 1 glow
+silk 307 1 16 14 ceiling 1

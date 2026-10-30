@@ -1,0 +1,246 @@
+{
+ "name": "Kip Kepler",
+ "style": "instrumental video game soundtrack, retro science fiction platformer, modern synthwave with chiptune colour, catchy melodies",
+ "key": "C major",
+ "bpm": 112,
+ "timesig": "4",
+ "takes": 2,
+ "format": "flac",
+ "seed": 7311,
+ "cues": [
+  {
+   "id": "title",
+   "type": "loop",
+   "bars": 32,
+   "bpm": 112,
+   "key": "A minor",
+   "style": "main title theme of a cheerful retro science fiction platformer, catchy heroic synth lead melody, punchy drums, bright arpeggios, synthwave meets chiptune, adventurous and upbeat",
+   "hint": "instrumental video game background music, loopable, constant energy, no intro, no ending, no vocals"
+  },
+  {
+   "id": "e1_station",
+   "type": "loop",
+   "bars": 32,
+   "bpm": 118,
+   "key": "C major",
+   "style": "bouncy electro funk in a space academy, playful slap synth bass, crisp drum machine, sparkling arpeggios, clean retro future, curious and upbeat",
+   "hint": "instrumental video game background music, loopable, constant energy, no intro, no ending, no vocals"
+  },
+  {
+   "id": "e1_hull",
+   "type": "loop",
+   "bars": 32,
+   "bpm": 108,
+   "key": "D minor",
+   "style": "floating spacewalk outside a space station, dreamy synthwave arpeggios, wide pads, steady driving kick, starlight bells, a little lonely but adventurous",
+   "hint": "instrumental video game background music, loopable, constant energy, no intro, no ending, no vocals"
+  },
+  {
+   "id": "e2_jungle",
+   "type": "loop",
+   "bars": 32,
+   "bpm": 116,
+   "key": "E minor",
+   "style": "exotic alien jungle adventure, tribal hand drums, marimba and kalimba melody, warm synth pads, playful flute-like lead, lush and lively",
+   "hint": "instrumental video game background music, loopable, constant energy, no intro, no ending, no vocals"
+  },
+  {
+   "id": "e2_hive",
+   "type": "loop",
+   "bars": 32,
+   "bpm": 100,
+   "key": "F minor",
+   "style": "mysterious insect hive caves, pulsing organic synth bass, clicking percussion, eerie bubbling textures, tense but groovy",
+   "hint": "instrumental video game background music, loopable, constant energy, no intro, no ending, no vocals"
+  },
+  {
+   "id": "e3_ice",
+   "type": "loop",
+   "bars": 32,
+   "bpm": 112,
+   "key": "B minor",
+   "style": "frozen comet mines, crystalline bell melody, icy shimmering pads, steady electronic beat, cold and bright",
+   "hint": "instrumental video game background music, loopable, constant energy, no intro, no ending, no vocals"
+  },
+  {
+   "id": "e3_crystal",
+   "type": "loop",
+   "bars": 32,
+   "bpm": 104,
+   "key": "G major",
+   "style": "glittering crystal caverns, glassy arpeggios, music box like lead, soft deep bass, sense of wonder and discovery",
+   "hint": "instrumental video game background music, loopable, constant energy, no intro, no ending, no vocals"
+  },
+  {
+   "id": "e4_foundry",
+   "type": "loop",
+   "bars": 32,
+   "bpm": 126,
+   "key": "C minor",
+   "style": "industrial forge of a giant warship, heavy distorted synth bass, metallic hammering percussion, urgent driving rhythm, fiery",
+   "hint": "instrumental video game background music, loopable, constant energy, no intro, no ending, no vocals"
+  },
+  {
+   "id": "e4_citadel",
+   "type": "loop",
+   "bars": 32,
+   "bpm": 122,
+   "key": "F sharp minor",
+   "style": "dark neon fortress of an evil machine syndicate, menacing cyberpunk arpeggios, deep sub bass, tense synth brass, sinister and fast",
+   "hint": "instrumental video game background music, loopable, constant energy, no intro, no ending, no vocals"
+  },
+  {
+   "id": "boss",
+   "type": "loop",
+   "bars": 32,
+   "bpm": 140,
+   "key": "D minor",
+   "style": "intense boss battle of a retro science fiction platformer, aggressive fast synth lead, pounding drums, driving bass ostinato, epic and urgent",
+   "hint": "instrumental video game background music, loopable, constant energy, no intro, no ending, no vocals"
+  },
+  {
+   "id": "shop",
+   "type": "loop",
+   "bars": 32,
+   "bpm": 96,
+   "key": "F major",
+   "style": "relaxed space quartermaster shop, smooth lounge funk, electric piano, soft bass groove, laid back and friendly",
+   "hint": "instrumental video game background music, loopable, constant energy, no intro, no ending, no vocals"
+  },
+  {
+   "id": "story",
+   "type": "loop",
+   "bars": 32,
+   "bpm": 80,
+   "key": "A minor",
+   "style": "calm atmospheric space story interlude, gentle synth pads, soft piano, distant stars, hopeful",
+   "hint": "instrumental video game background music, loopable, constant energy, no intro, no ending, no vocals"
+  },
+  {
+   "id": "ending",
+   "type": "loop",
+   "bars": 32,
+   "bpm": 110,
+   "key": "C major",
+   "style": "triumphant victory ending theme of a retro science fiction platformer, joyful heroic synth melody, big drums, celebratory",
+   "hint": "instrumental video game background music, loopable, constant energy, no intro, no ending, no vocals"
+  },
+  {
+   "id": "tally",
+   "type": "oneshot",
+   "bars": 4,
+   "bpm": 120,
+   "key": "C major",
+   "style": "short cheerful level complete victory fanfare jingle, bright synth brass and arpeggio",
+   "hint": "instrumental, short jingle, ends cleanly"
+  },
+  {
+   "id": "e1_station_fight",
+   "type": "loop",
+   "bars": 32,
+   "bpm": 132,
+   "key": "C minor",
+   "style": "intense action version of a bouncy electro funk space academy theme, fast drum machine, urgent slap bass, alarm synth stabs, energetic",
+   "hint": "instrumental video game battle music, loopable, high constant energy, no intro, no ending, no vocals"
+  },
+  {
+   "id": "e1_hull_fight",
+   "type": "loop",
+   "bars": 32,
+   "bpm": 128,
+   "key": "D minor",
+   "style": "intense spacewalk battle, driving synthwave arpeggios, pounding kick, heroic lead, urgent",
+   "hint": "instrumental video game battle music, loopable, high constant energy, no intro, no ending, no vocals"
+  },
+  {
+   "id": "e2_jungle_fight",
+   "type": "loop",
+   "bars": 32,
+   "bpm": 132,
+   "key": "E minor",
+   "style": "intense exotic jungle chase, fast tribal drums, marimba runs, aggressive synth bass, urgent and wild",
+   "hint": "instrumental video game battle music, loopable, high constant energy, no intro, no ending, no vocals"
+  },
+  {
+   "id": "e2_hive_fight",
+   "type": "loop",
+   "bars": 32,
+   "bpm": 126,
+   "key": "F minor",
+   "style": "intense insect hive battle, aggressive pulsing organic bass, rattling percussion, tense swarming textures",
+   "hint": "instrumental video game battle music, loopable, high constant energy, no intro, no ending, no vocals"
+  },
+  {
+   "id": "e3_ice_fight",
+   "type": "loop",
+   "bars": 32,
+   "bpm": 130,
+   "key": "B minor",
+   "style": "intense frozen mine battle, fast electronic beat, sharp crystalline stabs, cold driving bass",
+   "hint": "instrumental video game battle music, loopable, high constant energy, no intro, no ending, no vocals"
+  },
+  {
+   "id": "e3_crystal_fight",
+   "type": "loop",
+   "bars": 32,
+   "bpm": 124,
+   "key": "G minor",
+   "style": "intense crystal cavern fight, fast glassy arpeggios, heavy drums, shimmering urgent lead",
+   "hint": "instrumental video game battle music, loopable, high constant energy, no intro, no ending, no vocals"
+  },
+  {
+   "id": "e4_foundry_fight",
+   "type": "loop",
+   "bars": 32,
+   "bpm": 140,
+   "key": "C minor",
+   "style": "intense industrial warship battle, distorted synth bass, metallic hammering drums, furious and fast",
+   "hint": "instrumental video game battle music, loopable, high constant energy, no intro, no ending, no vocals"
+  },
+  {
+   "id": "e4_citadel_fight",
+   "type": "loop",
+   "bars": 32,
+   "bpm": 138,
+   "key": "F sharp minor",
+   "style": "intense dark neon fortress battle, menacing fast cyberpunk arpeggios, heavy drums, sinister synth brass",
+   "hint": "instrumental video game battle music, loopable, high constant energy, no intro, no ending, no vocals"
+  },
+  {
+   "id": "boss_e1",
+   "type": "loop",
+   "bars": 32,
+   "bpm": 142,
+   "key": "D minor",
+   "style": "epic boss battle against a giant security robot in a space station, heavy industrial drums, alarm synths, heroic synth lead",
+   "hint": "instrumental video game boss battle music, loopable, very high energy, no intro, no ending, no vocals"
+  },
+  {
+   "id": "boss_e2",
+   "type": "loop",
+   "bars": 32,
+   "bpm": 138,
+   "key": "E minor",
+   "style": "epic boss battle against a giant insect queen in a hive, tribal war drums, buzzing synth swarm, dark choir pads",
+   "hint": "instrumental video game boss battle music, loopable, very high energy, no intro, no ending, no vocals"
+  },
+  {
+   "id": "boss_e3",
+   "type": "loop",
+   "bars": 32,
+   "bpm": 136,
+   "key": "B minor",
+   "style": "epic boss battle against a crystal giant in a frozen cavern, massive drums, glassy crystalline lead, icy pads",
+   "hint": "instrumental video game boss battle music, loopable, very high energy, no intro, no ending, no vocals"
+  },
+  {
+   "id": "boss_e4",
+   "type": "loop",
+   "bars": 32,
+   "bpm": 146,
+   "key": "F sharp minor",
+   "style": "final boss battle against a cold machine god, dark epic orchestra hits, aggressive synths, choir, relentless drums",
+   "hint": "instrumental video game boss battle music, loopable, very high energy, no intro, no ending, no vocals"
+  }
+ ]
+}

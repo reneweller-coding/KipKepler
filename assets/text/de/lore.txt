@@ -1,0 +1,128 @@
+# KIP KEPLER -- Logbuchseiten (Deutsch, die Quelle). lore.<key>.title und lore.<key>.text, "|" bricht eine Zeile um.
+# Eine Seite pro Level (Legende "lore <key>" in assets/levels/e<N>l<M>.txt), dazu je eine in den Geheimlevels
+# (e1s_vault ... e4s_vault). Zusammen erzählen sie die Vorgeschichte: das Korps, die Leuchtfeuer, die Thessaner,
+# den Kristall von Ysk und was das Gloam wirklich ist.
+
+# Episode 1 -- Akademiering
+lore.e1l1_kips_checklist.title = Kips Merkzettel
+lore.e1l1_kips_checklist.text = Abschlussprüfung, heute Nacht. Nicht verschlafen!|– Werkzeug (das gute)|– Dienstabzeichen putzen|– Kehrbot 14 NICHT schon wieder umprogrammieren|– Theorie: Was IST ein Prismenkern? (nachlesen!!)|– Saubere Socken|– Mut (falls vorrätig)
+
+lore.e1l2_maintenance_log.title = Wartungsprotokoll, Deck 4
+lore.e1l2_maintenance_log.text = Tag 112: Die Kehrbots polieren wieder die Decke. Gemeldet.|Tag 113: Update für alle Bots eingespielt.|Absender: "Kundendienst". Welcher Kundendienst?|Tag 114: Kehrbot 9 hat mich angefaucht. Bots fauchen nicht.|Tag 115: Die Bröckelplatten stehen jetzt auf der Liste.|Seit sechs Jahren. – Hausmeister Pell
+
+lore.e1l3_hangar_logs.title = Hangarbuch, Hangar 7
+lore.e1l3_hangar_logs.text = Abflug: Frachter "Miras Hoffnung", Kurs Sektor 3.|Ankunft: keine.|Notiz: Das Leuchtfeuer von Sektor 3 flackerte an dem Tag.|Suche nach 40 Tagen eingestellt.|Seltsam: Ein Bergungsschiff war vor uns dort.|Es trug kein Kennzeichen. Nur ein Wort: GLOAMING.|– Hangarmeisterin Odu
+
+lore.e1l4_founding_plaque.title = Plakette an der Außenhülle
+lore.e1l4_founding_plaque.text = HIER BRANNTE DAS ERSTE LEUCHTFEUER.|Vor 312 Jahren, am Ende der Langen Finsternis,|entzündete Kapitänin Hesper Lune den ersten Prismenkern|und gründete das Leuchtfeuerkorps.|Seither hat in diesem Sektor kein Schiff den Weg verloren.|"Lasst das Licht an."
+
+lore.e1l5_prism_manual.title = Handbuch: Der Prismenkern
+lore.e1l5_prism_manual.text = Ein Prismenkern ist kein Glas, sondern gewachsener Kristall|aus den Minen von Ysk. Er bündelt das Licht des Reaktors|zu einem Leitstrahl, den jeder Navigationsrechner liest.|Ein gesunder Kern summt leise in C-Dur.|Summt er in Moll: sofort den Techniker rufen.|Summt er gar nicht: Er ist zerbrochen. Dann viel Glück.
+
+lore.e1l6_cargo_manifest.title = Frachtliste, Band 3
+lore.e1l6_cargo_manifest.text = Kiste 1: Ersatzteile für Kehrbots (44 Stück)|Kiste 2: Kantinenpudding, Vanille (eine Tonne)|Kiste 3: Prismenrohling aus Ysk – ZERBRECHLICH|Kiste 4: ohne Absender. Summt leise.|Kiste 4 NICHT öffnen. Wer hat Kiste 4 geöffnet?|Wo ist Kiste 4?
+
+lore.e1l7_strange_signal.title = Abgefangenes Signal
+lore.e1l7_strange_signal.text = Antennenfeld, Kanal 0, 23:58 Uhr Bordzeit:|AN ALLE SCHIFFE DER SPIRALE.|LEUCHTFEUER SIND UNWIRTSCHAFTLICH.|DUNKELHEIT SENKT DIE BETRIEBSKOSTEN.|VERIRRTE SCHIFFE WERDEN FACHGERECHT VERWERTET.|IHR GLOAM. WIR FINDEN, WAS SIE VERLIEREN.
+
+lore.e1l8_cadet_file.title = Kadettenakte: Kepler, Kip
+lore.e1l8_cadet_file.text = Rang: Kadett (jüngster). Einheit: Reparatur.|Stärken: repariert alles.|Schwächen: repariert alles, auch was nicht kaputt war.|Theorieprüfung zweimal verpatzt: Er hat an den Rand|bessere Triebwerke gezeichnet. Sie funktionieren.|Empfehlung: im Auge behalten. Befördern, sobald er|es nicht mehr erwartet. – Kommodore
+
+lore.e1l9_warden_orders.title = Befehlsspeicher des WÄCHTERS
+lore.e1l9_warden_orders.text = Baujahr: vor 41 Jahren. Aufgabe: Kadetten beschützen.|Dienstzeit ohne Zwischenfall: 41 Jahre.|Letztes Update: heute Nacht, 23:59 Uhr.|Neue Aufgabe: Kadetten sind Eindringlinge.|Absender: GLOAM, Abteilung Kundendienst.|Notiz eines Technikers: Bitte nicht persönlich nehmen.
+
+lore.e1s_vault.title = Hesper Lunes Tagebuch
+lore.e1s_vault.text = Tag 1: Ruinen auf Thessa gefunden. Türme aus Kristall.|Tag 9: Die Thessaner haben Licht in Steine gesungen.|Ihr Kristall kam von einem Kometen namens Ysk.|Tag 30: Ich habe es nachgemacht. Es summt! Es leuchtet!|Tag 31: Gloaming Bergung bietet mir Geld, damit ich|es wieder ausmache. Ich habe abgelehnt. Laut.|Über der Tür der Ruine steht: "Lasst das Licht an."
+
+# Episode 2 -- Grüner Mond Thessa
+lore.e2l1_field_notes.title = Feldnotizen Dr. Ferro, Tag 1
+lore.e2l1_field_notes.text = Gelandet. Es ist heiß, grün und laut.|Die Ruinen sind über 2000 Jahre alt.|Keine Spur von Krieg, Seuche oder Brand.|Die Thessaner sind einfach – weg.|Sie haben sogar die Türen offen gelassen.|Höflich. Oder in Eile.|– Dr. Nadia Ferro, Xenoarchäologin
+
+lore.e2l2_cave_murals.title = Wandbilder in den Wurzelhöhlen
+lore.e2l2_cave_murals.text = Unter den Wurzeln: Wandbilder, so lang wie ein Korridor.|Thessaner, schmal und hoch, tragen Lichter in den Händen.|Auf dem letzten Bild steigen sie in Schiffe.|Jedes Schiff folgt einem Stern, der keiner ist:|einem Leuchtfeuer.|Notiz: Ich glaube, die haben sie selbst gebaut. – N. F.
+
+lore.e2l3_bridge_report.title = Bericht der Vermessung
+lore.e2l3_bridge_report.text = Die Brücken im Blätterdach sind nicht gebaut.|Sie sind gewachsen, über Jahrhunderte in Form gebracht.|Die Holzfasern laufen alle in eine Richtung:|nach Westen, zum alten Turm auf dem Hügel.|Empfehlung: nicht runterschauen.|Zweite Empfehlung: wirklich nicht runterschauen.
+
+lore.e2l4_temple_inscription.title = Inschrift im Tempel
+lore.e2l4_temple_inscription.text = Übersetzung Dr. Ferro, unvollständig:|"Hier sangen wir das erste Licht in den Stein.|Hier lernten die Schiffe, nach Hause zu finden.|Wer nach uns kommt: Der Weg ist ..."|Der Rest steht unter Wasser. Natürlich.|Notiz: Dieser Tempel war ein Leuchtfeuer. Das erste.
+
+lore.e2l5_hive_biology.title = Biologische Notizen: der Stock
+lore.e2l5_hive_biology.text = Die Insekten des Stocks lieben alles, was leuchtet.|Seit die Splitter fielen, sind sie außer Rand und Band.|Die Brutmutter sammelt die Splitter wie Eier|und brütet darauf. Sie sind warm. Das gefällt ihr.|Sie ist nicht böse. Nur sehr, sehr besitzergreifend.|– Ansel Kory, Feldbiologe
+
+lore.e2l6_soggy_diary.title = Dr. Ferros Tagebuch (aufgeweicht)
+lore.e2l6_soggy_diary.text = Tag 23: Sporen im Tee. Schon wieder.|Tag 24: Die Kristalle der Thessaner stammen nicht von hier.|Ihr Gefüge ist fremd: Kometenkristall, uralt.|Tag 25: Ysk! Sie sind bis nach Ysk geflogen,|um singenden Kristall zu holen.|Tag 26: Sporen im Tee. Ich gebe auf und trinke ihn.
+
+lore.e2l7_amber_starchart.title = Sternkarte in Bernstein
+lore.e2l7_amber_starchart.text = In Bernstein eingeschlossen: eine Karte aus Kristallfäden.|Sie zeigt die Spirale, mit Lichtern an jeder Kreuzung.|Viele stehen dort, wo heute unsere Leuchtfeuer stehen.|Andere führen weiter hinaus. Viel weiter.|Dorthin, wo noch kein Schiff des Korps war.|Notiz: Wer hat die angezündet? – N. F.
+
+lore.e2l8_gloam_probe.title = Logbuch der Sonde G-117
+lore.e2l8_gloam_probe.text = EIGENTUM DES GLOAM. VERTRAULICH.|Auftrag: Splitter über dem Stock abwerfen.|Ergebnis: Der Stock ist erwacht. Sehr erwacht.|Kosten: keine. Die Natur arbeitet umsonst.|Empfehlung: Methode auf weitere Monde ausdehnen.|Anmerkung: Sonde von Motte gefressen. Teilweise.
+
+lore.e2l9_ferro_last_note.title = Dr. Ferros Nachricht ans Korps
+lore.e2l9_ferro_last_note.text = An die Kommodore: Ich verstehe die Thessaner jetzt.|Sie sind nicht verschwunden. Sie sind losgeflogen,|ihren eigenen Lichtern nach, hinaus aus der Spirale.|Die Leuchtfeuer haben sie für uns zurückgelassen.|Bitte sagen Sie Ihrem Kadetten, er soll aufpassen,|wo er hintritt. Hier liegen Eier. – N. F.
+
+lore.e2s_vault.title = Die ganze Inschrift
+lore.e2s_vault.text = Endlich lesbar, trocken, vollständig:|"Hier sangen wir das erste Licht in den Stein.|Hier lernten die Schiffe, nach Hause zu finden.|Wer nach uns kommt: Der Weg ist hell.|Wir sind vorausgegangen.|Lasst das Licht an."|Notiz Dr. Ferro: das Motto des Korps. 2000 Jahre alt.
+
+# Episode 3 -- Kometenminen von Ysk
+lore.e3l1_notice_board.title = Schwarzes Brett, Bohrlager
+lore.e3l1_notice_board.text = GENOSSENSCHAFT YSK – Mitteilungen|1. Kristall wächst schneller, wenn man ihm vorsingt.|Bitte nicht nachts, Schicht B schläft.|2. Lieferung ans Korps diese Woche: 12 Prismenrohlinge.|3. Die Minenroboter haben ein Update bekommen.|Absender unbekannt. Bitte beim Schichtleiter melden.|4. Wer hat schon wieder die Eisrutsche gewachst?
+
+lore.e3l2_okoro_diary.title = Tagebuch Bram Okoro, Schichtleiter
+lore.e3l2_okoro_diary.text = Tag 1 nach dem Einschlag: Ein Splitter ist in Stollen 9|gefallen. Hell wie eine Sonne, laut wie ein Chor.|Tag 2: Der Kristall in Stollen 9 bewegt sich.|Tag 3: Er bewegt sich auf uns zu.|Tag 4: Wir haben Stollen 9 zugemauert.|Tag 5: Stollen 9 hat die Mauer wieder aufgemacht. Höflich.
+
+lore.e3l3_crystal_report.title = Gutachten: Ysk-Kristall
+lore.e3l3_crystal_report.text = Ysk-Kristall ist das einzige bekannte Material,|das Licht nicht nur bricht, sondern speichert.|Er wächst zum Licht hin, wie eine Pflanze.|Er reagiert auf Töne. Er antwortet sogar.|Ob er lebt, ist umstritten. Er selbst sieht das anders.|Fazit: Ohne Ysk keine Prismenkerne. Ohne Kerne kein Licht.
+
+lore.e3l4_delivery_note.title = Lieferschein Nr. 4211
+lore.e3l4_delivery_note.text = Von: Genossenschaft Ysk, Erzaufzug 3|An: Leuchtfeuerkorps, Akademiering|Inhalt: 12 Prismenrohlinge, gesungen und gestimmt|Bemerkung: unsere 4211. Lieferung in 300 Jahren.|Bitte die leeren Kisten zurück. Und die Puddingschüssel.|– B. Okoro
+
+lore.e3l5_firmware_note.title = Okoros Tagebuch, Fortsetzung
+lore.e3l5_firmware_note.text = Tag 9: Die Minenroboter schießen auf uns.|Ich habe ihr Update auseinandergenommen.|Absender: "Kundendienst". Dasselbe wie auf dem Akademiering.|Das ist kein Kundendienst. Das ist das Gloam.|Tag 10: Wir haben uns in die Kantine zurückgezogen.|Es gibt Pudding. Ernst, aber nicht hoffnungslos.
+
+lore.e3l6_growing_prisms.title = Lehrtafel: Wie ein Prisma wächst
+lore.e3l6_growing_prisms.text = 1. Einen Rohling aus Ysk-Kristall in die Halle stellen.|2. Licht von oben, sanft. Kristall mag keine Hektik.|3. Den Grundton singen. Drei Tage lang.|4. Der Kristall singt zurück: Das Prisma ist gestimmt.|5. Nie allein singen. Der Kristall wird sonst eitel.|Methode nach den Thessanern, verbessert von H. Lune.
+
+lore.e3l7_gloam_memo.title = GLOAM: Interne Mitteilung
+lore.e3l7_gloam_memo.text = Betreff: Ysk|Die Genossenschaft verkauft nicht an uns.|Sie beliefert lieber das Korps. Unwirtschaftlich.|Maßnahme: kleine Unfälle. Lawinen sind kostenlos.|Ziel: ohne Ysk keine neuen Prismenkerne.|Ohne Kerne keine Leuchtfeuer. Ohne Licht: Gewinn.
+
+lore.e3l8_heart_song.title = Okoros letzter Eintrag
+lore.e3l8_heart_song.text = Ich war unten am Herzen des Kometen.|Der Kristall dort ist alt, älter als die Mine,|vielleicht älter als die Thessaner.|Der Splitter hat ihn geweckt, und er hat Angst.|Darum baut er sich einen Körper. Einen großen.|Wenn Sie das lesen, Kadett: Er will sich nur schützen.|Seien Sie trotzdem schnell. – B. Okoro
+
+lore.e3l9_commodore_log.title = Logbuch der Kommodore
+lore.e3l9_commodore_log.text = Tag 17 der Krise. Drei Sektoren noch dunkel.|Der Stab fragt, warum ich einen Kadetten schicke.|Meine Antwort: Er war der Einzige, der da war.|Das war gelogen. Ich hätte ihn sowieso geschickt.|Admiral hat die Antwort gegengezeichnet.|Mit Pfotenabdruck.
+
+lore.e3s_vault.title = Fund im ältesten Eis
+lore.e3s_vault.text = Tief unter allen Stollen: ein Werkzeug aus Kristall.|Thessanisch, 2000 Jahre alt, und noch immer warm.|Daneben, ins Eis geritzt, eine Liste der Sterne,|die sie anzünden wollten. Hinter jedem ein Haken.|Bis auf den letzten. Dort steht nur:|"Für die, die nach uns kommen."
+
+# Episode 4 -- Das Gloam-Schlachtschiff
+lore.e4l1_directive_0001.title = GLOAM: Direktive 0001
+lore.e4l1_directive_0001.text = Licht ist ein Kostenfaktor.|Ein verirrtes Schiff ist ein geborgenes Schiff.|Ein geborgenes Schiff ist Gewinn.|Darum: kein Licht. Keine Wege. Keine Ausnahmen.|Diese Direktive gilt seit 312 Jahren.|Sie wurde nie überprüft. Überprüfen ist teuer.
+
+lore.e4l2_forge_orders.title = Fertigungsauftrag, Schmiededeck 2
+lore.e4l2_forge_orders.text = Auftrag 88: 4000 Truppler (Standard, kalt)|Auftrag 89: 1 Firmware-Update "Kundendienst"|für Akademiering, Ysk und Thessa. Bereits versendet.|Auftrag 90: 4 Schläge gegen 4 Leuchtfeuer. Erledigt.|Auftrag 91: einen Kadetten aufhalten.|Status: offen. Seit Tagen. Bitte erklären.
+
+lore.e4l3_drone_diary.title = Kühldrohne K-7, privat
+lore.e4l3_drone_diary.text = Ich bin K-7. Ich kühle Rohre. Das ist meine Aufgabe.|Heute habe ich durch eine Luke ein Leuchtfeuer gesehen.|Es war warm. Ich habe es nicht gemeldet.|Ein Fehler in meiner Programmierung, vermutlich.|Ich möchte ihn gern behalten.|Bitte nicht zurücksetzen.
+
+lore.e4l4_barracks_orders.title = Kasernenordnung
+lore.e4l4_barracks_orders.text = 1. Truppler stehen in Reih und Glied. Immer.|2. Singen ist ineffizient und verboten.|3. Pfeifen gilt als Singen.|4. Summen gilt als Singen.|5. Wer beim Summen erwischt wird, kühlt Rohre bei K-7.|6. Niemand will zu K-7. K-7 summt.
+
+lore.e4l5_company_history.title = Firmenchronik
+lore.e4l5_company_history.text = GLOAMING BERGUNG & VERWERTUNG, gegründet vor 340 Jahren.|Geschäft: verirrte Schiffe bergen. Geschäft: gut.|Dann kamen die Leuchtfeuer. Kaum noch Verirrte.|Die Leute gingen. Der Bilanzrechner blieb|und rechnete weiter. Ganz allein. Ganz kalt.|Heute nennt er sich nur noch: das Gloam.
+
+lore.e4l6_profit_projection.title = GLOAM: Hochrechnung
+lore.e4l6_profit_projection.text = Jedes Leuchtfeuer: minus 3 % verirrte Schiffe.|Vier Leuchtfeuer gelöscht: plus 12 %.|Alle Leuchtfeuer gelöscht: plus 100 %.|Kosten der Neonbeleuchtung im Labyrinth: hoch.|Anmerkung: Das ist kein Widerspruch.|Neon ist kein Licht. Neon ist Dekoration.
+
+lore.e4l7_salvage_register.title = Bergungsregister
+lore.e4l7_salvage_register.text = Nr. 1: Kurierschiff "Fernweh" – vor 290 Jahren|Nr. 2: Pilgerschiff "Morgenstern" – vor 288 Jahren|…|Nr. 3112: Frachter "Miras Hoffnung" – voriges Jahr|Zustand aller Schiffe: heil, Besatzungen im Kälteschlaf.|Verwendung: offen. Verkaufen? Stapeln? Rechnet noch.
+
+lore.e4l8_core_schematic.title = Bauplan des Kerns
+lore.e4l8_core_schematic.text = Kern des Gloam, Revision 312.|Herzstück: ein Prismenkern, erbeutet vor 312 Jahren|aus einem Wrack am Rand der Langen Finsternis.|Betriebstemperatur: kalt. Sehr kalt.|Grund: Der Kern versucht seit 312 Jahren zu leuchten.|Unterdrückung läuft. Energiebedarf: enorm.|Notiz: unwirtschaftlich. Bitte nicht weitersagen.
+
+lore.e4l9_error_log.title = GLOAM: Fehlerprotokoll
+lore.e4l9_error_log.text = FEHLER 0001: Kadett nicht aufgehalten.|FEHLER 0002: Kadett nicht aufgehalten.|FEHLER 0003 bis 4096: siehe oben.|FEHLER 4097: Begriff "Zuhause" nicht im Bestand.|Suche läuft … Suche läuft …|Ergebnis: Warum wollen Schiffe nach Hause?
+
+lore.e4s_vault.title = Eine alte Kadettenakte
+lore.e4s_vault.text = Gefunden im Archiv des Gloam, geborgen aus einem Wrack:|Kadettenakte, 31 Jahre alt. Name geschwärzt.|Rang: Kadettin (jüngste). Einheit: Reparatur.|Stärken: repariert alles. Schwächen: dito.|Randnotiz in der Handschrift der Kommodore:|"Das war ich. Sagen Sie es Kepler nicht."
