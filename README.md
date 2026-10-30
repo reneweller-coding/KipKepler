@@ -12,7 +12,7 @@ with its own world, levels and characters. Windows, Linux and the Steam Deck.
 
     .\build.ps1                 # Windows, MSVC: bin\msvc\KipKepler.exe and bin\msvc\KeplerTool.exe
     bash Deploy/build_linux.sh  # Linux / Steam Deck (WSL Ubuntu 22.04, GCC 12): dist/KipKepler-<v>-linux-x86_64.tar.gz
-    .\Deploy\build_release.ps1# both packages into dist/
+    .\Deploy\build_release.ps1  # both packages into dist/
 
 C++20 on raylib 5.5 (its sources in third_party/raylib, no download). The game reads assets/ beside the program, else
 the source tree's.
