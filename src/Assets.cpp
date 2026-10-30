@@ -91,6 +91,15 @@ namespace
 Texture2D loadTex( const std::string &path )
 {
     if ( !FileExists( path.c_str() ) ) return {};
+    if ( !IsWindowReady() )
+    {
+        // Without a window (the autopilot test runs without the graphics card): only the size, nothing uploaded.
+        Image     img = LoadImage( path.c_str() );
+        Texture2D t = {};
+        t.width = img.width, t.height = img.height;
+        UnloadImage( img );
+        return t;
+    }
     Texture2D t = LoadTexture( path.c_str() );
     SetTextureFilter( t, TEXTURE_FILTER_POINT );
     SetTextureWrap( t, TEXTURE_WRAP_CLAMP );
@@ -100,6 +109,7 @@ Texture2D loadTex( const std::string &path )
 /** @brief A magenta-and-dark checker box: a frame for what has no picture yet. */
 Texture2D standInTex( int w, int h, Color a, Color b )
 {
+    if ( !IsWindowReady() ) return {};
     Image img = GenImageChecked( w, h, std::max( 2, w / 4 ), std::max( 2, h / 4 ), a, b );
     ImageDrawRectangleLines( &img, { 0, 0, (float)w, (float)h }, 1, BLACK );
     Texture2D t = LoadTextureFromImage( img );
@@ -141,6 +151,7 @@ void readSheetText( Sheet &s, const std::string &path )
 /** @brief A stand-in terrain sheet: one variant of all 256 masks, lit edges where a side is open. */
 Texture2D standInTerrain( Color base, bool back )
 {
+    if ( !IsWindowReady() ) return {};
     Image img = GenImageColor( 512, 512, BLANK );
     for ( int m = 0; m < 256; ++m )
     {
@@ -191,7 +202,7 @@ const Sheet &Assets::sheetIn( const std::string &folder, const std::string &name
     auto        s = std::make_unique<Sheet>();
     std::string base = assetDir() + folder + "/" + name;
     s->m_tex = loadTex( base + ".png" );
-    if ( s->m_tex.id )
+    if ( s->m_tex.width > 0 )
     {
         readSheetText( *s, base + ".txt" );
         s->m_glow = loadTex( base + "_glow.png" );
@@ -406,8 +417,8 @@ void Assets::unload()
 {
     for ( auto &[k, s] : m_sheets )
     {
-        UnloadTexture( s->m_tex );
-        if ( s->m_hasGlow ) UnloadTexture( s->m_glow );
+        if ( s->m_tex.id ) UnloadTexture( s->m_tex );
+        if ( s->m_glow.id ) UnloadTexture( s->m_glow );
     }
     m_sheets.clear();
     m_tiles.clear();

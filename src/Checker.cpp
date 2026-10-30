@@ -268,7 +268,10 @@ struct Search
             for ( int s : out.m_touched )
             {
                 const Spawn &sp = L.m_spawns[s];
-                if ( sp.m_kind == "spring" && b.m_vy >= 0 && b.m_y >= sp.m_y * T + 8 &&
+                // (The cell must hold the hero now, as in the game: out.m_touched is everything touched so far.)
+                bool here = b.right() > sp.m_x * T && b.left() < ( sp.m_x + 1 ) * T && b.m_y > sp.m_y * T &&
+                            b.top() < ( sp.m_y + 1 ) * T;
+                if ( sp.m_kind == "spring" && here && b.m_vy >= 0 && b.m_y >= sp.m_y * T + 8 &&
                      std::find( springsUsed.begin(), springsUsed.end(), s ) == springsUsed.end() )
                 {
                     b.m_vy = -phys::SpringJump;

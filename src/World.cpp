@@ -38,6 +38,14 @@ bool overlaps( float l0, float t0, float r0, float b0, float l1, float t1, float
     return l0 < r1 && r0 > l1 && t0 < b1 && b0 > t1;
 }
 
+/** @brief How far a crusher is down at a moment of its clock (0 up .. 1 down): up slowly, slam down fast, rest. */
+float crusherDrop( const Object &o, float at )
+{
+    float period = o.m_args.size() > 1 ? (float)atof( o.m_args[1].c_str() ) : 3;
+    float ph = std::fmod( at, period ) / period;
+    return ph < 0.55f ? 0 : ph < 0.62f ? ( ph - 0.55f ) / 0.07f : ph < 0.75f ? 1 : 1 - ( ph - 0.75f ) / 0.25f;
+}
+
 }   // namespace
 
 // ------------------------------------------------------------------------------------------------------- loading
@@ -495,6 +503,42 @@ bool World::platformTop( float x0, float x1, float before, float after, float &t
     for ( const Enemy &e : m_enemies )
         if ( e.m_alive && e.m_frozen > 0 ) consider( e.left() - 2, e.right() + 2, e.top() );
     return found;
+}
+
+bool World::hazard( const Object &o, float at, float box[4], int *beam ) const
+{
+    float l = o.m_cx * T, t = o.m_cy * T;
+    if ( o.m_kind == "laser" )
+    {
+        float on = o.m_args.size() > 1 ? (float)atof( o.m_args[1].c_str() ) : 1.5f;
+        float off = o.m_args.size() > 2 ? (float)atof( o.m_args[2].c_str() ) : 1.5f;
+        if ( std::fmod( at, on + off ) >= on ) return false;
+        bool vertical = !o.m_args.empty() && o.m_args[0] == "v";
+        // The beam runs from the emitter to the next solid cell, away from the wall it sits on.
+        int dx = 0, dy = 0;
+        if ( vertical )
+            dy = solid( o.m_cx, o.m_cy - 1 ) ? 1 : -1;
+        else
+            dx = solid( o.m_cx - 1, o.m_cy ) ? 1 : -1;
+        int cx = o.m_cx, cy = o.m_cy, n = 0;
+        while ( n < 40 && !solid( cx + dx, cy + dy ) ) cx += dx, cy += dy, ++n;
+        box[0] = std::min( o.m_cx, cx ) * T, box[2] = ( std::max( o.m_cx, cx ) + 1 ) * T;
+        box[1] = std::min( o.m_cy, cy ) * T, box[3] = ( std::max( o.m_cy, cy ) + 1 ) * T;
+        if ( vertical )
+            box[0] += 12, box[2] -= 12;
+        else
+            box[1] += 12, box[3] -= 12;
+        if ( beam ) *beam = n;
+        return true;
+    }
+    if ( o.m_kind == "crusher" )
+    {
+        float reach = ( o.m_args.size() > 0 ? (float)atof( o.m_args[0].c_str() ) : 3 ) * T, d = crusherDrop( o, at );
+        if ( d <= 0.3f ) return false;
+        box[0] = l + 2, box[1] = t, box[2] = l + T - 2, box[3] = t + T + reach * d;
+        return true;
+    }
+    return false;
 }
 
 bool World::lineOfSight( float x0, float y0, float x1, float y1 ) const
@@ -1211,66 +1255,55 @@ void World::stepObjects( float dt )
         {
             float on = o.m_args.size() > 1 ? (float)atof( o.m_args[1].c_str() ) : 1.5f;
             float off = o.m_args.size() > 2 ? (float)atof( o.m_args[2].c_str() ) : 1.5f;
-            float ph = std::fmod( o.m_t, on + off );
             bool  was = o.m_on;
-            o.m_on = ph < on;
+            o.m_on = std::fmod( o.m_t, on + off ) < on;
             if ( o.m_on && !was && std::fabs( o.m_x - m_hero.m_x ) < 400 ) sfx( "laser_fence", 0.4f );
-            if ( !o.m_on || !heroFree ) continue;
-            bool  vertical = !o.m_args.empty() && o.m_args[0] == "v";
-            // The beam runs from the emitter to the next solid cell, away from the wall it sits on.
-            int   dx = 0, dy = 0;
-            if ( vertical ) dy = solid( o.m_cx, o.m_cy - 1 ) ? 1 : -1;
-            else
-                dx = solid( o.m_cx - 1, o.m_cy ) ? 1 : -1;
-            int cx = o.m_cx, cy = o.m_cy, n = 0;
-            while ( n < 40 && !solid( cx + dx, cy + dy ) ) cx += dx, cy += dy, ++n;
-            float bl = std::min( o.m_cx, cx ) * T, br = ( std::max( o.m_cx, cx ) + 1 ) * T;
-            float bt = std::min( o.m_cy, cy ) * T, bb = ( std::max( o.m_cy, cy ) + 1 ) * T;
-            if ( vertical ) bl += 12, br -= 12;
-            else
-                bt += 12, bb -= 12;
-            o.m_target = n;
-            if ( overlaps( hl, ht, hr, hb, bl, bt, br, bb ) ) hurtHero( 30, m_hero.m_x - m_face );
+            float box[4];
+            if ( !o.m_on || !hazard( o, o.m_t, box, &o.m_target ) || !heroFree ) continue;
+            if ( overlaps( hl, ht, hr, hb, box[0], box[1], box[2], box[3] ) ) hurtHero( 30, m_hero.m_x - m_face );
         }
         else if ( o.m_kind == "crusher" )
         {
-            float reach = ( o.m_args.size() > 0 ? (float)atof( o.m_args[0].c_str() ) : 3 ) * T;
-            float period = o.m_args.size() > 1 ? (float)atof( o.m_args[1].c_str() ) : 3;
-            float ph = std::fmod( o.m_t, period ) / period;
-            // Up slowly, slam down fast, rest.
-            float d = ph < 0.55f ? 0 : ph < 0.62f ? ( ph - 0.55f ) / 0.07f : ph < 0.75f ? 1 : 1 - ( ph - 0.75f ) / 0.25f;
-            float was = o.m_target / 1000.0f;
+            float d = crusherDrop( o, o.m_t ), was = o.m_target / 1000.0f;
             o.m_target = (int)( d * 1000 );
             if ( d >= 1 && was < 1 && std::fabs( o.m_x - m_hero.m_x ) < 360 )
             {
                 sfx( "crusher", 0.7f );
                 m_shake = std::max( m_shake, 0.2f );
             }
-            if ( heroFree && d > 0.3f && overlaps( hl, ht, hr, hb, l + 2, t, l + T - 2, t + T + reach * d ) ) hurtHero( 40, o.m_x );
+            float box[4];
+            if ( heroFree && hazard( o, o.m_t, box ) && overlaps( hl, ht, hr, hb, box[0], box[1], box[2], box[3] ) )
+                hurtHero( 40, o.m_x );
         }
     }
     if ( !m_sign.empty() ) m_signT = 0.2f;
+}
+
+void advanceMover( Mover &m, float dt )
+{
+    m.m_px = m.m_x, m.m_py = m.m_y;
+    float len = std::hypot( m.m_dx, m.m_dy );
+    if ( len < 1 ) return;
+    if ( m.m_hold > 0 )
+        m.m_hold -= dt;
+    else
+    {
+        float before = m.m_s;
+        m.m_s += m.m_speed * dt / len;
+        if ( before < 1 && m.m_s >= 1 ) m.m_s = 1, m.m_hold = m.m_wait;
+        if ( m.m_s >= 2 ) m.m_s = 0, m.m_hold = m.m_wait;
+    }
+    float f = m.m_s <= 1 ? m.m_s : 2 - m.m_s;
+    f = f * f * ( 3 - 2 * f ) * 0.35f + f * 0.65f;
+    m.m_x = m.m_x0 + m.m_dx * f;
+    m.m_y = m.m_y0 + m.m_dy * f;
 }
 
 void World::stepMovers( float dt )
 {
     for ( Mover &m : m_movers )
     {
-        m.m_px = m.m_x, m.m_py = m.m_y;
-        float len = std::hypot( m.m_dx, m.m_dy );
-        if ( len < 1 ) continue;
-        if ( m.m_hold > 0 ) m.m_hold -= dt;
-        else
-        {
-            float before = m.m_s;
-            m.m_s += m.m_speed * dt / len;
-            if ( before < 1 && m.m_s >= 1 ) m.m_s = 1, m.m_hold = m.m_wait;
-            if ( m.m_s >= 2 ) m.m_s = 0, m.m_hold = m.m_wait;
-        }
-        float f = m.m_s <= 1 ? m.m_s : 2 - m.m_s;
-        f = f * f * ( 3 - 2 * f ) * 0.35f + f * 0.65f;
-        m.m_x = m.m_x0 + m.m_dx * f;
-        m.m_y = m.m_y0 + m.m_dy * f;
+        advanceMover( m, dt );
         // Carry the hero when he stands on it.
         if ( m_hero.m_ground && m_hero.right() > m.m_px && m_hero.left() < m.m_px + m.m_w * T && std::fabs( m_hero.m_y - m.m_py ) < 1.0f )
         {

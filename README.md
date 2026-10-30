@@ -45,7 +45,7 @@ The saves and settings live in %APPDATA%\KipKepler (Linux: ~/.local/share/KipKep
     KipKepler --level FILE | --episode N --stage M      play a level directly
     KipKepler --shot OUT.png [--at X,Y] [--warm S] [--hold rljfu] [--weapons]   a picture after S seconds (tiles for --at)
     KipKepler --menu title|main|episodes|levels|shop|options|difficulty|story|tally|pause|extras|awards|logbook|radio --shot OUT.png
-    KipKepler --autotest REPORT [--limit S] [--level FILE | --episode N]   the autopilot, headless and muted
+    KipKepler --autotest REPORT [--limit S] [--level FILE | --episode N]   the autopilot: no window, no sound, processor only
     KipKepler --editor FILE                                                the level editor on a file
     KipKepler --mute --windowed --w W --h H --lang de|en --difficulty 0-2
     KeplerTool check LEVEL [overview.png] | checkall DIR | render LEVEL OUT.png [scale | x y w h]

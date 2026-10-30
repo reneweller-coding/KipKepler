@@ -19,6 +19,7 @@
 #include <raylib.h>
 
 #include <algorithm>
+#include <chrono>
 #include <cmath>
 #include <cstdlib>
 #include <memory>
@@ -36,7 +37,6 @@ void App::openWindow()
     unsigned flags = FLAG_WINDOW_RESIZABLE | ( m_settings.m_vsync && !shot ? FLAG_VSYNC_HINT : 0 ) | ( shot ? FLAG_WINDOW_HIDDEN : 0 );
     SetConfigFlags( flags );
     int w = m_o.m_w ? m_o.m_w : 1280, h = m_o.m_h ? m_o.m_h : 720;
-    SetTraceLogLevel( LOG_WARNING );
     InitWindow( w, h, "KIP KEPLER" );
     SetExitKey( 0 );
     if ( !shot && !m_o.m_w )
@@ -60,8 +60,10 @@ void App::openWindow()
 
 int App::run()
 {
+    SetTraceLogLevel( LOG_WARNING );
     loadSettings( m_settings );
-    openWindow();
+    // The autopilot test needs no window: it runs on the processor alone, beside whatever uses the graphics card.
+    if ( m_o.m_autotest.empty() ) openWindow();
     audioInit( m_o.m_mute || !m_o.m_shot.empty() || !m_o.m_autotest.empty() );
     applyVolumes();
     setLanguage( !m_o.m_lang.empty() ? m_o.m_lang : !m_settings.m_lang.empty() && m_settings.m_lang != "-" ? m_settings.m_lang : systemLanguage() );
@@ -269,7 +271,7 @@ int App::autotest()
         Bot bot;
         bot.start( w );
         if ( getenv( "KEPLER_TRACE" ) ) bot.m_trace = fopen( ( std::string( getenv( "KEPLER_TRACE" ) ) + w.m_level.m_id + ".txt" ).c_str(), "w" );
-        double wall = GetTime();
+        auto wall = std::chrono::steady_clock::now();
         while ( !w.m_finished && w.m_time < m_o.m_limit )
         {
             Controls c = bot.think( w );
@@ -278,17 +280,19 @@ int App::autotest()
         if ( w.m_finished ) m_progress.m_credits += w.m_credits, m_progress.m_score += w.m_score;
         else
             ++failures;
-        fprintf( out, "%s finished=%d time=%.1f deaths=%d crystals=%d/%d treasure=%d/%d secrets=%d/%d kills=%d/%d stalls=%d(lost %d noway %d) hp=%.0f wall=%.1fs %s\n",
-                 w.m_level.m_id.c_str(), w.m_finished ? 1 : 0, w.m_time, w.m_deaths, w.m_crystalsTaken, w.m_crystals, w.m_treasureTaken,
-                 w.m_treasure, w.m_secretsFound, w.m_secrets, w.m_kills, w.m_enemiesTotal, bot.m_stalls, bot.m_lost, bot.m_noWay, w.m_hp, GetTime() - wall,
-                 ( bot.m_stallLog + ( w.m_finished ? "" : " last: " + bot.m_status ) ).c_str() );
+        fprintf(
+            out,
+            "%s finished=%d time=%.1f deaths=%d crystals=%d/%d treasure=%d/%d secrets=%d/%d kills=%d/%d stalls=%d(lost %d noway %d) hp=%.0f wall=%.1fs %s\n",
+            w.m_level.m_id.c_str(), w.m_finished ? 1 : 0, w.m_time, w.m_deaths, w.m_crystalsTaken, w.m_crystals,
+            w.m_treasureTaken, w.m_treasure, w.m_secretsFound, w.m_secrets, w.m_kills, w.m_enemiesTotal, bot.m_stalls,
+            bot.m_lost, bot.m_noWay, w.m_hp,
+            std::chrono::duration<double>( std::chrono::steady_clock::now() - wall ).count(),
+            ( bot.m_stallLog + ( w.m_finished ? "" : " last: " + bot.m_status ) ).c_str() );
         fflush( out );
         if ( bot.m_trace ) fclose( bot.m_trace );
     }
     fclose( out );
     assets().unload();
-    m_screen.unload();
-    CloseWindow();
     return failures ? 1 : 0;
 }
 

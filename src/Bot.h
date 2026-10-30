@@ -2,7 +2,10 @@
  * @file Bot.h
  * @brief The autopilot (`--autoplay`): plays a level in the real game with the checker's graph -- walks to where a
  *        move begins, replays the move's input step by step, picks the nearest crystal (key, exit) by the graph,
- *        shoots what is in front of it. For testing levels with their enemies: time, deaths, stalls.
+ *        shoots what is in front of it. Moves whose timing matters (onto or off moving platforms, past laser fences
+ *        and crushers) start when a look-ahead -- the move replayed with the world running on -- lands them safely;
+ *        moves that never work at any moment of the platforms' round trip are left out. For testing levels with
+ *        their enemies: time, deaths, stalls.
  * @author Rene Weller
  */
 #pragma once
@@ -47,6 +50,16 @@ private:
     int  here( const World &w ) const;
     bool plan( const World &w );
     void fight( const World &w, Controls &c );
+    /** @brief Whether a move begun at (x, y) needs timing: onto or off a platform that moves, past lasers or crushers. */
+    bool timed( const World &w, const ReachEdge &e, float x, float y ) const;
+    /** @brief The move replayed from the hero's state now with the world running on: whether it lands safely (why not). */
+    bool forecast( const World &w, const ReachEdge &e, std::string *why = nullptr ) const;
+    /** @brief Whether a timed move works at any moment of the platforms' round trip (remembered per move). */
+    bool possible( const World &w, int node, int edge );
+    /** @brief How long a timed move at (x, y) may wait for its moment (the platforms' longest round trip and some). */
+    float waitLimit( const World &w, float x, float y ) const;
+    /** @brief In the air for long (a spring keeps bouncing him): steers off the spring towards the nearest place. */
+    void steer( const World &w, Controls &c ) const;
 
     ReachGraph         m_graph;
     ModeE              m_mode = ModeE::PLAN;
@@ -60,12 +73,20 @@ private:
     bool               m_left = false;   ///< left the ground during the move
     float              m_lastX = 0, m_lastY = 0;
     std::map<long, int> m_failed;       ///< (node, edge) -> failures
+    std::map<long, bool> m_possible;     ///< (node, edge): timed moves that work at some moment
+    std::map<long, int>  m_impossible;   ///< (node, edge): never let go by the look-ahead, deadly twice, missed thrice
+    std::map<long, int>  m_deaths;       ///< (node, edge) -> deaths in it
+    std::map<long, int>  m_misses;       ///< (node, edge) -> times it landed elsewhere
     float              m_noPlanT = 0;
     float              m_fireT = 0;
     int                m_wanderDir = 1;
     float              m_progressT = 0; ///< seconds since something was collected
     int                m_collected = 0;
     bool               m_wasDead = false;
+    float                m_airT = 0;           ///< seconds off the ground
+    int                  m_forecastWait = 0;   ///< steps until the next look-ahead after one that failed
+    int                  m_budget = 0;         ///< look-aheads over a round trip one plan may still run
+    float                m_rideT = 0;          ///< riding with nothing to do: seconds until the next plan
 };
 
 }   // namespace kepler

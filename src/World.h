@@ -156,6 +156,13 @@ struct Mover
     float m_hold = 0;
 };
 
+/**
+ * @brief Moves a platform on by a step (the game and the autopilot's look-ahead alike).
+ * @param[in,out] m   the platform
+ * @param[in]     dt  the step
+ */
+void advanceMover( Mover &m, float dt );
+
 struct Object
 {
     std::string m_kind;    ///< exit checkpoint teleport switch spring sign laser crusher light
@@ -227,6 +234,16 @@ public:
     bool oneway( int cx, int cy ) const override;
     bool icy( int cx, int cy ) const override;
     bool platformTop( float x0, float x1, float before, float after, float &top ) const override;
+
+    /**
+     * @brief Where a laser fence or a crusher hurts at a moment of its own clock.
+     * @param[in]  o     the object
+     * @param[in]  at    its clock (Object::m_t then)
+     * @param[out] box   left, top, right, bottom of what hurts
+     * @param[out] beam  lasers: the beam's length in cells (may be null)
+     * @return whether it hurts at all then
+     */
+    bool hazard( const Object &o, float at, float box[4], int *beam = nullptr ) const;
 
     // What the level's end screen shows.
     bool  m_finished = false;   ///< the hero went through the exit
