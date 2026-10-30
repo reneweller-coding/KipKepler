@@ -313,6 +313,22 @@ bool World::load( const std::string &path, Progress &progress, std::string &erro
     m_loadedPickups = (int)m_pickups.size(), m_loadedEnemies = (int)m_enemies.size();
     placeDecos();
     if ( m_crystals == 0 && !m_boss ) openExitIfDone();
+    // The pictures the level needs, loaded now (behind the beam-in) rather than the moment they first come on screen:
+    // that was a hitch of 100 ms and more in the middle of play. Without a window (the autopilot's test) nothing.
+    if ( IsWindowReady() )
+    {
+        for ( const char *s : { "hero", "items", "objects", "shots", "fx" } ) assets().sheet( s );
+        assets().tiles( m_theme );
+        assets().background( m_bgName );
+        for ( const Enemy &e : m_enemies )
+        {
+            assets().sheet( e.m_def->m_id );
+            if ( e.m_def->m_child && *e.m_def->m_child ) assets().sheet( e.m_def->m_child );
+        }
+        // What the bosses call in.
+        if ( m_boss )
+            for ( const char *s : { "hoverdrone", "mothling", "trooper" } ) assets().sheet( s );
+    }
     // Two takes of each piece: the levels alternate them.
     std::string cue = L.key( "music", "" );
     if ( !cue.empty() ) music( cue + "_t" + std::to_string( 1 + ( L.m_id.empty() ? 0 : ( L.m_id.back() - '0' ) % 2 ) ) );

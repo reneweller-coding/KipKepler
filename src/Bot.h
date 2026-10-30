@@ -27,6 +27,8 @@ public:
     void start( const World &w );
     /** @brief The controls for the next fixed step. */
     Controls think( const World &w );
+    /** @brief Real time: a new frame begins, with this many look-aheads for all its steps. */
+    void newFrame( int lookAheads = 2 ) { m_lookAheads = lookAheads; }
 
     std::string m_status;      ///< what it does (for the log)
     int         m_stalls = 0;  ///< times it found no way on
@@ -34,6 +36,7 @@ public:
     int         m_noWay = 0;   ///< of those: no move leads to anything wanted
     bool        m_gaveUp = false;
     std::string m_stallLog;    ///< where it stalled (the first few)
+    bool        m_realTime = false;   ///< plays in real time (the demo): a few look-aheads per step at most
     FILE       *m_trace = nullptr;   ///< every move and its outcome (--trace)
 
 private:
@@ -54,6 +57,8 @@ private:
     bool timed( const World &w, const ReachEdge &e, float x, float y ) const;
     /** @brief The move replayed from the hero's state now with the world running on: whether it lands safely (why not). */
     bool forecast( const World &w, const ReachEdge &e, std::string *why = nullptr ) const;
+    /** @brief Takes one look-ahead from the step's allowance (only in real time); false when none is left. */
+    bool spend() const;
     /** @brief Whether a timed move works at any moment of the platforms' round trip (remembered per move). */
     bool possible( const World &w, int node, int edge );
     /** @brief How long a timed move at (x, y) may wait for its moment (the platforms' longest round trip and some). */
@@ -88,6 +93,7 @@ private:
     float                m_airT = 0;           ///< seconds off the ground
     int                  m_forecastWait = 0;   ///< steps until the next look-ahead after one that failed
     int                  m_budget = 0;         ///< look-aheads over a round trip one plan may still run
+    mutable int          m_lookAheads = 0;     ///< real time: look-aheads this step may still run
     float                m_rideCheckT = 0;     ///< riding: seconds until the next look whether standing is safe
     int                  m_rideDir = 0;        ///< riding: the side to step to (0: stand)
     float                m_rideT = 0;          ///< riding with nothing to do: seconds until the next plan

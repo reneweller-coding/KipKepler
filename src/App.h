@@ -37,6 +37,7 @@ struct Options
     bool        m_demoNow = false;    ///< the demo starts at once
     float       m_seconds = 0;        ///< ends after this long (0: never); the window stays hidden, the sound off
     bool        m_helpLook = false;   ///< colour help and big text on (pictures), the settings untouched
+    bool        m_trial = false;      ///< --level as a time trial (with the best run's ghost)
 };
 
 /** @brief Runs the game. */

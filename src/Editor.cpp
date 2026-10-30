@@ -1022,6 +1022,13 @@ struct Editor::Impl
         centreOn( px * T + T / 2, py * T );
         const char *demo = getenv( "KEPLER_EDITOR_SHOT" );
         m_demo = demo ? demo : "";
+        // Pictures of the death map: KEPLER_EDITOR_DEATHS=<deaths file> checks the level and shows both overlays.
+        if ( const char *deaths = getenv( "KEPLER_EDITOR_DEATHS" ) )
+        {
+            startCheck( true );
+            m_showDeaths = false;
+            toggleDeaths( deaths );
+        }
         return true;
     }
 
@@ -1146,9 +1153,10 @@ struct Editor::Impl
 
     // ----------------------------------------------------------------------------------------- the death map
 
-    void toggleDeaths()
+    void toggleDeaths( const std::string &file = "" )
     {
-        // The player's knockouts in this level (deaths.txt in the player's folder: level x y cause ...), per cell.
+        // The player's knockouts in this level (deaths.txt in the player's folder: level x y cause ...), per cell; the
+        // view goes to the cell with the most.
         m_showDeaths = !m_showDeaths;
         m_deathMarks.clear();
         if ( !m_showDeaths )
@@ -1156,7 +1164,7 @@ struct Editor::Impl
             message( tr( "editor.msg.deaths_off" ), Dim, 2 );
             return;
         }
-        std::ifstream              in( userDir() + "deaths.txt" );
+        std::ifstream              in( file.empty() ? userDir() + "deaths.txt" : file );
         std::string                line;
         std::map<long, int>        cells;
         std::map<std::string, int> causes;
@@ -1176,6 +1184,10 @@ struct Editor::Impl
             message( tr( "editor.msg.deaths_none" ), Dim, 3 );
             return;
         }
+        const DeathMark &worst =
+            *std::max_element( m_deathMarks.begin(), m_deathMarks.end(),
+                               []( const DeathMark &a, const DeathMark &b ) { return a.m_n < b.m_n; } );
+        centreOn( worst.m_x * T + T / 2, worst.m_y * T + T / 2 );
         // The three most frequent causes.
         std::vector<std::pair<int, std::string>> top;
         for ( const auto &[c, n] : causes ) top.push_back( { n, c } );

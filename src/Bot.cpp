@@ -417,6 +417,13 @@ bool Bot::plan( const World &w )
             break;
         }
         if ( clear ) break;
+        // In real time (the demo) three searches are enough: on foot the way found then is tried (the look-ahead at
+        // each move's start still decides), riding the platform carries on and the next plan looks again.
+        if ( m_realTime && round >= 2 )
+        {
+            if ( riding ) foundNode = -1;
+            break;
+        }
         foundNode = -1;
     }
     if ( foundNode < 0 && riding )
@@ -513,7 +520,21 @@ bool Bot::timed( const World &w, const ReachEdge &e, float x, float y ) const
 bool Bot::forecast( const World &w, const ReachEdge &e, std::string *why ) const
 {
     const ReachNode &to = m_graph.m_nodes[e.m_to];
+    if ( !spend() )
+    {
+        if ( why ) *why = "no time left in this step";
+        return false;
+    }
     return replay( w, to, e, w.m_hero, Ahead( w, w.m_hero.m_x, w.m_hero.m_y, to.m_x, to.m_y ), 0, why );
+}
+
+bool Bot::spend() const
+{
+    // In real time (the demo) a step may run only a few look-aheads; the rest wait for the next steps.
+    if ( !m_realTime ) return true;
+    if ( m_lookAheads <= 0 ) return false;
+    --m_lookAheads;
+    return true;
 }
 
 bool Bot::possible( const World &w, int node, int edge )
@@ -539,6 +560,8 @@ bool Bot::possible( const World &w, int node, int edge )
     bool  ok = false;
     for ( float wait = 0; wait <= waitLimit( w, b.m_x, b.m_y ) - 4 && !ok; wait += 0.25f )
     {
+        // Out of time in this step (the demo): unknown, counted as possible and looked at again later.
+        if ( !spend() ) return true;
         ok = replay( w, to, e, b, a, wait );
         for ( int k = 0; k < (int)( 0.25f / phys::Step + 0.5f ); ++k )
             for ( Mover &m : a.m_movers ) advanceMover( m, phys::Step );

@@ -137,6 +137,12 @@ int App::run()
                 if ( !ok ) TraceLog( LOG_ERROR, "%s", error.c_str() );
                 m_state = StateE::PLAY;
                 applyWorldSettings();
+                if ( ok && m_o.m_trial )
+                {
+                    m_trial = m_world->m_trial = m_world->m_record = true;
+                    loadGhost( m_world->m_level.m_id );
+                    m_world->m_ghost = m_ghostTrack.empty() ? nullptr : &m_ghostTrack;
+                }
             }
             else
                 ok = startLevel( m_o.m_episode ? m_o.m_episode : 1, m_o.m_stage ? m_o.m_stage : 1 );
@@ -186,7 +192,8 @@ int App::run()
             if ( m_world->load( m_o.m_level, m_progress, error ) )
             {
                 m_state = StateE::PLAY, m_directLevel = true;
-                if ( m_o.m_autoplay ) m_bot = std::make_unique<Bot>(), m_bot->start( *m_world );
+                if ( m_o.m_autoplay )
+                    m_bot = std::make_unique<Bot>(), m_bot->m_realTime = true, m_bot->start( *m_world );
             }
             else
                 m_message = error, m_messageT = 5;
@@ -297,6 +304,8 @@ int App::autotest()
             continue;
         }
         Bot bot;
+        // KEPLER_REALTIME: the autopilot as the demo has it (a few look-aheads per step), to measure its steps.
+        bot.m_realTime = getenv( "KEPLER_REALTIME" ) != nullptr;
         bot.start( w );
         if ( getenv( "KEPLER_TRACE" ) ) bot.m_trace = fopen( ( std::string( getenv( "KEPLER_TRACE" ) ) + w.m_level.m_id + ".txt" ).c_str(), "w" );
         auto wall = std::chrono::steady_clock::now();
@@ -304,11 +313,24 @@ int App::autotest()
         // KEPLER_SNAPSHOT_TEST=<seconds>: at that moment the quick save goes into a freshly loaded level and out again;
         // both must say the same (the line goes into the report).
         float       snapAt = getenv( "KEPLER_SNAPSHOT_TEST" ) ? (float)atof( getenv( "KEPLER_SNAPSHOT_TEST" ) ) : -1;
+        // KEPLER_GHOST: the run is recorded and, when it finishes, kept as the level's time trial ghost.
+        w.m_record = getenv( "KEPLER_GHOST" ) != nullptr;
         std::string snapResult;
+        // The longest step (the autopilot's thinking and the world): what the demo would feel as a hitch.
+        double slowest = 0, slowestAt = 0;
+        int    slow = 0;
         while ( !w.m_finished && w.m_time < m_o.m_limit )
         {
+            auto t0 = std::chrono::steady_clock::now();
+            // (In real time a frame of 60 a second: four steps share its look-aheads.)
+            if ( ( (int)std::lround( w.m_time / phys::Step ) & 3 ) == 0 ) bot.newFrame();
             Controls c = bot.think( w );
             w.update( phys::Step, c );
+            double ms = std::chrono::duration<double, std::milli>( std::chrono::steady_clock::now() - t0 ).count();
+            if ( ms > slowest ) slowest = ms, slowestAt = w.m_time;
+            if ( ms > 20 && bot.m_trace )
+                fprintf( bot.m_trace, "SLOW %.0f ms at t=%.2f: %s\n", ms, w.m_time, bot.m_status.c_str() );
+            slow += ms > 8;
             if ( !w.m_deathLog.empty() ) recordDeaths( w, deaths, "autopilot" );
             if ( snapAt >= 0 && w.m_time >= snapAt && snapResult.empty() )
             {
@@ -327,6 +349,7 @@ int App::autotest()
                         << b;
             }
         }
+        if ( w.m_finished && w.m_record ) saveGhost( w.m_level.m_id, w.m_track );
         if ( w.m_finished ) m_progress.m_credits += w.m_credits, m_progress.m_score += w.m_score;
         else
             ++failures;
@@ -337,7 +360,10 @@ int App::autotest()
             w.m_treasureTaken, w.m_treasure, w.m_secretsFound, w.m_secrets, w.m_kills, w.m_enemiesTotal, bot.m_stalls,
             bot.m_lost, bot.m_noWay, w.m_hp,
             std::chrono::duration<double>( std::chrono::steady_clock::now() - wall ).count(),
-            ( bot.m_stallLog + ( w.m_finished ? "" : " last: " + bot.m_status ) + snapResult ).c_str() );
+            ( bot.m_stallLog + ( w.m_finished ? "" : " last: " + bot.m_status ) + snapResult +
+              " slowest=" + std::to_string( (int)slowest ) + "ms@" + std::to_string( (int)slowestAt ) +
+              "s over8ms=" + std::to_string( slow ) )
+                .c_str() );
         fflush( out );
         if ( bot.m_trace ) fclose( bot.m_trace );
     }
@@ -523,6 +549,7 @@ void App::update( float dt )
         if ( m_bot )
         {
             int n = std::max( 1, (int)std::lround( dt / phys::Step ) );
+            m_bot->newFrame();
             for ( int i = 0; i < n && !m_world->m_finished; ++i ) m_world->update( phys::Step, m_bot->think( *m_world ) );
         }
         else

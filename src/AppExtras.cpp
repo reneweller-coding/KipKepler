@@ -152,6 +152,7 @@ bool App::loadLevelId( const std::string &id )
     if ( m_o.m_autoplay || m_demo )
     {
         m_bot = std::make_unique<Bot>();
+        m_bot->m_realTime = true;
         m_bot->start( *m_world );
     }
     else

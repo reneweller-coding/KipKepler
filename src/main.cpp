@@ -80,6 +80,8 @@ int main( int argc, char **argv )
             o.m_demoNow = true;
         else if ( a == "--help-look" )
             o.m_helpLook = true;
+        else if ( a == "--trial" )
+            o.m_trial = true;
         else if ( a == "--seconds" )
             o.m_seconds = (float)atof( next().c_str() );
     }

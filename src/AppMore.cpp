@@ -492,7 +492,10 @@ void App::drawMap()
         else if ( o.m_kind == "checkpoint" && seen( o.m_x, o.m_y - 10 ) )
             dot( o.m_x, o.m_y - 10, 0.5f, o.m_on ? Color{ 120, 255, 200, 255 } : Color{ 90, 140, 130, 255 } );
     }
-    if ( (int)( m_t * 3 ) % 2 == 0 ) dot( w.m_hero.m_x, w.m_hero.m_y - 20, 0.8f, { 255, 220, 80, 255 } );
+    // Kip always, a ring pulsing around him.
+    dot( w.m_hero.m_x, w.m_hero.m_y - 20, 0.8f, { 255, 220, 80, 255 } );
+    DrawCircleLines( (int)( ox + w.m_hero.m_x / Tile * sc ), (int)( oy + ( w.m_hero.m_y - 20 ) / Tile * sc ),
+                     std::max( 3.0f, sc * ( 1.4f + 0.6f * std::sin( m_t * 6 ) ) ), { 255, 220, 80, 200 } );
     // The key below.
     std::string legend = tr( "map.crystals" ) + " " + std::to_string( missing ) + "   " + tr( "map.secrets" ) + " " +
                          std::to_string( w.m_secretsFound ) + "/" + std::to_string( w.m_secrets ) + "   " +
