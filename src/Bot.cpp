@@ -692,6 +692,12 @@ Controls Bot::think( const World &w )
                      "t=%.1f WATCHDOG %s at x=%.1f y=%.1f ground %d vx %.0f vy %.0f push %.0f mode %d here %d\n",
                      w.m_time, m_status.c_str(), h.m_x, h.m_y, h.m_ground ? 1 : 0, h.m_vx, h.m_vy, h.m_pushX,
                      (int)m_mode, here( w ) );
+        // And who is near (an enemy in the line of fire is the usual reason).
+        if ( m_trace )
+            for ( const Enemy &e : w.m_enemies )
+                if ( e.m_alive && std::fabs( e.m_x - h.m_x ) < 400 && std::fabs( e.m_y - h.m_y ) < 160 )
+                    fprintf( m_trace, "    near: %s x=%.0f y=%.0f dir %d%s%s\n", e.m_def->m_id, e.m_x, e.m_y, e.m_dir,
+                             e.m_hidden ? " hidden" : "", e.m_shieldFront ? " shield" : "" );
         m_mode = ModeE::WANDER;
         m_modeT = 0;
         m_wanderDir = GetRandomValue( 0, 1 ) ? 1 : -1;

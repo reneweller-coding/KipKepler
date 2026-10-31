@@ -70,7 +70,8 @@ count) and warns when getting out costs more than two hits ("WARN  pool: ..."; t
 
 Kip carries an arm cannon. Weapons are found in levels and kept for the rest of the game; LB/RB (Q/E, mouse
 wheel) switch between the weapons he has. All but the blaster use ammo; ammo cells (`&`) refill a share of every
-weapon's ammo, enemies sometimes drop small ones. Holding up aims upwards (standing and in the air). Credits from
+weapon's ammo, enemies sometimes drop small ones. Holding up aims upwards (standing and in the air); level shots
+(and the lancer's beam) hit 12 px below their line, so the small walkers on the ground are hit from a stand. Credits from
 treasure buy upgrades at the Quartermaster between levels (3 steps per weapon: damage, ammo, special; armour steps
 for more health).
 
@@ -132,7 +133,7 @@ the hero may only leave it through the bottom (that is death).
 | `%`  | terrain B (secondary solid material; in theme `ice` it is slippery ice) |
 | `-`  | one-way platform |
 | `_`  | crumbling block: solid, falls 0.5 s after the hero stands on it, back after 4 s |
-| `B`  | breakable block: solid, destroyed by 2 shots |
+| `B`  | breakable block: solid, destroyed by 2 shots; the breakable blocks stacked on it come down with it |
 | `X`  | fake wall: looks like `#`, can be walked through (secret passages) |
 | `^`  | spikes on the floor (point up) -- hurt 25 and bounce |
 | `v`  | spikes on the ceiling (point down) |
@@ -358,6 +359,7 @@ kind and the four bosses; a kind counts as seen once it was on the screen (Progr
 
 Pause map: one pixel per cell, only cells that have been on the screen (World::m_explored); the crystals still missing
 everywhere, keys, pages and checkpoints where explored, the exit, the hero.
+In play, crystals out of sight show at the screen's edge (the crystal and an arrow where the line from Kip leaves the screen): the nearest three within 1.3 screen widths, any distance once only three are left.
 
 Colour help: closed doors and keys get a square (blue) or a triangle (gold); laser fences and crushers draw yellow
 warning stripes over what they hurt now (bright) and in the next 0.6 s (faint).

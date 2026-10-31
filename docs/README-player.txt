@@ -19,7 +19,8 @@ Steuerung (auch unter Optionen > Steuerung):
 Ziel: Sammle alle Kristalle eines Levels, dann öffnet sich der Ausgang. Schlüsselkarten öffnen Türen derselben
 Farbe, Schalter bewegen Wände, und manche Wände sind gar keine. Schätze bringen Punkte und Credits; mit Credits
 rüstet der Quartiermeister zwischen den Levels Waffen und Panzerung auf. Wer feststeckt: Pause > Zurück zum
-Kontrollpunkt.
+Kontrollpunkt. Fehlende Kristalle in der Nähe zeigt ein Pfeil am Bildschirmrand, die letzten drei immer;
+zerschießbare Wände stürzen ganz ein, sobald ihr unterster Block fällt.
 
 Mehr: Vor jedem Level funkt die Kommodore. In jeder Episode führt ein versteckter Warp in ein Geheimlevel. Medaillen
 pro Level (Zeit, alle Schätze, ohne Treffer, alle Geheimnisse), 40 Auszeichnungen, Logbuchseiten zum Nachlesen und
@@ -40,6 +41,9 @@ schneller Schuss) und die Deckwache (fährt auf den Plattformen mit).
 
 Neu in 1.3: Säure, Lava, Plasma und Sole kosten Gesundheit statt eines Lebens -- wer hineinfällt, wird
 herausgeschleudert und kann sich (steuernd) auf ein Ufer retten. Zu tiefe Becken sind dafür flacher geworden.
+
+Neu in 1.4: Kips Schuss trifft auch die kleinen Gegner am Boden, zerschießbare Wände stürzen ganz ein, und
+fehlende Kristalle in der Nähe zeigen sich als Pfeil am Bildschirmrand.
 
 Spielstände und Einstellungen: %APPDATA%\KipKepler (Windows), ~/.local/share/KipKepler (Linux).
 Windows warnt beim ersten Start vielleicht ("Der Computer wurde durch Windows geschützt"): "Weitere Informationen"
@@ -63,7 +67,8 @@ Controls (also under Options > Controls):
 
 Goal: collect every crystal of a level to open the exit. Key cards open doors of their colour, switches move walls,
 and some walls are no walls at all. Treasure brings score and credits; the Quartermaster between levels upgrades
-weapons and armour for credits. Stuck? Pause > Back to the checkpoint.
+weapons and armour for credits. Stuck? Pause > Back to the checkpoint. Missing crystals nearby show as an arrow at the screen's edge,
+the last three always; breakable walls come down whole once their lowest block falls.
 
 More: the Commodore radios in before every level. In every episode a hidden warp leads to a secret level. Medals per
 level (time, all treasure, unhurt, all secrets), 40 awards, logbook pages to read again and high scores are under
@@ -83,6 +88,9 @@ out of the pools), the shard sniper (aims visibly, then one fast shot) and the d
 
 New in 1.3: acid, lava, plasma and brine cost health instead of a life -- fall in and you are thrown out and can
 steer onto a bank. Pools that were too deep for that are shallower now.
+
+New in 1.4: Kip's shots hit the small enemies on the ground too, breakable walls come down whole, and missing
+crystals nearby show as an arrow at the screen's edge.
 
 Saves and settings: %APPDATA%\KipKepler (Windows), ~/.local/share/KipKepler (Linux).
 Windows may warn at the first start ("Windows protected your PC"): "More info" > "Run anyway" -- the program is not

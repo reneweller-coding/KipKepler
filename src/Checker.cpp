@@ -540,11 +540,12 @@ bool explore( const Level &level, Search &S, std::vector<Node> &nodes, Found &f,
                     if ( next.insert( to ).second ) nodes[ni].m_edges.push_back( { to, -1, n.m_x, here.m_touched } );
                 }
             }
-            // Switches in the line of fire (left, right at the cannon's height, or straight up) can be shot.
+            // Switches in the line of fire (left, right at the cannon's height, or straight up) can be shot -- within
+            // the blaster's reach (420 px from the cannon: 13 cells from anywhere on the stand).
             {
                 int row = n.m_fy - 1;
                 for ( int dir : { -1, 1 } )
-                    for ( int k = 1; k <= 16; ++k )
+                    for ( int k = 1; k <= 13; ++k )
                     {
                         int cx = n.m_fx + dir * k;
                         if ( !L.inside( cx, row ) || S.world.solid( cx, row ) ) break;

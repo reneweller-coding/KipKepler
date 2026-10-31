@@ -24,9 +24,12 @@ Color colourOf( unsigned rgb )
     return { (unsigned char)( rgb >> 16 ), (unsigned char)( rgb >> 8 ), (unsigned char)rgb, 255 };
 }
 
-bool inBox( float x, float y, float r, const Enemy &e )
+/** How far below its line Kip's level shots still hit: the cannon is 27 px up, the small walkers are 20 tall. */
+constexpr float LowReach = 12.0f;
+
+bool inBox( float x, float y, float r, const Enemy &e, float low = 0 )
 {
-    return x + r > e.left() && x - r < e.right() && y + r > e.top() && y - r < e.m_y;
+    return x + r > e.left() && x - r < e.right() && y + r + low > e.top() && y - r < e.m_y;
 }
 
 }   // namespace
@@ -130,7 +133,7 @@ void World::fire()
             x += dx * 4, y += dy * 4, len += 4;
         float half = up >= 3 ? 9.0f : 5.0f;
         float l = std::min( mx, x ), r = std::max( mx, x ), t = std::min( my, y ), b = std::max( my, y );
-        if ( dx != 0 ) t -= half, b += half;
+        if ( dx != 0 ) t -= half, b += half + LowReach;
         else
             l -= half, r += half;
         for ( size_t i = 0; i < m_enemies.size(); ++i )
@@ -519,10 +522,12 @@ void World::stepShots( float dt )
             }
         if ( s.m_dead ) continue;
         float r = s.m_charged ? 9.0f : s.m_weapon == WeaponE::MORTAR ? 7.0f : 4.0f;
+        // A shot flying level reaches down to the small ones on the ground (the cannon sits higher than a crab's back).
+        float low = s.m_weapon != WeaponE::MORTAR && std::fabs( s.m_vy ) < std::fabs( s.m_vx ) ? LowReach : 0.0f;
         for ( size_t i = 0; i < m_enemies.size() && !s.m_dead; ++i )
         {
             Enemy &e = m_enemies[i];
-            if ( !e.m_alive || e.m_hidden || !inBox( s.m_x, s.m_y, r, e ) ) continue;
+            if ( !e.m_alive || e.m_hidden || !inBox( s.m_x, s.m_y, r, e, low ) ) continue;
             if ( std::find( s.m_hit.begin(), s.m_hit.end(), (int)i ) != s.m_hit.end() ) continue;
             if ( s.m_splash > 0 )
             {
@@ -710,6 +715,15 @@ void World::hitCell( int cx, int cy, float damage )
         burst( x, y, 16, { 170, 150, 130, 255 }, 160, false, 800 );
         effect( "smoke", x, y );
         m_shake = std::max( m_shake, 0.15f );
+        // What stood on it comes down with it: a wall shot at the cannon's height opens all the way up.
+        for ( int above = cy - 1; m_level.inside( cx, above ) && m_level.at( cx, above ).m_kind == CellE::BREAKABLE; --above )
+        {
+            size_t j = (size_t)above * m_level.m_w + cx;
+            if ( m_broken[j] >= 2 ) break;
+            m_broken[j] = 2;
+            burst( x, above * T + 16, 12, { 170, 150, 130, 255 }, 140, false, 800 );
+            effect( "smoke", x, above * T + 16 );
+        }
     }
     else
     {

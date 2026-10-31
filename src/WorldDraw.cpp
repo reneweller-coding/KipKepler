@@ -577,6 +577,59 @@ void World::drawHud( Screen &s )
         return font.draw( t, x, y, c );
     };
 
+    // Crystals out of sight: the nearest few show at the screen's edge where they lie (all of them once only three
+    // are left), so none has to be searched for long.
+    if ( m_crystalsTaken < m_crystals && !m_dead )
+    {
+        const Sheet                                  &items = assets().sheet( "items" );
+        float                                         hx = m_hero.m_x - m_camX, hy = m_hero.m_y - 22 - m_camY;
+        bool                                          all = m_crystals - m_crystalsTaken <= 3;
+        std::vector<std::pair<float, const Pickup *>> far;
+        for ( const Pickup &p : m_pickups )
+        {
+            if ( p.m_taken || p.m_kind != PickE::CRYSTAL ) continue;
+            float px = p.m_x - m_camX, py = p.m_y - m_camY;
+            if ( px > -8 && px < s.m_w + 8 && py > -8 && py < s.m_h + 8 ) continue;
+            float d = std::hypot( p.m_x - m_hero.m_x, p.m_y - m_hero.m_y );
+            if ( all || d < s.m_w * 1.3f ) far.push_back( { d, &p } );
+        }
+        std::sort( far.begin(), far.end(), []( const auto &a, const auto &b ) { return a.first < b.first; } );
+        if ( far.size() > 3 ) far.resize( 3 );
+        for ( const auto &[d, p] : far )
+        {
+            // Where the line from Kip to the crystal leaves the screen, kept clear of the panel at the top left.
+            float dx = p->m_x - m_camX - hx, dy = p->m_y - m_camY - hy, len = std::max( 1.0f, std::hypot( dx, dy ) );
+            float ux = dx / len, uy = dy / len, m = 18;
+            float k = std::min( ux > 0 ? ( s.m_w - m - hx ) / ux : ux < 0 ? ( m - hx ) / ux : 1e9f,
+                                uy > 0 ? ( s.m_h - m - hy ) / uy : uy < 0 ? ( m - hy ) / uy : 1e9f );
+            float x = hx + ux * k, y = hy + uy * k;
+            if ( x < 150 && y < 112 )
+            {
+                if ( ux < 0 && std::fabs( ux ) > std::fabs( uy ) ) y = 112;
+                else
+                    x = 150;
+            }
+            // The crystal on a dark disc a little inside (it must stand out from any wall), a ring pulsing around it, an
+            // arrow towards the edge.
+            float pulse = 0.5f + 0.5f * std::sin( m_clock * 5 + d * 0.01f );
+            float cx = std::floor( x - ux * 8 ), cy = std::floor( y - uy * 8 );
+            Color ring = { (unsigned char)( 90 + 110 * pulse ), (unsigned char)( 210 + 45 * pulse ), 255, 255 };
+            DrawCircle( (int)cx, (int)cy, 14, { 8, 10, 26, 170 } );
+            DrawCircleLines( (int)cx, (int)cy, 14, ring );
+            DrawCircleLines( (int)cx, (int)cy, 13, ring );
+            items.draw( items.frame( "crystal", m_clock ), cx, cy );
+            auto arrow = [&]( float r, float w, Color c )
+            {
+                Vector2 tip = { x + ux * ( 13 + r ), y + uy * ( 13 + r ) }, b1 = { x + ux * 7 - uy * w, y + uy * 7 + ux * w },
+                        b2 = { x + ux * 7 + uy * w, y + uy * 7 - ux * w };
+                if ( ( b1.x - tip.x ) * ( b2.y - tip.y ) - ( b1.y - tip.y ) * ( b2.x - tip.x ) > 0 ) std::swap( b1, b2 );
+                DrawTriangle( tip, b1, b2, c );
+            };
+            arrow( 3, 7, { 8, 10, 26, 255 } );
+            arrow( 0, 5, ring );
+        }
+    }
+
     // Health: the bar's frame and its fill (green, red when low), longer with armour.
     float hmax = (float)m_progress->healthMax();
     float frac = std::clamp( m_hp / hmax, 0.0f, 1.0f );
