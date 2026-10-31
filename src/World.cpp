@@ -989,13 +989,23 @@ void World::stepHero( float dt, const Controls &c )
     {
         if ( liquid )
         {
-            effect( "splash", m_hero.m_x, std::floor( ( m_hero.m_y - 8 ) / T ) * T + 8 );
-            burst( m_hero.m_x, m_hero.m_y - 8, 16, { 160, 255, 120, 255 }, 160 );
-            sfx( "splash" );
-            killHero( "liquid" );
-            return;
+            // A pool costs health, not a life: each time Kip comes down into it, it throws him out again (about four
+            // tiles, steerable), knocked back the way he came. Lava and plasma burn more than acid, resin and brine.
+            if ( m_hero.m_vy >= 0 )
+            {
+                effect( "splash", m_hero.m_x, std::floor( ( m_hero.m_y - 8 ) / T ) * T + 8 );
+                burst( m_hero.m_x, m_hero.m_y - 8, 16, { 160, 255, 120, 255 }, 160 );
+                sfx( "splash" );
+                bool  hot = m_theme == "foundry" || m_theme == "station" || m_theme == "hull" || m_theme == "citadel";
+                float ahead = m_hero.m_vx != 0 ? ( m_hero.m_vx > 0 ? 1.0f : -1.0f ) : (float)m_face;
+                hurtHero( hot ? 30.0f : 20.0f, m_hero.m_x + ahead * 10, "liquid" );
+                if ( m_dead ) return;
+                m_hero.m_vy = -std::sqrt( 2 * m_hero.m_gravity * phys::PoolLift );
+                m_hero.m_noCut = true;
+                m_hero.m_ground = false;
+            }
         }
-        if ( m_hurtT <= 0 && m_shield <= 0 )
+        else if ( m_hurtT <= 0 && m_shield <= 0 )
         {
             hurtHero( 25, m_hero.m_x - m_face * 10, "spikes" );
             m_hero.m_vy = -460;

@@ -28,7 +28,7 @@ sign.e1l3.repeater = REPEATER: a stream of small bolts.|Uses ammo. Switch weapon
 sign.e1l3.mover = Moving platforms: hop on and ride.|Don't jump off too early!
 
 sign.e1l4.spring = Springs: step on and lift off.|You can still steer in the air.
-sign.e1l4.plasma = Plasma conduits! Falling in is fatal.|Jump, don't bathe.
+sign.e1l4.plasma = Plasma conduits! Falling in burns badly.|Jump, don't bathe.
 sign.e1l4.hatch = Way out: the spring under the hatch|takes you back onto the hull.
 
 sign.e1l5.laser = Laser fences! Wait until they|switch off – then dash through.

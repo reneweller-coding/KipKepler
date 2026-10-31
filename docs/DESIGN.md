@@ -50,12 +50,21 @@ Humour is light and friendly (signs, the Commodore's messages between levels), n
 | Jump speed                  | 640 px/s                  | apex 108 px = 3.37 t |
 | Super jump (boots)          | 900 px/s                  | apex 213 px = 6.6 t |
 | Fall speed cap              | 1000 px/s                 |          |
+| Thrown out of a pool        | apex 136 px (`PoolLift`)  | 4.25 t |
 | Releasing jump early        | vy *= 0.45                |          |
 | Coyote time / jump buffer   | 0.08 s / 0.12 s           |          |
 
 Consequences: a ledge 3 tiles higher can be reached, 4 cannot (without boots). Flat gaps up to 4 tiles can be jumped.
 The hero needs 2 free tiles of headroom. One-way platforms (`-`) are landed on from above, jumped through from below,
 and dropped through with down + jump.
+
+Pools hurt instead of killing (as in the old games): each time the hero comes down into one, it costs health (20,
+lava and plasma 30, then none for 1.1 s) and throws him out, about four tiles high, knocked back the way he came and
+steerable. So a pool's surface lies at most 3 tiles below a bank, a ledge or a platform that leads on (4 would
+just work with exact steering -- too tight). The checker throws the hero out of every spot of every pool's surface
+(steering left, right, not at all; a little weaker than the game, 112 px, for that slack; moving platforms do not
+count) and warns when getting out costs more than two hits ("WARN  pool: ..."; the summary counts "deep pool cells", which must be 0);
+`tools/levels/raise_pools.py` raises such pools to three tiles below the lower bank (or `--to` a line).
 
 ## Weapons (science fiction, no magic)
 
@@ -128,7 +137,7 @@ the hero may only leave it through the bottom (that is death).
 | `^`  | spikes on the floor (point up) -- hurt 25 and bounce |
 | `v`  | spikes on the ceiling (point down) |
 | `<` `>` | spikes on a wall (pointing left / right) |
-| `~`  | liquid (acid, lava, plasma, freezing brine -- by theme): kills |
+| `~`  | liquid (acid, lava, plasma, freezing brine -- by theme): hurts (20, lava and plasma 30) and throws the hero out, about four cells high (`phys::PoolLift`) -- a fall costs health, not a life |
 | `*`  | crystal (prism shard). All must be collected to open the exit |
 | `$`  | treasure, the kind picked by the engine (100-500 points) |
 | `+`  | health, small (+20) |

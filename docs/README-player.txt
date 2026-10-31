@@ -38,6 +38,9 @@ zeigt H diese Todeskarte, R die erreichbaren Stellen nach dem Prüfen (F5). Neue
 einfache Schüsse zurück), der Lakenaal (springt aus den Becken), der Splitterschütze (zielt sichtbar, dann ein
 schneller Schuss) und die Deckwache (fährt auf den Plattformen mit).
 
+Neu in 1.3: Säure, Lava, Plasma und Sole kosten Gesundheit statt eines Lebens -- wer hineinfällt, wird
+herausgeschleudert und kann sich (steuernd) auf ein Ufer retten. Zu tiefe Becken sind dafür flacher geworden.
+
 Spielstände und Einstellungen: %APPDATA%\KipKepler (Windows), ~/.local/share/KipKepler (Linux).
 Windows warnt beim ersten Start vielleicht ("Der Computer wurde durch Windows geschützt"): "Weitere Informationen"
 > "Trotzdem ausführen" -- das Programm ist nicht signiert.
@@ -77,6 +80,9 @@ large text and a performance display (frames per second, battery; it also writes
 The game notes where Kip is knocked out (deaths.txt); in the level editor H shows this death map, R the places the
 hero can reach after the check (F5). New enemies: the mirror bot (throws plain shots back), the brine eel (leaps
 out of the pools), the shard sniper (aims visibly, then one fast shot) and the deck guard (rides the platforms).
+
+New in 1.3: acid, lava, plasma and brine cost health instead of a life -- fall in and you are thrown out and can
+steer onto a bank. Pools that were too deep for that are shallower now.
 
 Saves and settings: %APPDATA%\KipKepler (Windows), ~/.local/share/KipKepler (Linux).
 Windows may warn at the first start ("Windows protected your PC"): "More info" > "Run anyway" -- the program is not

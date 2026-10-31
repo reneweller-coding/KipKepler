@@ -9,7 +9,7 @@ level.e4l7 = Hangar der Schatten
 level.e4l8 = Kernzugang
 level.e4l9 = Das Gloam
 
-sign.e4l1.lava = Geschmolzenes Metall ist tödlich!|Spring mit Anlauf über die Rinnen.
+sign.e4l1.lava = Geschmolzenes Metall brennt höllisch!|Spring mit Anlauf über die Rinnen.
 sign.e4l1.hound = Gloamhunde stürmen los, wenn sie dich sehen –|an Kanten bremsen sie. Lass sie kommen|und feuere über die Lücke!
 sign.e4l2.arc = Bogenwerfer: Blitze springen auf bis zu|vier nahe Gegner über. Ideal gegen Trupps!|Waffe wechseln: LB/RB oder Q/E.
 sign.e4l2.belt = Förderbänder tragen dich mit.|Gegen das Band läufst du langsamer.

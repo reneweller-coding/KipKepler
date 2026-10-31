@@ -9,7 +9,7 @@ level.e4l7 = Hangar of Shadows
 level.e4l8 = Core Approach
 level.e4l9 = The Gloam
 
-sign.e4l1.lava = Molten metal kills on contact!|Take a run-up and jump the channels.
+sign.e4l1.lava = Molten metal burns like hell!|Take a run-up and jump the channels.
 sign.e4l1.hound = Gloamhounds charge when they see you –|but they brake at every edge.|Let them come, then fire across the gap!
 sign.e4l2.arc = Arc caster: lightning leaps to up to|four nearby foes. Made for squads!|Switch weapons: LB/RB or Q/E.
 sign.e4l2.belt = Conveyor belts carry you along.|Walking against them is slower.

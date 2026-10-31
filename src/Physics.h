@@ -20,6 +20,7 @@ constexpr float Jump = 640.0f;      ///< jump speed
 constexpr float BootsJump = 900.0f; ///< with the boots
 constexpr float SpringJump = 1180.0f; ///< from a spring (~7 tiles)
 constexpr float FallMax = 1000.0f;  ///< fall speed cap
+constexpr float PoolLift = 136.0f;   ///< how high a pool throws the hero out (px, ~4 tiles; hurts, does not kill)
 constexpr float Cut = 0.45f;        ///< vy *= Cut when the jump is let go while rising
 constexpr float Coyote = 0.08f;     ///< jump still allowed this long after walking off
 constexpr float Buffer = 0.12f;     ///< a jump pressed this long before landing still counts

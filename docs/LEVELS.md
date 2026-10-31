@@ -13,7 +13,8 @@ level and the rules of good level design for this game.
 * `work\tool\KeplerTool.exe render assets\levels\e1l1.txt work\levels\e1l1.png 0.5` -- the whole level with its real
   tiles and sprites (CPU only). `... render <level> <out.png> x y w h` -- a part (tiles), twice as large: use it to
   look at every area at the scale the player sees (the screen shows 20 x 11 tiles).
-* `work\tool\KeplerTool.exe checkall assets\levels` -- all levels.
+* `work\tool\KeplerTool.exe checkall assets\levels` -- all levels. Pools must be left with at most two hits
+  (`deep pool cells 0`): see docs/DESIGN.md, Physics.
 * Do NOT start KipKepler.exe yourself (it uses the GPU that other jobs share).
 
 The checker's limits: breakable blocks `B` count as open, so put them only where the hero can shoot them (horizontal

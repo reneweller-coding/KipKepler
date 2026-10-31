@@ -9,7 +9,7 @@ level.e2l7 = Amber Tunnels
 level.e2l8 = The Nursery
 level.e2l9 = Broodmother
 
-sign.e2l1.acid = Thessan acid: green, bubbly, deadly.|Jump over it, don't fall in!
+sign.e2l1.acid = Thessan acid: green, bubbly, nasty.|Jump over it, don't fall in!
 sign.e2l1.beetle = Beetles are armoured at the front.|Jump over them and hit them from behind!
 sign.e2l2.ricochet = RICOCHET: discs bounce up to 4 times –|right into a beetle's unarmoured back.|Switch weapons: Q / E or LB / RB
 sign.e2l2.crumble = Rotten roots! They give way if you|stand still on them. Keep moving!

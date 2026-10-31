@@ -15,6 +15,7 @@
 #include <cmath>
 #include <cstdio>
 #include <deque>
+#include <map>
 #include <set>
 #include <thread>
 #include <unordered_map>
@@ -27,6 +28,9 @@ namespace
 {
 
 constexpr float T = (float)Tile;
+/** @brief The checker's throw out of a pool: a little weaker than the game's (phys::PoolLift), for slack -- a
+ *         player steers less exactly. A bank four tiles up does not count, three do. */
+constexpr float SureLift = phys::PoolLift - 24.0f;
 
 /** @brief A moving platform's place at one of its stops (the checker assumes it can be waited for anywhere). */
 struct Stop
@@ -216,6 +220,55 @@ struct Search
         float top = 0;
         if ( !any && world.platformTop( b.left(), b.right(), y - 0.5f, y + 0.5f, top ) ) any = true;
         return any && !hurt( b );
+    }
+
+    /**
+     * @brief One throw out of a pool: the hero's feet just in the surface at (x, y), thrown up as the game does,
+     *        steering `dir` from `after` seconds on. Moving platforms do not count: one may be anywhere on its way.
+     * @return 0 landed (at ox, oy), 1 back in a pool (at ox, oy, after `took` seconds), 2 dead (spikes, out of the
+     *         map), 3 neither
+     */
+    int pool( float x, float y, int dir, float after, float &ox, float &oy, float &took )
+    {
+        world.m_noMovers = true;
+        int r = throwOut( x, y, dir, after, ox, oy, took );
+        world.m_noMovers = false;
+        return r;
+    }
+
+    int throwOut( float x, float y, int dir, float after, float &ox, float &oy, float &took ) const
+    {
+        // Crumbling blocks over the pool have fallen: that is how the hero came down into it.
+        world.m_crumbled.clear();
+        world.m_now = 0;
+        int px = (int)std::floor( x / T ), py = (int)std::floor( y / T );
+        for ( int cy = py - 10; cy < py; ++cy )
+            for ( int cx = px - 8; cx <= px + 8; ++cx )
+                if ( L.inside( cx, cy ) && L.at( cx, cy ).m_kind == CellE::CRUMBLE )
+                    world.m_crumbled[cy * L.m_w + cx] = -10.0f;
+        HeroBody b;
+        b.m_x = x, b.m_y = y;
+        b.m_gravity = phys::Gravity * L.num( "gravity", 1.0f );
+        b.m_vy = -std::sqrt( 2 * b.m_gravity * SureLift );
+        b.m_noCut = true;
+        float t = 0;
+        for ( int i = 0; i < (int)( 4.0f / phys::Step ); ++i, t += phys::Step )
+        {
+            HeroInput in;
+            in.m_dir = t >= after ? dir : 0;
+            world.m_now = t;
+            stepHero( b, in, world, phys::Step );
+            ox = b.m_x, oy = b.m_y, took = t;
+            bool liquid = false;
+            if ( L.hurts( b.left(), b.top(), b.right(), b.m_y, liquid ) )
+            {
+                if ( !liquid ) return 2;
+                if ( b.m_vy >= 0 ) return 1;
+            }
+            if ( b.top() > L.m_h * T ) return 2;
+            if ( b.m_ground && t > 0.05f ) return 0;
+        }
+        return 3;
     }
 
     Sim run( float x, float y, const Prim &p, bool settle = false ) const
@@ -680,10 +733,131 @@ bool checkLevel( const Level &level, const std::string &picture, std::string &re
                   c % L.m_w + 1, c / L.m_w );
         report += line;
     }
-    snprintf( line, sizeof( line ),
-              "%s %s: %dx%d, crystals %d/%d, treasure %d/%d, secrets %d/%d, places %d, trap places %d, no-way-back places %d\n",
-              ok ? "OK   " : "FAIL ", L.m_id.c_str(), L.m_w, L.m_h, crystalsReached, crystals, treasureReached,
-              treasure, secretsReached, secrets, (int)nodes.size(), (int)trapCells.size(), (int)oneWay.size() );
+
+    // Pools cost health, not a life: they throw the hero out (phys::PoolLift) each time he comes down into them. From
+    // every spot of a pool's surface he must get out, steering left, right or not at all, onto a place that leads to
+    // the exit -- hurt at most PoolHits times (a hit, then none for HurtTime: World::hurtHero).
+    const int     PoolHits = 2;
+    const float   HurtTime = 1.1f;
+    std::set<int> safe;   // cells of places from which the exit can be reached
+    for ( size_t i = 0; i < nodes.size(); ++i )
+        if ( out[i] ) safe.insert( nodes[i].m_fy * L.m_w + nodes[i].m_fx );
+    auto liquidAt = [&]( int cx, int cy ) { return L.inside( cx, cy ) && L.at( cx, cy ).m_kind == CellE::LIQUID; };
+    // The surface cell a pool was entered at (x, feet y): up the liquid to its top.
+    auto surfaceOf = [&]( float x, float y )
+    {
+        int cx = (int)std::floor( x / T ), cy = (int)std::floor( ( y - 8.0f ) / T );
+        if ( !liquidAt( cx, cy ) && liquidAt( cx, cy + 1 ) ) ++cy;
+        while ( liquidAt( cx, cy - 1 ) ) --cy;
+        return liquidAt( cx, cy ) ? cy * L.m_w + cx : -1;
+    };
+    // Landing places off the graph (a ledge in a pit): whether a few moves from there reach a safe place.
+    std::map<int, bool> leadsOn;
+    auto cellOf = [&]( float x, float y ) { return (int)std::lround( y / T ) * L.m_w + (int)std::floor( x / T ); };
+    auto safeLanding = [&]( float x, float y )
+    {
+        int cell = cellOf( x, y );
+        if ( safe.count( cell ) ) return true;
+        auto it = leadsOn.find( cell );
+        if ( it != leadsOn.end() ) return it->second;
+        bool                                on = false;
+        std::set<int>                       seen = { cell };
+        std::deque<std::pair<float, float>> todo = { { x, y } };
+        for ( int expanded = 0; !todo.empty() && !on && expanded < 24; ++expanded )
+        {
+            auto [px, py] = todo.front();
+            todo.pop_front();
+            for ( const Prim &p : S.prims )
+            {
+                Sim s = S.run( px, py, p );
+                if ( !s.m_landed ) continue;
+                int c = cellOf( s.m_x, s.m_y );
+                if ( safe.count( c ) )
+                {
+                    on = true;
+                    break;
+                }
+                if ( seen.insert( c ).second ) todo.push_back( { s.m_x, s.m_y } );
+            }
+        }
+        return leadsOn[cell] = on;
+    };
+    std::vector<int>                    surface;
+    std::map<int, std::map<int, float>> into;   // pool cell -> the pool cells a throw from it ends in, and how soon
+    std::map<int, float>                last;   // pool cell -> seconds until the last time in the pool, getting out
+    std::set<std::pair<float, int>>     fromOut;
+    for ( int cy = 0; cy < L.m_h; ++cy )
+        for ( int cx = 0; cx < L.m_w; ++cx )
+        {
+            if ( !liquidAt( cx, cy ) || liquidAt( cx, cy - 1 ) ) continue;
+            // Only where the hero fits above the surface (not a pool under a ceiling).
+            if ( S.world.solid( cx, cy - 1 ) || S.world.solid( cx, cy - 2 ) ) continue;
+            int c = cy * L.m_w + cx;
+            surface.push_back( c );
+            bool gets = false;
+            for ( auto [dir, after] : { std::pair{ 0, 0.0f }, { -1, 0.0f }, { 1, 0.0f }, { -1, 0.25f }, { 1, 0.25f } } )
+            {
+                float ox = 0, oy = 0, took = 0;
+                int   r = S.pool( ( cx + 0.5f ) * T, cy * T + 9.0f, dir, after, ox, oy, took );
+                if ( r == 0 && safeLanding( ox, oy ) ) gets = true;
+                if ( r == 1 )
+                {
+                    int s = surfaceOf( ox, oy );
+                    if ( s >= 0 && s != c && ( !into[c].count( s ) || took < into[c][s] ) ) into[c][s] = took;
+                }
+            }
+            if ( gets ) last[c] = 0, fromOut.insert( { 0.0f, c } );
+        }
+    // From the ways out backwards, the soonest first.
+    std::map<int, std::vector<std::pair<int, float>>> intoBack;
+    for ( auto &[c, to] : into )
+        for ( auto [s, d] : to ) intoBack[s].push_back( { c, d } );
+    while ( !fromOut.empty() )
+    {
+        auto [e, c] = *fromOut.begin();
+        fromOut.erase( fromOut.begin() );
+        if ( e > last[c] ) continue;
+        for ( auto [p, d] : intoBack[c] )
+            if ( !last.count( p ) || e + d < last[p] )
+            {
+                if ( last.count( p ) ) fromOut.erase( { last[p], p } );
+                last[p] = e + d;
+                fromOut.insert( { last[p], p } );
+            }
+    }
+    auto          hits = [&]( int c ) { return 1 + (int)( last[c] / HurtTime ); };
+    std::set<int> deep;
+    for ( int c : surface )
+        if ( !last.count( c ) || hits( c ) > PoolHits ) deep.insert( c );
+    // One line per stretch of surface (map columns and line, 1-based).
+    for ( auto it = deep.begin(); it != deep.end(); )
+    {
+        int  first = *it, end = first, most = 0;
+        bool never = false;
+        for ( ; it != deep.end() && ( *it == first || *it == end + 1 ) && *it / L.m_w == first / L.m_w; ++it )
+        {
+            end = *it;
+            if ( last.count( end ) )
+                most = std::max( most, hits( end ) );
+            else
+                never = true;
+        }
+        if ( never )
+            snprintf( line, sizeof( line ), "WARN  pool: columns %d-%d, map line %d: the hero cannot get out\n",
+                      first % L.m_w + 1, end % L.m_w + 1, first / L.m_w + 1 );
+        else
+            snprintf( line, sizeof( line ), "WARN  pool: columns %d-%d, map line %d: up to %d hits to get out\n",
+                      first % L.m_w + 1, end % L.m_w + 1, first / L.m_w + 1, most );
+        report += line;
+    }
+
+    snprintf(
+        line, sizeof( line ),
+        "%s %s: %dx%d, crystals %d/%d, treasure %d/%d, secrets %d/%d, places %d, trap places %d, no-way-back places "
+        "%d, pool cells %d, deep pool cells %d\n",
+        ok ? "OK   " : "FAIL ", L.m_id.c_str(), L.m_w, L.m_h, crystalsReached, crystals, treasureReached, treasure,
+        secretsReached, secrets, (int)nodes.size(), (int)trapCells.size(), (int)oneWay.size(), (int)surface.size(),
+        (int)deep.size() );
     report += line;
 
     if ( !picture.empty() )
@@ -726,6 +900,9 @@ bool checkLevel( const Level &level, const std::string &picture, std::string &re
             ImageDrawRectangle( &img, ( c % L.m_w ) * P, ( c / L.m_w - 1 ) * P, P, P, { 240, 230, 40, 255 } );
         for ( int c : trapCells )
             ImageDrawRectangle( &img, ( c % L.m_w ) * P, ( c / L.m_w - 1 ) * P, P, P, { 255, 140, 0, 255 } );
+        for ( int c : deep )
+            ImageDrawRectangleLines( &img, { (float)( c % L.m_w ) * P, (float)( c / L.m_w ) * P, P, P }, 2,
+                                     { 255, 60, 60, 255 } );
         for ( const Stop &s : S.stops )
             ImageDrawRectangle( &img, (int)( s.m_x0 / T * P ), (int)( s.m_top / T * P ), (int)( ( s.m_x1 - s.m_x0 ) / T * P ), 1, { 230, 210, 80, 160 } );
         for ( size_t i = 0; i < L.m_spawns.size(); ++i )

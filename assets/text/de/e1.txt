@@ -28,7 +28,7 @@ sign.e1l3.repeater = REPETIERER: ein Strom kleiner Bolzen.|Braucht Munition. Waf
 sign.e1l3.mover = Fahrende Plattformen: aufspringen|und mitfahren. Nicht zu früh abspringen!
 
 sign.e1l4.spring = Sprungfedern: drauflaufen und abheben.|In der Luft kannst du noch lenken.
-sign.e1l4.plasma = Plasmaleitungen! Hineinfallen ist|tödlich. Springen, nicht baden.
+sign.e1l4.plasma = Plasmaleitungen! Hineinfallen brennt|übel. Springen, nicht baden.
 sign.e1l4.hatch = Ausstieg: Die Feder unter der Luke|bringt dich zurück auf die Hülle.
 
 sign.e1l5.laser = Laserzäune! Warte, bis sie|abschalten – dann schnell durch.

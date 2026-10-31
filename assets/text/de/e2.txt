@@ -9,7 +9,7 @@ level.e2l7 = Bernsteintunnel
 level.e2l8 = Die Brutkammern
 level.e2l9 = Brutmutter
 
-sign.e2l1.acid = Thessa-Säure: grün, blubbernd, tödlich.|Drüberspringen, nicht reinfallen!
+sign.e2l1.acid = Thessa-Säure: grün, blubbernd, ätzend.|Drüberspringen, nicht reinfallen!
 sign.e2l1.beetle = Käfer sind vorne gepanzert.|Spring drüber und triff sie von hinten!
 sign.e2l2.ricochet = QUERSCHLÄGER: Scheiben prallen bis zu|4-mal ab – auch Käfern in den Rücken.|Waffe wechseln: Q / E oder LB / RB
 sign.e2l2.crumble = Morsche Wurzeln! Sie brechen weg,|wenn du stehen bleibst. Weiterlaufen!
