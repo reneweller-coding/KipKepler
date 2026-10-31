@@ -244,6 +244,8 @@ bool replay( const World &w, const ReachNode &to, const ReachEdge &e, HeroBody b
             if ( dx > 1.5f * T || dy > ( a.riding( b ) ? 4.0f : 1.5f ) * T ) return no( "landed" );
             landed = i;
         }
+        else if ( !b.m_ground && b.m_vy >= 0 )
+            return no( "slid off" );   // landed with too much speed at a ledge
         else if ( ( i - landed ) * phys::Step > 0.4f )
             return true;
     }
@@ -466,7 +468,11 @@ void Bot::fight( const World &w, Controls &c )
     {
         if ( !e.m_alive || e.m_hidden ) continue;
         float dx = e.m_x - hx, dy = e.cy() - hy;
-        if ( dx * w.m_face > -4 && std::fabs( dx ) < 300 && std::fabs( dy ) < e.m_def->m_h * 0.5f + 10 ) front = true;
+        // (A mirror facing the hero throws plain shots back: not at it, unless the weapon is a heavy one.)
+        bool mirror = e.m_def->m_brain == BrainE::MIRROR && ( hx - e.m_x ) * e.m_dir > 0 &&
+                      w.m_weapon != WeaponE::LANCER && w.m_weapon != WeaponE::MORTAR && w.m_weapon != WeaponE::ARC;
+        if ( !mirror && dx * w.m_face > -4 && std::fabs( dx ) < 300 && std::fabs( dy ) < e.m_def->m_h * 0.5f + 10 )
+            front = true;
         if ( std::fabs( dx ) < 30 && dy < -20 && dy > -260 ) above = true;
     }
     // A breakable block ahead at the cannon's height is in the way: shoot it.
@@ -654,14 +660,19 @@ Controls Bot::think( const World &w )
         fprintf( m_trace, "t=%.1f DEATH at %d,%d cells %s nearest %s %.0f px, mode %d move %d\n", w.m_time, (int)( h.m_x / T ), (int)std::lround( h.m_y / T ),
                  cells.c_str(), near.c_str(), best, (int)m_mode, m_edge.m_prim );
     }
+    bool fresh = w.m_dead && !m_wasDead;
     m_wasDead = w.m_dead;
     if ( w.m_dead || w.m_exitT >= 0 || w.m_appearT > 0 )
     {
-        // A move that ended in death is not tried again soon, after the second death never again (the watchdog
-        // forgets failures, not deaths).
+        // A move that ended in death -- or whose landing did, a moment later -- is not tried again soon, after the
+        // second death never again (the watchdog forgets failures, not deaths).
+        long key = -1;
         if ( w.m_dead && m_mode == ModeE::MOVE && m_from >= 0 )
+            key = (long)m_from * 4096 + m_edgeIndex;
+        else if ( fresh && m_lastMove >= 0 && w.m_time - m_lastMoveT < 1.5f )
+            key = m_lastMove;
+        if ( key >= 0 )
         {
-            long key = (long)m_from * 4096 + m_edgeIndex;
             m_failed[key] += 2;
             if ( ++m_deaths[key] >= 2 ) m_impossible[key] = 1;
         }
@@ -795,6 +806,18 @@ Controls Bot::think( const World &w )
                       ( loose && std::fabs( dx ) < tolerance && ( !h.m_icy || std::fabs( h.m_vx ) < 40 ) );
         // On a platform the place a move was found at has moved on: only the look-ahead decides.
         if ( riding && m_edge.m_prim >= 0 ) there = true;
+        // Landed with speed towards a ledge (the move's run carries on): brake first, whatever comes next.
+        if ( staticFloor && std::fabs( h.m_vx ) > 30 )
+        {
+            int   vdir = h.m_vx > 0 ? 1 : -1;
+            float run = h.m_vx * h.m_vx / ( 2 * phys::DecGround );
+            if ( !standsFirm( w, h.m_x + vdir * ( run + 4 ), h.m_y ) )
+            {
+                ( vdir > 0 ? c.m_left : c.m_right ) = true;
+                fight( w, c );
+                break;
+            }
+        }
         // Never step off a ledge on the way to where a move begins (the checker may stand on its last half pixel):
         // close to it is close enough then.
         bool brink = m_edge.m_prim >= 0 && staticFloor && !standsFirm( w, h.m_x + ( dx > 0 ? 3 : -3 ), h.m_y );
@@ -869,6 +892,7 @@ Controls Bot::think( const World &w )
             bool done = h.m_ground && ( m_left || ( m_phase2 && std::fabs( h.m_vx ) < 1 ) || h.m_hitWall ) && m_step * dt > 0.02f;
             if ( done || jumped || m_step * dt > 4 )
             {
+                m_lastMove = m_from >= 0 ? (long)m_from * 4096 + m_edgeIndex : -1, m_lastMoveT = w.m_time;
                 int now = here( w );
                 if ( now != m_edge.m_to && m_from >= 0 )
                 {

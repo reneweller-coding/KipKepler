@@ -207,6 +207,8 @@ private:
     int         m_perfN = 0;
     float       m_perfSum = 0, m_perfMax = 0;
     std::string m_perfLine;
+    double                         m_perfPart[3] = {};      ///< the frame just shown: update, draw, swap (seconds)
+    double                         m_perfMaxPart[3] = {};   ///< the same for the second's longest frame
     bool        m_focused = true;
 };
 

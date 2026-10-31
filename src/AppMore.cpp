@@ -356,8 +356,11 @@ void App::drawChallenge()
 
 std::vector<std::string> App::bestiaryIds() const
 {
+    // Episode by episode, then the four bosses.
     std::vector<std::string> ids;
-    for ( const EnemyDef &d : enemyDefs() ) ids.push_back( d.m_id );
+    for ( int ep = 1; ep <= 4; ++ep )
+        for ( const EnemyDef &d : enemyDefs() )
+            if ( episodeOf( d ) == ep ) ids.push_back( d.m_id );
     for ( const char *b : { "warden", "broodmother", "colossus", "gloam" } ) ids.push_back( b );
     return ids;
 }
@@ -558,7 +561,9 @@ void App::updatePerf( float frame )
 {
     // A line a second: frames, their average and longest time, the battery; written down while the display is on.
     if ( !perfOn() ) return;
-    ++m_perfN, m_perfSum += frame, m_perfMax = std::max( m_perfMax, frame );
+    ++m_perfN, m_perfSum += frame;
+    // The frame given is the one just shown, whose parts the loop measured.
+    if ( frame > m_perfMax ) m_perfMax = frame, std::copy( m_perfPart, m_perfPart + 3, m_perfMaxPart );
     if ( m_perfSum < 1.0f ) return;
     int   pct = 0;
     float watts = -1;
@@ -581,7 +586,14 @@ void App::updatePerf( float frame )
         << " fps=" << m_perfN / m_perfSum << " avg_ms=" << 1000 * m_perfSum / m_perfN << " max_ms=" << 1000 * m_perfMax
         << " target=" << fpsNames[std::clamp( m_settings.m_fps, 0, 4 )]
         << " battery=" << ( bat ? std::to_string( pct ) : std::string( "-" ) )
-        << " watts=" << ( watts >= 0 ? std::to_string( watts ) : std::string( "-" ) ) << "\n";
+        << " watts=" << ( watts >= 0 ? std::to_string( watts ) : std::string( "-" ) );
+    // A slow frame: where its time went, and the pictures loaded in the meantime.
+    if ( m_perfMax > 0.03f )
+        out << " slow=update:" << 1000 * m_perfMaxPart[0] << ",draw:" << 1000 * m_perfMaxPart[1]
+            << ",swap:" << 1000 * m_perfMaxPart[2];
+    std::string loads = assets().takeLoads();
+    if ( !loads.empty() ) out << " loads: " << loads;
+    out << "\n";
     m_perfN = 0, m_perfSum = 0, m_perfMax = 0;
 }
 

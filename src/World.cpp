@@ -283,6 +283,19 @@ bool World::load( const std::string &path, Progress &progress, std::string &erro
             for ( size_t k = 0; k < m_objects.size(); ++k )
                 if ( m_objects[k].m_ch == o.m_args[0][0] && &m_objects[k] != &o ) o.m_target = (int)k;
 
+    // Riders stand on the platform below their cell from the start (it carries them even while they sleep).
+    for ( Enemy &e : m_enemies )
+        if ( e.m_def->m_brain == BrainE::RIDER )
+        {
+            e.m_mover = -1;
+            for ( size_t k = 0; k < m_movers.size(); ++k )
+            {
+                const Mover &m = m_movers[k];
+                if ( std::fabs( m.m_y0 - e.m_y ) < T * 0.75f && e.m_x > m.m_x0 - 4 && e.m_x < m.m_x0 + m.m_w * T + 4 )
+                    e.m_mover = (int)k;
+            }
+        }
+
     // The hero on the floor below the start.
     const Spawn *start = L.first( "start" );
     m_spawnX = start->m_x * T + T * 0.5f;
@@ -318,6 +331,12 @@ bool World::load( const std::string &path, Progress &progress, std::string &erro
     if ( IsWindowReady() )
     {
         for ( const char *s : { "hero", "items", "objects", "shots", "fx" } ) assets().sheet( s );
+        // The HUD's pictures (the low health bar only shows when it is low) and both fonts.
+        assets().sheetIn( "ui", "hud" );
+        for ( const char *t : { "ui/bar_frame.png", "ui/bar_fill.png", "ui/bar_fill_low.png", "ui/weapon_slot.png",
+                                "ui/weapon_slot_selected.png" } )
+            assets().texture( t );
+        assets().font( false ), assets().font( true, true );
         assets().tiles( m_theme );
         assets().background( m_bgName );
         for ( const Enemy &e : m_enemies )
@@ -349,9 +368,11 @@ int World::spawnEnemy( const std::string &type, float x, float y, bool ambush )
     e.m_shieldFront = d->m_armour;
     e.m_x = x;
     e.m_y = y;
-    e.m_hidden = ambush || d->m_brain == BrainE::BURROWER;
+    e.m_hidden = ambush || d->m_brain == BrainE::BURROWER || d->m_brain == BrainE::EEL;
     e.m_t = ( hashCell( (int)x, (int)y ) % 100 ) * 0.01f;
     e.m_shootT = 1.0f + ( hashCell( (int)x, (int)y, 3 ) % 100 ) * 0.01f;
+    // An eel lurks unseen anyway: ready at once, or a hero falling past the pool is gone before it leaps.
+    if ( d->m_brain == BrainE::EEL ) e.m_shootT = 0.3f;
     int cx = (int)std::floor( x / T ), cy = (int)std::floor( ( y - 1 ) / T );
     switch ( d->m_brain )
     {
@@ -360,6 +381,11 @@ int World::spawnEnemy( const std::string &type, float x, float y, bool ambush )
     case BrainE::FLOATER:
         // Fliers hang in the middle of their cell.
         e.m_y = cy * T + T * 0.5f + d->m_h * 0.5f;
+        break;
+    case BrainE::EEL:
+    case BrainE::RIDER:
+        // Eels lurk at the bottom of their (liquid) cell; riders stand on the platform in the cell below.
+        e.m_y = ( cy + 1 ) * T;
         break;
     case BrainE::SWOOPER:
     case BrainE::DROPPER:

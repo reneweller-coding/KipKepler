@@ -52,22 +52,26 @@ WeaponE weaponOf( const std::string &id );
 /** @brief How an enemy behaves. */
 enum class BrainE : int
 {
-    WALKER,    ///< patrols, turns at walls and edges
-    SHOOTER,   ///< patrols slowly, stops and shoots when it sees the hero
-    LOBBER,    ///< throws arcs at the hero
-    FLIER,     ///< floats on a sine path, drifts towards the hero
-    SWOOPER,   ///< hangs, then dives at the hero and returns
-    GUNSHIP,   ///< flies and shoots
-    TURRET,    ///< fixed, aims and shoots
-    BEAMER,    ///< fixed, charges and fires a beam
-    FLOATER,   ///< drifts at the hero, explodes on touch
-    CHARGER,   ///< walks, revs up and charges when it sees the hero
-    HOPPER,    ///< jumps at the hero
-    DROPPER,   ///< waits on the ceiling, drops on the hero, climbs back
-    SPAWNER,   ///< beams in others
-    BLINKER,   ///< teleports near the hero and shoots
-    BURROWER,  ///< hides in the ground, bursts out when the hero is near
-    HEAVY      ///< slow walker that throws grenades
+    WALKER,     ///< patrols, turns at walls and edges
+    SHOOTER,    ///< patrols slowly, stops and shoots when it sees the hero
+    LOBBER,     ///< throws arcs at the hero
+    FLIER,      ///< floats on a sine path, drifts towards the hero
+    SWOOPER,    ///< hangs, then dives at the hero and returns
+    GUNSHIP,    ///< flies and shoots
+    TURRET,     ///< fixed, aims and shoots
+    BEAMER,     ///< fixed, charges and fires a beam
+    FLOATER,    ///< drifts at the hero, explodes on touch
+    CHARGER,    ///< walks, revs up and charges when it sees the hero
+    HOPPER,     ///< jumps at the hero
+    DROPPER,    ///< waits on the ceiling, drops on the hero, climbs back
+    SPAWNER,    ///< beams in others
+    BLINKER,    ///< teleports near the hero and shoots
+    BURROWER,   ///< hides in the ground, bursts out when the hero is near
+    HEAVY,      ///< slow walker that throws grenades
+    MIRROR,     ///< walks at the hero behind a mirror that throws plain shots back
+    EEL,        ///< lurks in a pool, leaps at the hero passing above
+    SNIPER,     ///< aims a while (a visible line), then fires one fast shot
+    RIDER       ///< rides a moving platform, patrols it and shoots
 };
 
 /** @brief How an enemy dies (sound and debris). */
@@ -93,7 +97,11 @@ struct EnemyDef
     const char *m_shot;    ///< its shot ("enemy_bolt"), or "" for none
     const char *m_child;   ///< spawners: what it beams in
     bool        m_armour;  ///< blocks shots from the front
+    int         m_episode = 0;   ///< where it belongs (0: the table's blocks of eight tell)
 };
+
+/** @brief The episode an enemy kind belongs to (1-4). */
+int episodeOf( const EnemyDef &d );
 
 /** @brief The enemy table entry of a kind (nullptr if unknown). */
 const EnemyDef *enemyDef( const std::string &id );

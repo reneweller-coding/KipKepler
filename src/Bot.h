@@ -84,6 +84,8 @@ private:
     std::map<long, int>  m_impossible;   ///< (node, edge): never let go by the look-ahead, deadly twice, missed thrice
     std::map<long, int>  m_deaths;       ///< (node, edge) -> deaths in it
     std::map<long, int>  m_misses;       ///< (node, edge) -> times it landed elsewhere
+    long                 m_lastMove = -1;   ///< (node, edge) of the move that ended last
+    float                m_lastMoveT = 0;   ///< and when
     float              m_noPlanT = 0;
     float              m_fireT = 0;
     int                m_wanderDir = 1;

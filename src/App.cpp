@@ -217,14 +217,18 @@ int App::run()
             saveSettings( m_settings );
             m_screen.resize();
         }
+        double t0 = GetTime();
         update( dt );
         // The level's ambience bed plays while the level does (and under the pause menu).
         bool playing = m_world && ( m_state == StateE::PLAY || m_state == StateE::PAUSE || m_state == StateE::MAP );
         ambience( playing ? m_world->m_level.key( "theme", "" ) : "" );
         audioUpdate( dt );
+        double t1 = GetTime();
         BeginDrawing();
         draw();
+        double t2 = GetTime();
         EndDrawing();
+        m_perfPart[0] = t1 - t0, m_perfPart[1] = t2 - t1, m_perfPart[2] = GetTime() - t2;
     }
     // Closed in the middle of a level (the Deck's "exit game" too): it keeps its place.
     if ( m_state == StateE::PLAY || m_state == StateE::PAUSE || m_state == StateE::MAP ) saveSuspend();

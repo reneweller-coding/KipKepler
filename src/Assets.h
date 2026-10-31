@@ -181,6 +181,8 @@ public:
     const PixelFont &font( bool big = false, bool outline = false );
     /** @brief Frees everything (before the window closes). */
     void unload();
+    /** @brief The pictures loaded since the last call, with their time ("path 12.3ms", for the performance log). */
+    std::string takeLoads();
 
 private:
     std::map<std::string, std::unique_ptr<Sheet>>      m_sheets;

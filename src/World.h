@@ -116,6 +116,8 @@ struct Enemy
     bool            m_upsideDown = false;  ///< a walker on the ceiling
     float           m_hpMax = 1;
     int             m_phase = 0;        ///< bosses
+    float           m_aimX = 0, m_aimY = 0;   ///< snipers: where the shot goes
+    int             m_mover = -2;             ///< riders: the platform they ride (-2 not looked for yet, -1 none)
 
     float left() const { return m_x - m_def->m_w * 0.5f; }
     float right() const { return m_x + m_def->m_w * 0.5f; }

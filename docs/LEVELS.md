@@ -71,7 +71,8 @@ Music cues: e1_station e1_hull e2_jungle e2_hive e3_ice e3_crystal e4_foundry e4
 
 ### Episode 1 -- The Academy Ring (themes station, hull)
 Enemies: sweeper (walker), sentry (shooter), hoverdrone (flier), turret, sparkmine (homing mine), rammer (charger),
-springbot (hopper), fabricator (spawner of hoverdrones). Weapons: repeater in e1l3, scatter in e1l6.
+springbot (hopper), fabricator (spawner of hoverdrones), mirrorbot (mirror, from e1l3). Weapons: repeater in e1l3,
+scatter in e1l6.
 
 | Level | Name (en / de) | Theme / bg | Features |
 |---|---|---|---|
@@ -87,7 +88,8 @@ springbot (hopper), fabricator (spawner of hoverdrones). Weapons: repeater in e1
 
 ### Episode 2 -- Verdant Moon Thessa (themes jungle, hive)
 Enemies: beetle (armoured walker), spitter (acid lobber), mothling (flier), leaper (hopper), snapvine (drops from the
-ceiling), sporepod (floater), stalker (charger), hivenest (spawner of mothlings). Weapons: ricochet in e2l2, cryo in e2l5.
+ceiling), sporepod (floater), stalker (charger), hivenest (spawner of mothlings), brineeel (leaps from the pools).
+Weapons: ricochet in e2l2, cryo in e2l5.
 
 | Level | Name (en / de) | Theme / bg | Features |
 |---|---|---|---|
@@ -103,8 +105,8 @@ ceiling), sporepod (floater), stalker (charger), hivenest (spawner of mothlings)
 
 ### Episode 3 -- The Comet Mines of Ysk (themes ice, crystal)
 Enemies: crystalcrab (walker), icebat (swoops from the ceiling), shardling (hopper), cryoturret, minerbot (shooter),
-burrower (bursts from the ground), frostgolem (heavy charger), wisp (homing, passes rock). Weapons: lancer in e3l2,
-mortar in e3l6. `%` on ice is slippery.
+burrower (bursts from the ground), frostgolem (heavy charger), wisp (homing, passes rock), shardsniper (aims, then one
+fast shot, from e3l2). Weapons: lancer in e3l2, mortar in e3l6. `%` on ice is slippery.
 
 | Level | Name (en / de) | Theme / bg | Features |
 |---|---|---|---|
@@ -120,8 +122,8 @@ mortar in e3l6. `%` on ice is slippery.
 
 ### Episode 4 -- The Gloam Dreadnought (themes foundry, citadel)
 Enemies: trooper (shooter), shieldbot (armoured walker), jetpacker (flying gunner), gloamhound (charger), lasereye
-(beam turret), blinker (teleports and shoots), brute (heavy, grenades), riftgate (spawner of troopers). Weapons: arc
-in e4l2, seeker in e4l5.
+(beam turret), blinker (teleports and shoots), brute (heavy, grenades), riftgate (spawner of troopers), deckguard
+(rides the movers). Weapons: arc in e4l2, seeker in e4l5.
 
 | Level | Name (en / de) | Theme / bg | Features |
 |---|---|---|---|

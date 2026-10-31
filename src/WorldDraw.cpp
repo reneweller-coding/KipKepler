@@ -318,6 +318,18 @@ void World::draw( Screen &s )
             bool         hung = e.m_upsideDown || ( e.m_ceiling && ( e.m_def->m_brain == BrainE::TURRET || e.m_def->m_brain == BrainE::BEAMER ) );
             float        y = hung ? e.top() : e.m_y, rot = hung ? 180.0f : 0.0f;
             if ( e.m_state == -1 && ( (int)( e.m_stateT * 20 ) % 2 ) ) continue;
+            // A sniper's aim: a thin line from its muzzle, following the hero, then held (blinking) before the shot.
+            if ( e.m_def->m_brain == BrainE::SNIPER && e.m_state == 1 )
+            {
+                Vector2 m = sh.point( "muzzle", { e.m_def->m_w * 0.5f, -e.m_def->m_h * 0.6f } );
+                Vector2 a = { sx( e.m_x + m.x * e.m_dir ), sy( e.m_y + m.y ) }, b = { sx( e.m_aimX ), sy( e.m_aimY ) };
+                bool    held = e.m_stateT >= 0.75f;
+                if ( !held || (int)( e.m_stateT * 24 ) % 2 == 0 )
+                    DrawLineEx( a, b, glow ? 2.0f : 1.0f,
+                                glow   ? Color{ 255, 70, 70, 255 }
+                                : held ? Color{ 255, 90, 90, 240 }
+                                       : Color{ 255, 140, 140, 150 } );
+            }
             if ( sh.m_standIn && !glow )
             {
                 DrawRectangle( (int)sx( e.left() ), (int)sy( e.top() ), e.m_def->m_w, e.m_def->m_h, e.m_boss ? Color{ 200, 60, 200, 255 } : Color{ 220, 90, 60, 255 } );

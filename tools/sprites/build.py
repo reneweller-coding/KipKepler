@@ -28,6 +28,8 @@ MODELS += ["crystalcrab", "icebat", "shardling", "cryoturret", "minerbot", "burr
 MODELS += ["trooper", "shieldbot", "jetpacker", "gloamhound", "lasereye", "blinker", "brute", "riftgate"]
 # bosses
 MODELS += ["warden", "broodmother", "colossus", "gloam"]
+# The third round: one new way of fighting per episode.
+MODELS += ["mirrorbot", "brineeel", "shardsniper", "deckguard"]
 
 
 def _below_normal():

@@ -9,6 +9,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <cstdio>
 #include <cstdlib>
 #include <filesystem>
 #include <fstream>
@@ -88,7 +89,22 @@ void Sheet::draw( int frame, float x, float y, bool flip, Color tint, bool glow,
 namespace
 {
 
+std::string g_loads;   ///< pictures loaded since the last takeLoads()
+
+Texture2D loadTexNow( const std::string &path );
+
 Texture2D loadTex( const std::string &path )
+{
+    double    t0 = GetTime();
+    Texture2D t = loadTexNow( path );
+    char      ms[32];
+    snprintf( ms, sizeof( ms ), " %.1fms ", 1000 * ( GetTime() - t0 ) );
+    bool inside = path.compare( 0, assetDir().size(), assetDir() ) == 0;
+    if ( g_loads.size() < 2000 ) g_loads += ( inside ? path.substr( assetDir().size() ) : path ) + ms;
+    return t;
+}
+
+Texture2D loadTexNow( const std::string &path )
 {
     if ( !FileExists( path.c_str() ) ) return {};
     if ( !IsWindowReady() )
@@ -411,6 +427,13 @@ const PixelFont &Assets::font( bool big, bool outline )
     }
     m_fonts[i] = std::move( f );
     return *m_fonts[i];
+}
+
+std::string Assets::takeLoads()
+{
+    std::string s;
+    s.swap( g_loads );
+    return s;
 }
 
 void Assets::unload()

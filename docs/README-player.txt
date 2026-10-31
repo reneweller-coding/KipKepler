@@ -34,7 +34,9 @@ aus Nur-Blaster, Ein Treffer, geringer Schwerkraft, Finsternis und Turbo, mit Be
 Bestiarium (rechts/links blättert zwischen Seiten und Gegnern). Optionen: Farbhilfe (Formen auf Schlüsseln und
 Türen, Warnstreifen an Lasern und Stampfern), große Schrift und eine Leistungsanzeige (Bilder pro Sekunde, Akku;
 sie schreibt auch perf.txt in den Spielerordner). Das Spiel notiert, wo Kip k.o. geht (deaths.txt); im Leveleditor
-zeigt H diese Todeskarte, R die erreichbaren Stellen nach dem Prüfen (F5).
+zeigt H diese Todeskarte, R die erreichbaren Stellen nach dem Prüfen (F5). Neue Gegner: der Spiegelbot (wirft
+einfache Schüsse zurück), der Lakenaal (springt aus den Becken), der Splitterschütze (zielt sichtbar, dann ein
+schneller Schuss) und die Deckwache (fährt auf den Plattformen mit).
 
 Spielstände und Einstellungen: %APPDATA%\KipKepler (Windows), ~/.local/share/KipKepler (Linux).
 Windows warnt beim ersten Start vielleicht ("Der Computer wurde durch Windows geschützt"): "Weitere Informationen"
@@ -73,7 +75,8 @@ Low gravity, Darkness and Turbo, with best times) and, in the logbook, the besti
 pages and the enemies). Options: colour help (shapes on keys and doors, warning stripes on lasers and crushers),
 large text and a performance display (frames per second, battery; it also writes perf.txt into the player folder).
 The game notes where Kip is knocked out (deaths.txt); in the level editor H shows this death map, R the places the
-hero can reach after the check (F5).
+hero can reach after the check (F5). New enemies: the mirror bot (throws plain shots back), the brine eel (leaps
+out of the pools), the shard sniper (aims visibly, then one fast shot) and the deck guard (rides the platforms).
 
 Saves and settings: %APPDATA%\KipKepler (Windows), ~/.local/share/KipKepler (Linux).
 Windows may warn at the first start ("Windows protected your PC"): "More info" > "Run anyway" -- the program is not

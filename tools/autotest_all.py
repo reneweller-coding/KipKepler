@@ -24,6 +24,9 @@ def main():
     ap.add_argument("--minutes", type=float, default=45, help="wall-clock limit per worker")
     a = ap.parse_args()
     os.makedirs(WORK, exist_ok=True)
+    # The knockouts of this run only (the game appends to deaths.txt beside the reports).
+    if os.path.exists(os.path.join(WORK, "deaths.txt")):
+        os.remove(os.path.join(WORK, "deaths.txt"))
     procs = {}
     for name, runs in WORKERS.items():
         report = os.path.join(WORK, name + ".txt")

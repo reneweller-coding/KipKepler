@@ -51,11 +51,41 @@ void World::stepEnemies( float dt )
             stepBoss( e, (int)i, dt );
             continue;
         }
+        // A rider goes where its platform goes, asleep or not.
+        if ( e.m_def->m_brain == BrainE::RIDER && e.m_mover >= 0 && e.m_frozen <= 0 )
+        {
+            const Mover &m = m_movers[e.m_mover];
+            e.m_x += m.m_x - m.m_px;
+            e.m_y = m.m_y;
+            e.m_vy = 0;
+            e.m_ground = true;
+        }
         // Far away things sleep.
         if ( std::fabs( e.m_x - m_hero.m_x ) > 900 || std::fabs( e.m_y - m_hero.m_y ) > 640 ) continue;
         if ( e.m_hidden )
         {
             bool near = std::hypot( e.m_x - heroCx(), e.cy() - heroCy() ) < 7 * T;
+            if ( e.m_def->m_brain == BrainE::EEL )
+            {
+                // Under the surface until the hero passes above the pool, then out in an arc to where he will be at
+                // its top (he keeps running).
+                if ( e.m_shootT > 0 ) e.m_shootT -= dt;
+                if ( !m_dead && e.m_shootT <= 0 && std::fabs( e.m_x - heroCx() ) < 150 && m_hero.m_y < e.m_y &&
+                     e.m_y - m_hero.m_y < 260 )
+                {
+                    float h = std::clamp( e.m_y - heroCy() + 24, 70.0f, 230.0f );
+                    e.m_hidden = false;
+                    e.m_state = 1, e.m_stateT = 0;
+                    e.m_vy = -std::sqrt( 2 * 1500 * h );
+                    float up = -e.m_vy / 1500, aim = heroCx() + m_hero.m_vx * up;
+                    e.m_dir = aim < e.m_x ? -1 : 1;
+                    e.m_vx = std::clamp( ( aim - e.m_x ) / up, -170.0f, 170.0f );
+                    effect( "splash", e.m_x, e.m_y - 8 );
+                    burst( e.m_x, e.m_y - 8, 12, { 120, 230, 200, 255 }, 160 );
+                    sfx( "splash", 0.7f, 1.3f );
+                }
+                continue;
+            }
             if ( e.m_def->m_brain == BrainE::BURROWER )
             {
                 // Under the ground until the hero is right there, then out with a leap.
@@ -520,6 +550,106 @@ void World::stepEnemy( Enemy &e, int index, float dt )
             walk( speed, true );
         }
         break;
+
+        case BrainE::MIRROR:
+            // Behind its mirror, always turned to the hero once it sees him; slowly closer.
+            e.m_anim = "move";
+            if ( sees( 320, 60 ) )
+            {
+                face();
+                walk( std::fabs( dx ) > 70 ? speed : 0, true );
+            }
+            else
+                walk( speed * 0.6f, true );
+            break;
+
+        case BrainE::EEL:
+            // In the air: a plain arc, back into its pool where it came from.
+            e.m_anim = "attack";
+            e.m_vy = std::min( 900.0f, e.m_vy + 1500 * dt );
+            e.m_x += e.m_vx * dt;
+            e.m_y += e.m_vy * dt;
+            if ( e.m_vy > 0 && e.m_y >= e.m_homeY )
+            {
+                e.m_x = e.m_homeX, e.m_y = e.m_homeY;
+                e.m_vx = e.m_vy = 0;
+                e.m_hidden = true;
+                e.m_state = 0;
+                e.m_shootT = 1.6f;
+                effect( "splash", e.m_x, e.m_y - 8 );
+                sfx( "splash", 0.5f, 1.4f );
+            }
+            break;
+
+        case BrainE::SNIPER:
+            // Takes aim (the line follows the hero, then holds still a moment) and fires one fast shard.
+            if ( e.m_state == 0 )
+            {
+                e.m_anim = "move";
+                walk( speed, true );
+                if ( e.m_shootT <= 0 && sees( 470, 170 ) ) e.m_state = 1, e.m_stateT = 0, face();
+            }
+            else if ( e.m_state == 1 )
+            {
+                e.m_anim = "attack";
+                walk( 0, true );
+                if ( e.m_stateT < 0.75f ) face(), e.m_aimX = hx, e.m_aimY = hy;
+                if ( e.m_stateT > 1.05f )
+                {
+                    float x, y;
+                    muzzle( x, y );
+                    float ax = e.m_aimX - x, ay = e.m_aimY - y, n = std::max( 1.0f, std::hypot( ax, ay ) );
+                    enemyShoot( e, d.m_shot, x, y, ax / n * 640, ay / n * 640 );
+                    e.m_state = 2, e.m_stateT = 0;
+                    e.m_shootT = 2.4f;
+                }
+            }
+            else
+            {
+                e.m_anim = "attack";
+                walk( 0, true );
+                if ( e.m_stateT > 0.4f ) e.m_state = 0;
+            }
+            break;
+
+        case BrainE::RIDER:
+        {
+            // Rides the platform it stands on (looked for once), walks to and fro on it and shoots along its height.
+            // (Carried by its platform in stepEnemies; here it walks to and fro on it.)
+            bool shooting = e.m_state != 0;
+            if ( e.m_mover >= 0 )
+            {
+                const Mover &m = m_movers[e.m_mover];
+                float        l = m.m_x + w * 0.5f + 2, r = m.m_x + m.m_w * T - w * 0.5f - 2;
+                if ( !shooting )
+                {
+                    e.m_x += e.m_dir * speed * 0.5f * dt;
+                    if ( e.m_x < l ) e.m_x = l, e.m_dir = 1;
+                    if ( e.m_x > r ) e.m_x = r, e.m_dir = -1;
+                }
+                else
+                    e.m_x = std::clamp( e.m_x, l, std::max( l, r ) );
+            }
+            else
+                walk( shooting ? 0 : speed, true );
+            e.m_anim = shooting ? "attack" : "move";
+            if ( !shooting && e.m_shootT <= 0 && sees( 340, 50 ) ) e.m_state = 1, e.m_stateT = 0;
+            if ( e.m_state == 1 )
+            {
+                face();
+                if ( e.m_stateT > 0.4f )
+                {
+                    float x, y;
+                    muzzle( x, y );
+                    enemyShoot( e, d.m_shot, x, y, e.m_dir * 320.0f, 0 );
+                    e.m_state = 2, e.m_stateT = 0;
+                    e.m_shootT = 1.6f;
+                }
+            }
+            else if ( e.m_state == 2 && e.m_stateT > 0.3f )
+                e.m_state = 0;
+            break;
+        }
 
     case BrainE::HEAVY:
         if ( heroUp && dist < 300 && e.m_shootT <= 0 && lineOfSight( e.m_x, e.cy(), hx, hy ) )

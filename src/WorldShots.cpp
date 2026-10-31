@@ -561,6 +561,17 @@ bool World::hurtEnemy( int index, float damage, float fromX, WeaponE w, bool cha
         killEnemy( index );
         return true;
     }
+    // A mirror throws plain shots from the front back at the hero.
+    if ( e.m_def->m_brain == BrainE::MIRROR && ( fromX - e.m_x ) * e.m_dir > 0 && !charged && w != WeaponE::LANCER &&
+         w != WeaponE::MORTAR && w != WeaponE::ARC && e.m_frozen <= 0 )
+    {
+        float dir = fromX < e.m_x ? -1.0f : 1.0f;
+        enemyShoot( e, "enemy_bolt", e.m_x + dir * ( e.m_def->m_w * 0.5f + 4 ), e.cy() - 4, dir * 380.0f, 0 );
+        effect( "spark", fromX, e.cy() );
+        sfx( "armour_ping", 0.7f, 1.3f, pan );
+        e.m_attackT = 0.25f;
+        return false;
+    }
     // Armour turns plain shots from the front.
     bool front = ( fromX - e.m_x ) * e.m_dir > 0;
     bool heavy = charged || w == WeaponE::LANCER || w == WeaponE::MORTAR || w == WeaponE::ARC;

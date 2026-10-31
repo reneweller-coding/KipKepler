@@ -99,8 +99,20 @@ const std::vector<EnemyDef> &enemyDefs()
         { "blinker", B::BLINKER, F::GLOAM, 4, 0, 15, 24, 36, 350, "enemy_orb", "", false },
         { "brute", B::HEAVY, F::GLOAM, 12, 35, 25, 40, 50, 500, "grenade", "", false },
         { "riftgate", B::SPAWNER, F::GLOAM, 18, 0, 15, 48, 64, 900, "", "trooper", false },
+        // The third round: one new way of fighting per episode (after the blocks of eight, with their episode).
+        { "mirrorbot", B::MIRROR, F::ROBOT, 4, 35, 15, 24, 40, 260, "enemy_bolt", "", false, 1 },
+        { "brineeel", B::EEL, F::CREATURE, 3, 0, 20, 30, 22, 220, "", "", false, 2 },
+        { "shardsniper", B::SNIPER, F::ICE, 4, 30, 18, 24, 40, 280, "shard", "", false, 3 },
+        { "deckguard", B::RIDER, F::GLOAM, 6, 45, 15, 24, 42, 320, "enemy_bolt", "", false, 4 },
     };
     return defs;
+}
+
+int episodeOf( const EnemyDef &d )
+{
+    if ( d.m_episode ) return d.m_episode;
+    const std::vector<EnemyDef> &defs = enemyDefs();
+    return &d >= defs.data() && &d < defs.data() + defs.size() ? (int)( &d - defs.data() ) / 8 + 1 : 1;
 }
 
 const EnemyDef *enemyDef( const std::string &id )

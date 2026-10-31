@@ -166,19 +166,27 @@ the hero may only leave it through the bottom (that is death).
 
 Episode 1 (robots): `sweeper` (walker), `sentry` (shooter), `hoverdrone` (flier), `turret` (turret, on a wall or
 ceiling), `sparkmine` (floater, homing, explodes), `rammer` (charger), `springbot` (hopper), `fabricator` (spawner of
-hoverdrones). Boss `warden`.
+hoverdrones), `mirrorbot` (mirror: walks at the hero behind a mirror that throws plain shots from the front back).
+Boss `warden`.
 
 Episode 2 (creatures): `beetle` (walker, armoured front), `spitter` (shooter: lobs acid arcs), `mothling` (flier),
 `leaper` (hopper), `snapvine` (dropper from the ceiling), `sporepod` (floater, bursts into spores), `stalker`
-(charger), `hivenest` (spawner of mothlings). Boss `broodmother`.
+(charger), `hivenest` (spawner of mothlings), `brineeel` (eel: placed in the cell above a pool, lurks under the
+surface, leaps at the hero passing above, only hurt while out). Boss `broodmother`.
 
 Episode 3 (ice and crystal): `crystalcrab` (walker), `icebat` (flier, swoops), `shardling` (hopper),
 `cryoturret` (turret), `minerbot` (shooter), `burrower` (ambusher from the ground), `frostgolem` (charger, heavy),
-`wisp` (floater, homing). Boss `colossus`.
+`wisp` (floater, homing), `shardsniper` (sniper: aims about a second along a visible line, the last 0.3 s held
+still, then one fast shard). Boss `colossus`.
 
 Episode 4 (the Gloam): `trooper` (shooter), `shieldbot` (walker, blocks frontal shots), `jetpacker` (flier
 shooter), `gloamhound` (charger), `lasereye` (turret, beam), `blinker` (teleports around), `brute` (heavy walker,
-throws grenades), `riftgate` (spawner). Final boss `gloam`.
+throws grenades), `riftgate` (spawner), `deckguard` (rider: placed in the cell above a moving platform, rides it --
+asleep too --, walks to and fro on it and shoots). Final boss `gloam`.
+
+The four of the third round come after the blocks of eight in the enemy table with their episode set
+(`EnemyDef::m_episode`); `tools/levels/spread_enemies.py` spread the kinds over the levels once (4-6 kinds per level
+by stage, conversions only within a movement class, no chargers or grenade throwers next to pits).
 
 ## Sprite sheets (assets/sprites/<sheet>.png + <sheet>.txt)
 

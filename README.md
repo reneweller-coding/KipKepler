@@ -4,7 +4,7 @@ A 2D action platformer in HD pixel art: Kip Kepler, the most junior cadet of the
 of four shattered beacons across four episodes of nine levels each -- crystals open the exit, key cards open doors,
 switches move walls, fake walls hide secrets, and nine science-fiction weapons (bought up at the Quartermaster
 between levels) deal with what lives there. Four bosses, a secret level per episode behind a hidden warp, the
-Commodore's radio messages (spoken, German and English), logbook pages, a bestiary, medals, 40 awards, high scores,
+Commodore's radio messages (spoken, German and English), 36 enemy kinds, logbook pages, a bestiary, medals, 40 awards, high scores,
 New Game+, boss rush, time trials against your own ghost, daily and custom challenges, a pause map, a quick save in the
 middle of a level, an assist mode, colour help, large text, a performance display and a level editor with a death
 map. In the spirit of the early-90s shareware jump-and-runs, with its own world, levels and characters. Windows,

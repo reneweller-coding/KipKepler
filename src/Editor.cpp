@@ -281,9 +281,9 @@ std::vector<std::vector<Item>> makeItems( int episode, const std::vector<std::st
     std::vector<const EnemyDef *> order;
     const std::vector<EnemyDef>  &defs = enemyDefs();
     for ( size_t k = 0; k < defs.size(); ++k )
-        if ( (int)k / 8 + 1 == episode ) order.push_back( &defs[k] );
+        if ( episodeOf( defs[k] ) == episode ) order.push_back( &defs[k] );
     for ( size_t k = 0; k < defs.size(); ++k )
-        if ( (int)k / 8 + 1 != episode ) order.push_back( &defs[k] );
+        if ( episodeOf( defs[k] ) != episode ) order.push_back( &defs[k] );
     for ( const EnemyDef *d : order )
     {
         Item i;

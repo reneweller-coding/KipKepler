@@ -45,6 +45,7 @@ Episode 1:
 | rammer | 34 x 28 | walks, revs, charges | a squat forklift/bulldozer bot with a ram plate (attack = charging, hurt = dazed with sparks) |
 | springbot | 24 x 28 | hops at the hero | a robot on a big spring leg (idle = compressed, attack = in the air) |
 | fabricator | 44 x 44 | beams in hoverdrones | a fabrication pod / machine block with a glowing hatch (attack = hatch open) |
+| mirrorbot | 24 x 40 | walks at the hero; its mirror throws plain shots back | a sentry carrying a polished mirror shield (muzzle) |
 
 Episode 2:
 | id | box | behaviour | look |
@@ -57,6 +58,7 @@ Episode 2:
 | sporepod | 22 x 22 | drifts at the hero, puffs spores | a floating spore balloon with tendrils (fly) |
 | stalker | 36 x 30 | walks, charges | a lean raptor-like predator |
 | hivenest | 48 x 48 | beams in mothlings | a pulsing hive mound with openings |
+| brineeel | 30 x 22 | lurks in a pool, leaps at the hero above | a dark teal eel with a big head (attack = leaping) |
 
 Episode 3:
 | id | box | behaviour | look |
@@ -69,6 +71,7 @@ Episode 3:
 | burrower | 30 x 24 | bursts out of the ground, then walks | an ice worm / burrowing beast |
 | frostgolem | 40 x 46 | walks heavy, charges | a hulking ice golem (96 frame) |
 | wisp | 20 x 20 | drifts through rock at the hero | a cold ghost light (fly; mostly glow) |
+| shardsniper | 24 x 40 | aims along a visible line, then one fast shard | an icy sentry with a long scoped rifle (muzzle) |
 
 Episode 4:
 | id | box | behaviour | look |
@@ -81,6 +84,7 @@ Episode 4:
 | blinker | 24 x 36 | teleports near the hero and shoots | a phasing assassin android (idle, attack; muzzle) |
 | brute | 40 x 50 | walks heavy, throws grenades | a hulking heavy android (96 frame; muzzle = throwing hand) |
 | riftgate | 48 x 64 | beams in troopers | a portal frame with a swirling rift (96 frame) |
+| deckguard | 24 x 42 | rides a moving platform, walks on it, shoots | a trooper with a cyan visor, a shield and magnet soles (muzzle) |
 
 ## The bosses (one sheet each)
 
