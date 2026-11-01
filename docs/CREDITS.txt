@@ -1,0 +1,20 @@
+KIP KEPLER – credits
+====================
+
+Game, code, levels, pixel art, texts and sounds: made for this game. All characters, places and organisations are
+invented; any likeness to real persons is a coincidence.
+
+Built with
+- raylib 5.5 (zlib/libpng licence), https://www.raylib.com
+
+How the pictures and sounds were made
+- The sprites are baked by the game's own tools from 3D signed-distance-field parts into pixel art; the tiles,
+  backgrounds, fonts and the interface come from its own generators (tools/).
+- The music was generated locally with ACE-Step 1.5.
+- The sound effects and ambiences are synthesised by the game's tools.
+- The Commodore's radio voice was made locally with Qwen3-TTS (an invented voice, German and English).
+- The story stills were painted locally with FLUX.2 [dev] and pixelated.
+
+Licence
+KIP KEPLER is free software under the GNU Affero General Public License 3.0 (LICENSE): use it, change it, pass it
+on, with the source of what you change. The source is at https://github.com/reneweller-coding/KipKepler

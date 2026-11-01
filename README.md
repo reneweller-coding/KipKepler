@@ -1,4 +1,10 @@
-# KIP KEPLER
+<h1 align="center"><img src="docs/logo.png" width="620" alt="KIP KEPLER" /></h1>
+
+<p align="center">
+<a href="https://reneweller-coding.itch.io/kip-kepler"><b>itch.io</b></a> ·
+<a href="https://github.com/reneweller-coding/KipKepler/releases/latest"><b>Download</b></a> ·
+<a href="LICENSE">AGPL-3.0</a>
+</p>
 
 A 2D action platformer in HD pixel art: Kip Kepler, the most junior cadet of the Beacon Corps, collects the shards
 of four shattered beacons across four episodes of nine levels each -- crystals open the exit, key cards open doors,
@@ -7,8 +13,35 @@ between levels) deal with what lives there. Four bosses, a secret level per epis
 Commodore's radio messages (spoken, German and English), 36 enemy kinds, logbook pages, a bestiary, medals, 40 awards, high scores,
 New Game+, boss rush, time trials against your own ghost, daily and custom challenges, a pause map, a quick save in the
 middle of a level, an assist mode, colour help, large text, a performance display and a level editor with a death
-map. In the spirit of the early-90s shareware jump-and-runs, with its own world, levels and characters. Windows,
-Linux and the Steam Deck.
+map. In the spirit of the early-90s shareware jump-and-runs, with its own world, levels and characters.
+
+**Windows, Linux and the Steam Deck**, free and open source under the AGPL-3.0. Sprites, tiles, backgrounds, fonts
+and sounds come from the game's own generators in `tools/`.
+
+![Kip on a planet's surface](docs/shots/surface.png)
+
+## Download
+
+**[KipKepler-1.4.0-windows-x64.zip](https://github.com/reneweller-coding/KipKepler/releases/download/v1.4.0/KipKepler-1.4.0-windows-x64.zip)**
+for Windows 10 and 11: unpack it anywhere and start `KipKepler.exe`, nothing to install. The
+**[Linux archive](https://github.com/reneweller-coding/KipKepler/releases/download/v1.4.0/KipKepler-1.4.0-linux-x86_64.tar.gz)**
+runs on any x86-64 distribution with glibc 2.35 or newer, SteamOS included (add `KipKepler` to Steam as a non-Steam
+game). Both carry the player's readme (`README.txt`), the credits and the licence. The same packages are on
+**[itch.io](https://reneweller-coding.itch.io/kip-kepler)**.
+
+Requirements: a graphics card with OpenGL 3.3; a gamepad or the keyboard. The program is not code-signed: Windows'
+SmartScreen may warn once ("More info", "Run anyway").
+
+## Pictures
+
+| | |
+|:---:|:---:|
+| ![A station level](docs/shots/station.png) | ![The caves](docs/shots/caves.png) |
+| A station of the Beacon Corps | Down in the caves |
+| ![Crystal caverns](docs/shots/crystals.png) | ![A warp gate](docs/shots/portal.png) |
+| Crystal caverns | A warp gate in the last episode |
+| ![The Quartermaster](docs/shots/quartermaster.png) | ![The pause map](docs/shots/map.png) |
+| The Quartermaster between levels | The pause map |
 
 ## Build
 
@@ -54,3 +87,12 @@ The saves and settings live in %APPDATA%\KipKepler (Linux: ~/.local/share/KipKep
     KipKepler --mute --windowed --w W --h H --lang de|en --difficulty 0-2
     KeplerTool check LEVEL [overview.png] | checkall DIR | render LEVEL OUT.png [scale | x y w h]
     KeplerTool deaths LEVEL deaths.txt OUT.png [scale]                    a level with its knockouts (the death map)
+
+## Credits and licence
+
+[docs/CREDITS.txt](docs/CREDITS.txt) lists what KIP KEPLER is made from: raylib (zlib/libpng licence) and the tools
+the music, the radio voice and the story stills were made with (ACE-Step 1.5, Qwen3-TTS, FLUX.2 [dev]); everything else
+comes from the game's own generators.
+
+KIP KEPLER is free software under the GNU Affero General Public License 3.0 ([LICENSE](LICENSE)): use it, change it,
+pass it on, with the source of what you change.

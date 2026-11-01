@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Builds KIP KEPLER for Linux (Release, GCC 12) and packs dist/KipKepler-<version>-linux-x86_64.tar.gz: the program,
-# its assets, the player's readme and the licence. Built on Ubuntu 22.04 it runs on glibc 2.35 and newer, SteamOS (the
+# its assets, the player's readme, the credits and the licence. Built on Ubuntu 22.04 it runs on glibc 2.35 and newer, SteamOS (the
 # Steam Deck) included.
 #
 #   bash Deploy/build_linux.sh [BUILD_DIR]      (default ~/build/kipkepler-release; nice -n 15, four jobs)
@@ -22,6 +22,7 @@ cp "$build/KipKepler" "$stage/KipKepler"
 (cd "$root/assets" && tar -cf - .) | (cd "$stage/assets" && tar -xf -)
 [ -f "$root/docs/README-player.txt" ] && cp "$root/docs/README-player.txt" "$stage/README.txt"
 [ -f "$root/LICENSE" ] && cp "$root/LICENSE" "$stage/"
+[ -f "$root/docs/CREDITS.txt" ] && cp "$root/docs/CREDITS.txt" "$stage/"
 mkdir -p "$root/dist"
 tar -C "$build/release" -czf "$root/dist/$name.tar.gz" "$name"
 echo "$root/dist/$name.tar.gz"

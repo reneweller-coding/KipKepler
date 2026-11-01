@@ -6,7 +6,8 @@
 .DESCRIPTION
     .\Deploy\build_release.ps1 [-NoBuild] [-NoLinux]
 
-    Builds the Release (build.ps1), stages KipKepler.exe with its assets and the player's readme in work\release and
+    Builds the Release (build.ps1), stages KipKepler.exe with its assets, the player's readme, the credits and the
+    licence in work\release and
     zips them into dist. The Linux archive comes from Deploy/build_linux.sh in WSL (GCC 12, glibc 2.35 and newer,
     SteamOS included); without WSL it is skipped.
 
@@ -39,6 +40,9 @@ Copy-Item (Join-Path $root "bin\msvc\KipKepler.exe") (Join-Path $stage "KipKeple
 & robocopy (Join-Path $root "assets") (Join-Path $stage "assets") /E /NFL /NDL /NJH /NJS /NP | Out-Null
 $readme = Join-Path $root "docs\README-player.txt"
 if (Test-Path $readme) { Copy-Item $readme (Join-Path $stage "README.txt") }
+foreach ($f in "LICENSE", "docs\CREDITS.txt") {
+    if (Test-Path (Join-Path $root $f)) { Copy-Item (Join-Path $root $f) $stage }
+}
 $dist = Join-Path $root "dist"
 New-Item -ItemType Directory -Force $dist | Out-Null
 $zip = Join-Path $dist "$name.zip"
