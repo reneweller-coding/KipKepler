@@ -3,6 +3,8 @@
 <p align="center">
 <a href="https://reneweller-coding.itch.io/kip-kepler"><b>itch.io</b></a> ·
 <a href="https://github.com/reneweller-coding/KipKepler/releases/latest"><b>Download</b></a> ·
+<a href="https://youtu.be/d2ju_QJA_wU"><b>Trailer</b></a> ·
+<a href="https://youtu.be/LK-f-_U9U-0">Gameplay video</a> ·
 <a href="LICENSE">AGPL-3.0</a>
 </p>
 
@@ -31,6 +33,13 @@ game). Both carry the player's readme (`README.txt`), the credits and the licenc
 
 Requirements: a graphics card with OpenGL 3.3; a gamepad or the keyboard. The program is not code-signed: Windows'
 SmartScreen may warn once ("More info", "Run anyway").
+
+## Videos
+
+| | |
+|:---:|:---:|
+| [![Trailer](https://img.youtube.com/vi/d2ju_QJA_wU/maxresdefault.jpg)](https://youtu.be/d2ju_QJA_wU) | [![Gameplay video](https://img.youtube.com/vi/LK-f-_U9U-0/maxresdefault.jpg)](https://youtu.be/LK-f-_U9U-0) |
+| The trailer (one minute) | Gameplay (several minutes, the game's autopilot at the controls) |
 
 ## Pictures
 
